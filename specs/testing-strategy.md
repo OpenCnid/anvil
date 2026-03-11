@@ -148,7 +148,7 @@ def test_tailor_output_structure(mock_anthropic):
     AnvilModel.model_validate(result)  # Must not raise
 ```
 
-**Tier 1 is NOT sufficient for feature completion.** An AI feature is considered "untested" and may not be marked as complete until it passes Tier 2 golden-set regression with a score ≥ 50/100 on ALL test cases for ALL supported providers. This is a release-blocking requirement, not a nice-to-have.
+**Tier 1 is NOT sufficient for feature completion.** An AI feature is considered "untested" and may not be marked as complete until it passes Tier 2 golden-set regression with a score ≥ 60/100 on ALL test cases for ALL supported providers. This is a release-blocking requirement, not a nice-to-have.
 
 ### Tier 2 — Golden-Set Regression (Nightly / On-Demand)
 
@@ -263,7 +263,7 @@ def test_tailor_provider_parity(provider, golden_case_01):
 
     # Quality evaluation (Tier 2 rubric)
     score = evaluate_against_rubric(result, golden_case_01.rubric)
-    assert score >= 50, f"Provider {provider} scored {score}/100 (minimum: 50)"
+    assert score >= 60, f"Provider {provider} scored {score}/100 (minimum: 60)"
 
     # Log score for tracking
     log_provider_score(provider, "tailor", "case_01", score)

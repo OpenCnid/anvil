@@ -4,11 +4,19 @@ Why:
     The vendored render, new, and create-theme commands must register on the
     Anvil Typer app. If the vendor import hook or auto-discovery breaks, these
     commands silently disappear from ``anvil --help``. These tests catch that.
+
+Note:
+    All tests in this module use @pytest.mark.xdist_group("typer_cli") to
+    ensure they run on the same parallel worker. Typer's invoke() calls
+    get_type_hints() which fails when parallel mock tests interfere.
 """
 
+import pytest
 from typer.testing import CliRunner
 
 runner = CliRunner()
+
+pytestmark = pytest.mark.xdist_group("typer_cli")
 
 
 def test_render_command_registered():
