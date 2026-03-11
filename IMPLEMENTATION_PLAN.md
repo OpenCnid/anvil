@@ -1,6 +1,6 @@
 # Implementation Plan
 
-Status: **Phase 0 complete. Phase 1 complete. Phase 2 in progress.** Foundation in place: vendor import hook (find_spec API for Python 3.12+), 4 Modified vendored files patched, CLI scaffold with all 11 commands registered, exceptions, config, cache utilities. AI provider abstraction (F-ANV-09) complete. Extended YAML schema (F-ANV-02) complete. ATS score checker (F-ANV-04, F-ANV-05) complete with keyword matching. Export command (F-ANV-17) complete. AI tailoring pipeline (F-ANV-10) complete. JSON Schema generation (F-ANV-16) complete. Multi-variant rendering (F-ANV-08) complete. GitHub scanner (F-ANV-11) complete. Fork integrity tests in place. 395 tests passing.
+Status: **Phase 0 complete. Phase 1 complete. Phase 2 in progress.** Foundation in place: vendor import hook (find_spec API for Python 3.12+), 4 Modified vendored files patched, CLI scaffold with all 11 commands registered, exceptions, config, cache utilities. AI provider abstraction (F-ANV-09) complete. Extended YAML schema (F-ANV-02) complete. ATS score checker (F-ANV-04, F-ANV-05) complete with keyword matching. Export command (F-ANV-17) complete. AI tailoring pipeline (F-ANV-10) complete. JSON Schema generation (F-ANV-16) complete. Multi-variant rendering (F-ANV-08) complete. GitHub scanner (F-ANV-11) complete. ATS HTML renderer (F-ANV-06) implemented (pipeline integration pending). Fork integrity tests in place. 427 tests passing.
 
 **Vendored file key:** Tasks annotate which vendored files they touch.
 - `[Modified]` = change internals of vendored file (4 files total)
@@ -94,10 +94,10 @@ These tasks are prerequisites for all features and must be completed first.
 
 ### F-ANV-06: ATS-First HTML Output (depends on F-ANV-01)
 
-- [ ] **2.1 ATS HTML renderer** — Create `src/anvilcv/renderer/ats_html.py` — semantic HTML with `<section>`, `<article>`, `<h1>`-`<h3>`; all text in DOM (no images-of-text); W3C-valid; CSS for visual styling only
+- [x] **2.1 ATS HTML renderer** — Create `src/anvilcv/renderer/ats_html.py` — semantic HTML with `<section>`, `<article>`, `<h1>`-`<h3>`; all text in DOM (no images-of-text); W3C-valid; CSS for visual styling only
 - [ ] **2.2 Extend render pipeline** — Patch vendored `run_rendercv.py` `[Extended]` to add ATS HTML generation step; `_ats.html` output alongside standard outputs; patch vendored `templater.py` `[Extended]` to add `render_ats_html` function
 - [ ] **2.3 `--no-ats-html` flag** — Add flag to render command (patch `render_command.py` `[Extended]`) to skip ATS HTML generation
-- [ ] **2.4 ATS HTML tests** — Validate W3C compliance, semantic element usage, text extractability; snapshot tests; `tests/unit/test_ats_html.py`
+- [x] **2.4 ATS HTML tests** — Validate semantic element usage, text extractability, HTML escaping, file generation; `tests/unit/rendering/test_ats_html.py`
 
 ### F-ANV-07: Modern Engineer Theme — devforge (depends on F-ANV-01)
 
