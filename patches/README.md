@@ -22,6 +22,9 @@ Files where new functionality was appended without altering existing code.
 | E-005 | `vendor/rendercv/schema/models/design/built_in_design.py` | Extended: Imported DevforgeTheme and added to BuiltInDesign discriminated union for theme registration | **Low** |
 | E-006 | `vendor/rendercv/cli/error_handler.py` | Extended: Added AnvilError handling with exit codes 1-4 and category-specific Rich panel styling | **Low** |
 | E-007 | `vendor/rendercv/schema/error_dictionary.yaml` | Extended: Added Anvil-specific error messages for devforge theme, AI providers, URL/string validation | **Low** |
+| E-008 | `vendor/rendercv/schema/sample_content.yaml` | Extended: Added `anvil` section with developer-focused sample config (AI providers, GitHub, variants) | **Low** |
+| E-009 | `vendor/rendercv/schema/sample_generator.py` | Extended: Added `include_anvil` parameter and `_create_anvil_sample_section()` for commented anvil config in generated YAML | **Low** |
+| E-010 | `vendor/rendercv/cli/new_command/new_command.py` | Extended: Added `--rendercv-compat` flag to suppress anvil section; updated help text and next-steps to say `anvil` | **Low** |
 
 Risk levels:
 - **Low** — Simple additions or renames. Unlikely to conflict with upstream.

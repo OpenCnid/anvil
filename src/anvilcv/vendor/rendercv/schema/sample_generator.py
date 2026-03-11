@@ -100,6 +100,7 @@ def create_sample_yaml_input_file(
     name: str = "John Doe",
     theme: str = "classic",
     locale: str = "english",
+    include_anvil: bool = True,
 ) -> str | None:
     """Generate formatted sample YAML with schema hint and commented design options.
 
@@ -107,6 +108,9 @@ def create_sample_yaml_input_file(
         New command provides users with immediately usable CV templates.
         JSON schema hint enables IDE autocompletion, commented design
         fields show customization options without overwhelming beginners.
+        The optional anvil section demonstrates AI provider, GitHub, and
+        variant configuration — commented out so it doesn't interfere
+        but educates users about Anvil capabilities.
 
     Example:
         ```py
@@ -121,14 +125,15 @@ def create_sample_yaml_input_file(
         name: Person's full name.
         theme: Design theme identifier.
         locale: Language/date format identifier.
+        include_anvil: Whether to include the commented-out anvil section.
+            Set to False for pure rendercv-compatible output.
 
     Returns:
         YAML string if file_path is None, otherwise None after writing file.
     """
     if theme not in available_themes:
         message = (
-            f"The theme {theme} is not available. The available themes are:"
-            f" {available_themes}"
+            f"The theme {theme} is not available. The available themes are: {available_themes}"
         )
         raise RenderCVUserError(message)
 
@@ -140,9 +145,7 @@ def create_sample_yaml_input_file(
         )
         raise RenderCVUserError(message)
 
-    data_model = create_sample_rendercv_pydantic_model(
-        name=name, theme=theme, locale=locale
-    )
+    data_model = create_sample_rendercv_pydantic_model(name=name, theme=theme, locale=locale)
 
     data_model_as_dictionary = rendercv_model_to_dictionary(data_model)
 
@@ -150,11 +153,7 @@ def create_sample_yaml_input_file(
 
     # Process for nested bullets (only in YAML list items, not mapping values):
     yaml_string = "\n".join(
-        (
-            re.sub(r"(?<! ) - (?! )", "\n            - ", line)
-            if re.match(r"\s+- ", line)
-            else line
-        )
+        (re.sub(r"(?<! ) - (?! )", "\n            - ", line) if re.match(r"\s+- ", line) else line)
         for line in yaml_string.split("\n")
     )
 
@@ -173,8 +172,7 @@ def create_sample_yaml_input_file(
     split_yaml_string = split_yaml_string[1].split(yaml_locale_part)
     below_design = split_yaml_string[0].replace(yaml_design_theme_part, "")
     below_design = [
-        f"  {line.replace('  ', '# ', 1)}"
-        for line in below_design.splitlines(keepends=False)
+        f"  {line.replace('  ', '# ', 1)}" for line in below_design.splitlines(keepends=False)
     ]
     yaml_design_field = yaml_design_theme_part + "\n".join(below_design) + "\n"
 
@@ -184,20 +182,53 @@ def create_sample_yaml_input_file(
     split_by_settings = locale_and_settings.split(settings_part)
     below_locale = split_by_settings[0]
     below_locale_commented = [
-        f"  {line.replace('  ', '# ', 1)}"
-        for line in below_locale.splitlines(keepends=False)
+        f"  {line.replace('  ', '# ', 1)}" for line in below_locale.splitlines(keepends=False)
     ]
     yaml_locale_field = yaml_locale_part + "\n".join(below_locale_commented) + "\n"
     yaml_settings_field = settings_part + split_by_settings[1]
 
-    yaml_string = (
-        yaml_cv_field + yaml_design_field + yaml_locale_field + yaml_settings_field
-    )
+    yaml_string = yaml_cv_field + yaml_design_field + yaml_locale_field + yaml_settings_field
+
+    # Append commented-out anvil section to show Anvil-specific configuration
+    if include_anvil:
+        yaml_string += _create_anvil_sample_section()
 
     if file_path is not None:
         file_path.write_text(yaml_string, encoding="utf-8")
 
     return yaml_string
+
+
+def _create_anvil_sample_section() -> str:
+    """Generate a commented-out anvil configuration section for sample YAML.
+
+    Why:
+        Users need to discover Anvil capabilities (AI providers, GitHub
+        scanning, variant management) through the generated sample file.
+        Commenting everything out means the file is valid without any
+        API keys, but users can uncomment sections as needed.
+
+    Returns:
+        Commented YAML string for the anvil section.
+    """
+    sample_content = pathlib.Path(__file__).parent / "sample_content.yaml"
+    sample_dict = read_yaml(sample_content)
+    anvil_dict = sample_dict.get("anvil")
+    if not anvil_dict:
+        return ""
+
+    anvil_yaml = dictionary_to_yaml({"anvil": anvil_dict})
+    # Comment out all lines except the section header comment
+    lines = anvil_yaml.splitlines()
+    commented_lines = [
+        "\n# Anvil configuration (uncomment to enable AI features, GitHub scanning, etc.)",
+    ]
+    for line in lines:
+        if line.strip():
+            commented_lines.append(f"# {line}")
+        else:
+            commented_lines.append("#")
+    return "\n".join(commented_lines) + "\n"
 
 
 def rendercv_model_to_dictionary(data_model: RenderCVModel) -> dict:
@@ -256,11 +287,7 @@ def create_sample_yaml_file(
 
     # Process for nested bullets (only in YAML list items, not mapping values):
     yaml_string = "\n".join(
-        (
-            re.sub(r"(?<! ) - (?! )", "\n            - ", line)
-            if re.match(r"\s+- ", line)
-            else line
-        )
+        (re.sub(r"(?<! ) - (?! )", "\n            - ", line) if re.match(r"\s+- ", line) else line)
         for line in yaml_string.split("\n")
     )
 
@@ -302,9 +329,7 @@ def create_sample_cv_file(
     """
     data_model = create_sample_rendercv_pydantic_model(name=name)
     dictionary = rendercv_model_to_dictionary(data_model)
-    return create_sample_yaml_file(
-        dictionary={"cv": dictionary["cv"]}, file_path=file_path
-    )
+    return create_sample_yaml_file(dictionary={"cv": dictionary["cv"]}, file_path=file_path)
 
 
 @overload
@@ -339,16 +364,13 @@ def create_sample_design_file(
     """
     if theme not in available_themes:
         message = (
-            f"The theme {theme} is not available. The available themes are:"
-            f" {available_themes}"
+            f"The theme {theme} is not available. The available themes are: {available_themes}"
         )
         raise RenderCVUserError(message)
 
     data_model = create_sample_rendercv_pydantic_model(theme=theme)
     dictionary = rendercv_model_to_dictionary(data_model)
-    return create_sample_yaml_file(
-        dictionary={"design": dictionary["design"]}, file_path=file_path
-    )
+    return create_sample_yaml_file(dictionary={"design": dictionary["design"]}, file_path=file_path)
 
 
 @overload
@@ -391,9 +413,7 @@ def create_sample_locale_file(
 
     data_model = create_sample_rendercv_pydantic_model(locale=locale)
     dictionary = rendercv_model_to_dictionary(data_model)
-    return create_sample_yaml_file(
-        dictionary={"locale": dictionary["locale"]}, file_path=file_path
-    )
+    return create_sample_yaml_file(dictionary={"locale": dictionary["locale"]}, file_path=file_path)
 
 
 @overload

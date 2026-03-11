@@ -36,11 +36,14 @@ MODIFIED_FILES: frozenset[str] = frozenset(
         "cli/app.py",
         # Extended — functionality added
         "cli/error_handler.py",
+        "cli/new_command/new_command.py",
         "cli/render_command/render_command.py",
         "cli/render_command/run_rendercv.py",
         "renderer/html.py",
         "renderer/templater/templater.py",
         "schema/error_dictionary.yaml",
+        "schema/sample_content.yaml",
+        "schema/sample_generator.py",
         "schema/models/design/built_in_design.py",
     }
 )
@@ -81,8 +84,7 @@ def test_untouched_file_matches_baseline(rel_path: str) -> None:
     vendor_file = _VENDOR_DIR / rel_path
 
     assert vendor_file.exists(), (
-        f"Untouched file missing from vendor tree: {rel_path}\n"
-        f"  expected at: {vendor_file}"
+        f"Untouched file missing from vendor tree: {rel_path}\n  expected at: {vendor_file}"
     )
 
     baseline_bytes = baseline_file.read_bytes()

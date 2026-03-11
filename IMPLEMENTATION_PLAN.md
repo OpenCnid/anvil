@@ -1,10 +1,10 @@
 # Implementation Plan
 
-Status: **Phase 0 complete. Phase 1 complete. Phase 2 complete. Phase 3 complete.** All features implemented. Cross-cutting concerns X.1, X.2, X.4 complete; X.3 deferred (sample content works as-is with devforge); X.5-X.8 ongoing. 558 tests passing.
+Status: **Phase 0 complete. Phase 1 complete. Phase 2 complete. Phase 3 complete.** All features implemented. Cross-cutting concerns X.1, X.2, X.3, X.4 complete; X.5-X.8 ongoing. 573 tests passing.
 
 **Vendored file key:** Tasks annotate which vendored files they touch.
 - `[Modified]` = change internals of vendored file (4 files total)
-- `[Extended]` = add to vendored file (14 files total)
+- `[Extended]` = add to vendored file (17 files total)
 - `[Wrapped]` = use through adapter in new file (1 file)
 - All other vendored files are **Untouched** — do NOT modify them.
 
@@ -167,7 +167,7 @@ These tasks are prerequisites for all features and must be completed first.
 
 - [x] **X.1 Vendor patch documentation** — All 4 Modified and 7 Extended vendored files documented in `patches/README.md` (P-001 to P-004, E-001 to E-007) with file, purpose, and risk level
 - [x] **X.2 Extend vendored `error_handler.py`** `[Extended]` — Added AnvilError handling with exit codes 1-4, category-specific Rich panel styling (Error/CLI Error/Service Error/AI Provider Error), 10 tests
-- [ ] **X.3 Extend vendored `sample_generator.py` and `sample_content.yaml`** `[Extended]` — Add Anvil-specific and developer-focused sample content for `anvil new`
+- [x] **X.3 Extend vendored `sample_generator.py` and `sample_content.yaml`** `[Extended]` — Added `anvil` section to sample_content.yaml (AI providers, GitHub, variants config); extended sample_generator.py with `include_anvil` parameter and `_create_anvil_sample_section()` to include commented-out anvil config in generated YAML; added `--rendercv-compat` flag to `anvil new` to suppress anvil section; 15 new tests, patches E-008 to E-010 documented
 - [x] **X.4 Extend vendored `error_dictionary.yaml`** `[Extended]` — Added error messages for devforge theme tag, AI provider validation, URL format, empty string validation
 - [ ] **X.5 Test coverage target** — Maintain ≥80% line coverage on Anvil-specific code; 100% coverage on ATS scoring rules (P-01 through P-08, S-01 through S-08, K-01 through K-05) per `specs/success-criteria.md`
 - [x] **X.6 Ruff + mypy compliance** — All Anvil-specific code passes `ruff check` and `mypy` (0 errors). 29 remaining mypy errors are in vendored rendercv code (Untouched files — not our responsibility)
@@ -256,14 +256,14 @@ Quick reference for build agents — files classified by modification status:
 - `vendor/rendercv/cli/entry_point.py` — binary entry point
 - `vendor/rendercv/cli/app.py` — Typer app replacement
 
-**Extended (14):** Add functionality, document in patches/README.md
+**Extended (17):** Add functionality, document in patches/README.md
 - `vendor/rendercv/cli/error_handler.py` — AI/API error formatting
 - `vendor/rendercv/cli/render_command/render_command.py` — `--variant`, `--no-ats-html` flags
 - `vendor/rendercv/cli/render_command/run_rendercv.py` — ATS HTML generation step
-- `vendor/rendercv/cli/new_command/` — Anvil-flavored YAML generation
+- `vendor/rendercv/cli/new_command/new_command.py` — `--rendercv-compat` flag, Anvil branding
 - `vendor/rendercv/schema/json_schema_generator.py` — Anvil fields in schema
-- `vendor/rendercv/schema/sample_generator.py` — Anvil sample content
-- `vendor/rendercv/schema/sample_content.yaml` — developer-focused samples
+- `vendor/rendercv/schema/sample_generator.py` — `include_anvil` param, commented anvil section
+- `vendor/rendercv/schema/sample_content.yaml` — `anvil` section with provider/GitHub/variant config
 - `vendor/rendercv/schema/error_dictionary.yaml` — Anvil error messages
 - `vendor/rendercv/schema/models/rendercv_model.py` — AnvilModel subclass target
 - `vendor/rendercv/schema/models/design/built_in_design.py` — devforge theme registration

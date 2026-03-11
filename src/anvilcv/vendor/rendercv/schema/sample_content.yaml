@@ -176,3 +176,25 @@ cv:
       - reversed_number: Building AI Infrastructure for the Next Decade — TechCrunch Disrupt (2024)
       - reversed_number: "From Research to Production: Lessons in ML Systems — NeurIPS Workshop (2023)"
       - reversed_number: "Efficient Deep Learning: A Practitioner's Perspective — Google Tech Talk (2022)"
+# Anvil-specific configuration (optional — remove this section for pure rendercv YAML)
+anvil:
+  providers:
+    default: anthropic
+    anthropic:
+      model: claude-sonnet-4-20250514
+      api_key_env: ANTHROPIC_API_KEY
+    openai:
+      model: gpt-4o
+      api_key_env: OPENAI_API_KEY
+    ollama:
+      model: "llama3.1:8b"
+      base_url: "http://localhost:11434"
+  github:
+    username: rendercv
+    token_env: GITHUB_TOKEN
+    include_forks: false
+    min_stars: 0
+    min_commits: 5
+  variants:
+    output_dir: ./variants
+    naming: "{name}_{company}_{date}"

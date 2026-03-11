@@ -20,8 +20,8 @@ from .print_welcome import print_welcome
 @app.command(
     name="new",
     help=(
-        "Generate a YAML input file to get started. Example: [yellow]rendercv new"
-        ' "John Doe"[/yellow]. Details: [cyan]rendercv new --help[/cyan]'
+        "Generate a YAML input file to get started. Example: [yellow]anvil new"
+        ' "John Doe"[/yellow]. Details: [cyan]anvil new --help[/cyan]'
     ),
 )
 @handle_user_errors
@@ -30,10 +30,7 @@ def cli_command_new(
     theme: Annotated[
         str,
         typer.Option(
-            help=(
-                "The name of the theme (available themes are:"
-                f" {', '.join(available_themes)})"
-            )
+            help=(f"The name of the theme (available themes are: {', '.join(available_themes)})")
         ),
     ] = "classic",
     locale: Annotated[
@@ -47,6 +44,16 @@ def cli_command_new(
             )
         ),
     ] = "english",
+    rendercv_compat: Annotated[
+        bool,
+        typer.Option(
+            "--rendercv-compat",
+            help=(
+                "Output pure rendercv YAML without the anvil configuration"
+                " section. Useful for compatibility with upstream rendercv."
+            ),
+        ),
+    ] = False,
     create_typst_templates: Annotated[
         bool,
         typer.Option(
@@ -64,8 +71,7 @@ def cli_command_new(
 ):
     if theme not in available_themes:
         message = (
-            f"Theme {theme} is not available. Available themes are:"
-            f" {', '.join(available_themes)}"
+            f"Theme {theme} is not available. Available themes are: {', '.join(available_themes)}"
         )
         raise RenderCVUserError(message)
 
@@ -88,7 +94,11 @@ def cli_command_new(
             "Your YAML input file",
             input_file_path,
             lambda: create_sample_yaml_input_file(
-                file_path=input_file_path, name=full_name, theme=theme, locale=locale
+                file_path=input_file_path,
+                name=full_name,
+                theme=theme,
+                locale=locale,
+                include_anvil=not rendercv_compat,
             ),
             True,  # never skip the input file
         ),
@@ -122,32 +132,23 @@ def cli_command_new(
     lines: list[str] = []
 
     # Input file status (always first)
-    input_file_created = any(
-        desc == "Your YAML input file" for desc, _ in created_items
-    )
+    input_file_created = any(desc == "Your YAML input file" for desc, _ in created_items)
     if input_file_created:
         lines.append(
-            "[green]✓[/green] Created your YAML input file: "
-            f"[purple]./{input_file_path}[/purple]"
+            f"[green]✓[/green] Created your YAML input file: [purple]./{input_file_path}[/purple]"
         )
     else:
-        lines.append(
-            f"Your YAML input file already exists: [purple]./{input_file_path}[/purple]"
-        )
+        lines.append(f"Your YAML input file already exists: [purple]./{input_file_path}[/purple]")
 
     # Next steps (always visible)
     lines.append("")
     lines.append("Next steps:")
     lines.append("  1. Edit the YAML input file with your information")
-    lines.append(f"  2. Run: [cyan]rendercv render {input_file_path}[/cyan]")
+    lines.append(f"  2. Run: [cyan]anvil render {input_file_path}[/cyan]")
 
     # Templates (exclude input file from these lists)
-    created_templates = [
-        (d, p) for d, p in created_items if d != "Your YAML input file"
-    ]
-    existing_templates = [
-        (d, p) for d, p in existing_items if d != "Your YAML input file"
-    ]
+    created_templates = [(d, p) for d, p in created_items if d != "Your YAML input file"]
+    existing_templates = [(d, p) for d, p in existing_items if d != "Your YAML input file"]
 
     if created_templates:
         lines.append("")
@@ -164,8 +165,7 @@ def cli_command_new(
     if created_templates or existing_templates:
         lines.append("")
         lines.append(
-            "Templates are for advanced design customization. You can ignore or"
-            " delete them."
+            "Templates are for advanced design customization. You can ignore or delete them."
         )
 
     print(

@@ -38,3 +38,42 @@ def test_create_theme_command_registered():
 
     result = runner.invoke(app, ["create-theme", "--help"])
     assert result.exit_code == 0
+
+
+def test_new_command_has_rendercv_compat_flag():
+    """The new command exposes --rendercv-compat flag."""
+    import anvilcv.vendor.rendercv.cli.app  # noqa: F401
+    from anvilcv.cli.app import app
+
+    result = runner.invoke(app, ["new", "--help"])
+    assert result.exit_code == 0
+    assert "--rendercv-compat" in result.output
+
+
+def test_new_command_generates_file_with_anvil(tmp_path, monkeypatch):
+    """anvil new generates YAML with commented anvil section."""
+    import anvilcv.vendor.rendercv.cli.app  # noqa: F401
+    from anvilcv.cli.app import app
+
+    monkeypatch.chdir(tmp_path)
+    result = runner.invoke(app, ["new", "Test User"])
+    assert result.exit_code == 0
+    yaml_file = tmp_path / "Test_User_CV.yaml"
+    assert yaml_file.exists()
+    content = yaml_file.read_text(encoding="utf-8")
+    assert "# Anvil configuration" in content
+
+
+def test_new_command_rendercv_compat_excludes_anvil(tmp_path, monkeypatch):
+    """anvil new --rendercv-compat generates YAML without anvil section."""
+    import anvilcv.vendor.rendercv.cli.app  # noqa: F401
+    from anvilcv.cli.app import app
+
+    monkeypatch.chdir(tmp_path)
+    result = runner.invoke(app, ["new", "Test User", "--rendercv-compat"])
+    assert result.exit_code == 0
+    yaml_file = tmp_path / "Test_User_CV.yaml"
+    assert yaml_file.exists()
+    content = yaml_file.read_text(encoding="utf-8")
+    assert "# Anvil configuration" not in content
+    assert "Test User" in content
