@@ -367,6 +367,78 @@ class TestSectionDetector:
         assert sections.has_section("experience")
         assert len(sections.sections) == 1
 
+    def test_get_section_returns_detected(self):
+        """get_section returns a DetectedSection by canonical name."""
+        doc = _good_resume_doc()
+        sections = detect_sections(doc)
+        exp = sections.get_section("experience")
+        assert exp is not None
+        assert exp.name == "experience"
+
+    def test_get_section_returns_none_for_missing(self):
+        """get_section returns None for undetected sections."""
+        doc = _good_resume_doc()
+        sections = detect_sections(doc)
+        assert sections.get_section("nonexistent") is None
+
+    def test_section_names_property(self):
+        """section_names returns list of canonical names."""
+        doc = _good_resume_doc()
+        sections = detect_sections(doc)
+        names = sections.section_names
+        assert isinstance(names, list)
+        assert "experience" in names
+        assert "education" in names
+
+    def test_lines_ending_with_ellipsis_not_headers(self):
+        """Lines ending with '...' are not treated as section headers."""
+        doc = ExtractedDocument(
+            full_text="Continue reading...\nExperience\n",
+            elements=[
+                TextElement(text="Continue reading..."),
+                TextElement(text="Experience"),
+            ],
+        )
+        sections = detect_sections(doc)
+        assert sections.has_section("experience")
+        assert len(sections.sections) == 1
+
+    def test_lines_ending_with_semicolon_not_headers(self):
+        """Lines ending with ';' are not treated as section headers."""
+        doc = ExtractedDocument(
+            full_text="some statement;\nSkills\n",
+            elements=[
+                TextElement(text="some statement;"),
+                TextElement(text="Skills"),
+            ],
+        )
+        sections = detect_sections(doc)
+        assert sections.has_section("skills")
+        assert len(sections.sections) == 1
+
+    def test_decorated_header_stripped(self):
+        """Headers with bullets/dashes/colons are still detected."""
+        doc = ExtractedDocument(
+            full_text="• Experience:\n",
+            elements=[TextElement(text="• Experience:")],
+        )
+        sections = detect_sections(doc)
+        assert sections.has_section("experience")
+
+    def test_empty_after_stripping_not_matched(self):
+        """Lines that are only decorators (no text after stripping) are skipped."""
+        doc = ExtractedDocument(
+            full_text="---\n• :\nExperience\n",
+            elements=[
+                TextElement(text="---"),
+                TextElement(text="• :"),
+                TextElement(text="Experience"),
+            ],
+        )
+        sections = detect_sections(doc)
+        assert sections.has_section("experience")
+        assert len(sections.sections) == 1
+
 
 # --- Structure Rules ---
 

@@ -12,8 +12,12 @@ from unittest.mock import AsyncMock, MagicMock
 from anvilcv.ai.provider import GenerationResponse
 from anvilcv.schema.job_description import JobDescription, JobRequirements
 from anvilcv.tailoring.matcher import ResumeMatch, match_resume_to_job
-from anvilcv.tailoring.rewriter import build_rewrite_prompt, rewrite_bullet
-from anvilcv.tailoring.variant_writer import write_variant
+from anvilcv.tailoring.rewriter import (
+    build_rewrite_prompt,
+    rewrite_bullet,
+    rewrite_top_bullets,
+)
+from anvilcv.tailoring.variant_writer import _apply_change, write_variant
 
 # --- Fixtures ---
 
@@ -257,6 +261,93 @@ class TestRewriter:
         result = asyncio.run(rewrite_bullet(provider, "Short bullet", job, match))
         assert result == "Short bullet"
 
+    def test_build_rewrite_prompt_type_error_fallback(self):
+        """TypeError from per-provider prompt builder falls back to common."""
+        from unittest.mock import patch as _patch
+
+        job = _sample_job()
+        match = ResumeMatch(missing_required=["Terraform"])
+
+        # Mock get_prompt_builder to return a builder that raises TypeError
+        def bad_builder(*args, **kwargs):
+            raise TypeError("wrong signature")
+
+        with _patch("anvilcv.tailoring.rewriter.get_prompt_builder", return_value=bad_builder):
+            system, user = build_rewrite_prompt(
+                "Built microservices", job, match, provider_name="anthropic"
+            )
+            # Should fall through to common prompt
+            assert "Rewrite this resume bullet" in user
+
+    def test_rewrite_top_bullets(self):
+        """rewrite_top_bullets returns mapping of changed bullets."""
+        provider = MagicMock()
+        provider.name = "test"
+        provider.generate = AsyncMock(
+            return_value=GenerationResponse(
+                content="Improved bullet with Kubernetes",
+                model="test",
+                provider="test",
+            )
+        )
+
+        job = _sample_job()
+        match = ResumeMatch(missing_required=["Kubernetes"])
+
+        bullets = [
+            ("experience.0.highlights.0", "Built scalable Python microservices"),
+            ("experience.0.highlights.1", "Led migration to cloud"),
+        ]
+
+        results = asyncio.run(rewrite_top_bullets(provider, bullets, job, match))
+        assert isinstance(results, dict)
+        # Both bullets should be rewritten (content changed)
+        assert len(results) > 0
+        for path, content in results.items():
+            assert "Kubernetes" in content
+
+    def test_rewrite_top_bullets_skips_unchanged(self):
+        """rewrite_top_bullets skips bullets where AI returns the same content."""
+        provider = MagicMock()
+        provider.name = "test"
+        # Return the exact same content → should not appear in results
+        provider.generate = AsyncMock(
+            return_value=GenerationResponse(
+                content="Original bullet",
+                model="test",
+                provider="test",
+            )
+        )
+
+        job = _sample_job()
+        match = ResumeMatch()
+
+        bullets = [("experience.0.highlights.0", "Original bullet")]
+        results = asyncio.run(rewrite_top_bullets(provider, bullets, job, match))
+        assert len(results) == 0
+
+    def test_rewrite_top_bullets_respects_max(self):
+        """rewrite_top_bullets respects max_rewrites limit."""
+        call_count = 0
+
+        async def mock_generate(request):
+            nonlocal call_count
+            call_count += 1
+            return GenerationResponse(
+                content=f"Rewritten {call_count}", model="test", provider="test"
+            )
+
+        provider = MagicMock()
+        provider.name = "test"
+        provider.generate = mock_generate
+
+        job = _sample_job()
+        match = ResumeMatch()
+
+        bullets = [(f"path.{i}", f"Bullet {i}") for i in range(10)]
+        asyncio.run(rewrite_top_bullets(provider, bullets, job, match, max_rewrites=3))
+        assert call_count == 3
+
 
 # --- Variant Writer ---
 
@@ -326,3 +417,36 @@ class TestVariantWriter:
         )
 
         assert output.exists()
+
+    def test_apply_change_dict_last_key(self):
+        """_apply_change sets a dict key when the last path part targets a dict."""
+        data = {"cv": {"sections": {"summary": {"text": "old"}}}}
+        _apply_change(data, "summary.text", "new value")
+        assert data["cv"]["sections"]["summary"]["text"] == "new value"
+
+    def test_apply_change_invalid_list_index_mid_path(self):
+        """_apply_change returns silently when a mid-path list index is invalid."""
+        data = {"cv": {"sections": {"experience": [{"highlights": ["a"]}]}}}
+        # Index 99 is out of range
+        _apply_change(data, "experience.99.highlights.0", "new")
+        # Original data unchanged — the function returned early
+        assert data["cv"]["sections"]["experience"][0]["highlights"][0] == "a"
+
+    def test_apply_change_non_numeric_list_index_mid_path(self):
+        """_apply_change returns silently when a mid-path list index is not numeric."""
+        data = {"cv": {"sections": {"experience": [{"highlights": ["a"]}]}}}
+        _apply_change(data, "experience.abc.highlights.0", "new")
+        assert data["cv"]["sections"]["experience"][0]["highlights"][0] == "a"
+
+    def test_apply_change_invalid_list_index_last(self):
+        """_apply_change silently ignores invalid last index on a list."""
+        data = {"cv": {"sections": {"skills": ["Python", "Go"]}}}
+        _apply_change(data, "skills.99", "Rust")
+        # Original unchanged — IndexError caught
+        assert data["cv"]["sections"]["skills"] == ["Python", "Go"]
+
+    def test_apply_change_non_numeric_last_on_list(self):
+        """_apply_change silently ignores non-numeric last key on a list."""
+        data = {"cv": {"sections": {"skills": ["Python", "Go"]}}}
+        _apply_change(data, "skills.abc", "Rust")
+        assert data["cv"]["sections"]["skills"] == ["Python", "Go"]

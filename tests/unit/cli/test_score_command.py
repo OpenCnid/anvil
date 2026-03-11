@@ -504,3 +504,126 @@ class TestScoreReportFormatting:
         assert _status_icon("fail") == "[FAIL]"
         assert _status_icon("warn") == "[WARN]"
         assert _status_icon("unknown") == "[????]"
+
+
+class TestScoreScoringError:
+    """Test AnvilUserError from score_extracted_document (lines 123-125)."""
+
+    @patch(_EXTRACT)
+    @patch(_SCORE_DOC)
+    def test_scoring_error_exits_1(
+        self, mock_score: MagicMock, mock_extract: MagicMock, tmp_path: pathlib.Path
+    ) -> None:
+        """AnvilUserError from score_extracted_document exits with code 1."""
+        pdf = tmp_path / "resume.pdf"
+        pdf.write_bytes(b"%PDF-1.4 fake")
+        mock_extract.return_value = _make_doc()
+        mock_score.side_effect = AnvilUserError(message="scoring failed")
+
+        result = runner.invoke(app, ["score", str(pdf)])
+        assert result.exit_code == 1
+        assert "Error: scoring failed" in result.output
+
+
+class TestRenderYamlForScoring:
+    """Test _render_yaml_for_scoring helper (lines 147-180)."""
+
+    _BUILD = (
+        "anvilcv.vendor.rendercv.schema.rendercv_model_builder.build_rendercv_dictionary_and_model"
+    )
+    _ATS_HTML = "anvilcv.vendor.rendercv.renderer.html.generate_ats_html"
+    _MD = "anvilcv.vendor.rendercv.renderer.markdown.generate_markdown"
+    _HTML = "anvilcv.vendor.rendercv.renderer.html.generate_html"
+
+    @patch(_ATS_HTML)
+    @patch(_BUILD)
+    def test_ats_html_happy_path(
+        self,
+        mock_build: MagicMock,
+        mock_ats_html: MagicMock,
+        tmp_path: pathlib.Path,
+    ) -> None:
+        """Returns ATS HTML path when it exists."""
+        from anvilcv.cli.score_command.score_command import _render_yaml_for_scoring
+
+        yaml_file = tmp_path / "cv.yaml"
+        yaml_file.write_text("cv:\n  name: Test\n")
+        ats_path = tmp_path / "output_ats.html"
+        ats_path.write_text("<html>ats</html>")
+        mock_build.return_value = ({}, MagicMock())
+        mock_ats_html.return_value = ats_path
+
+        result = _render_yaml_for_scoring(yaml_file)
+        assert result == ats_path
+
+    @patch(_HTML)
+    @patch(_MD)
+    @patch(_ATS_HTML)
+    @patch(_BUILD)
+    def test_fallback_to_regular_html(
+        self,
+        mock_build: MagicMock,
+        mock_ats_html: MagicMock,
+        mock_md: MagicMock,
+        mock_html: MagicMock,
+        tmp_path: pathlib.Path,
+    ) -> None:
+        """Falls back to regular HTML when ATS HTML is not available."""
+        from anvilcv.cli.score_command.score_command import _render_yaml_for_scoring
+
+        yaml_file = tmp_path / "cv.yaml"
+        yaml_file.write_text("cv:\n  name: Test\n")
+        html_path = tmp_path / "output.html"
+        html_path.write_text("<html>regular</html>")
+        mock_build.return_value = ({}, MagicMock())
+        mock_ats_html.return_value = None  # ATS HTML not available
+        mock_md.return_value = tmp_path / "output.md"
+        mock_html.return_value = html_path
+
+        result = _render_yaml_for_scoring(yaml_file)
+        assert result == html_path
+
+    @patch(_HTML)
+    @patch(_MD)
+    @patch(_ATS_HTML)
+    @patch(_BUILD)
+    def test_no_scorable_output_raises(
+        self,
+        mock_build: MagicMock,
+        mock_ats_html: MagicMock,
+        mock_md: MagicMock,
+        mock_html: MagicMock,
+        tmp_path: pathlib.Path,
+    ) -> None:
+        """Raises AnvilUserError when no scorable output is produced."""
+        import pytest
+
+        from anvilcv.cli.score_command.score_command import _render_yaml_for_scoring
+
+        yaml_file = tmp_path / "cv.yaml"
+        yaml_file.write_text("cv:\n  name: Test\n")
+        mock_build.return_value = ({}, MagicMock())
+        mock_ats_html.return_value = None
+        mock_md.return_value = tmp_path / "output.md"
+        mock_html.return_value = None
+
+        with pytest.raises(AnvilUserError, match="produced no scorable output"):
+            _render_yaml_for_scoring(yaml_file)
+
+    @patch(_BUILD)
+    def test_generic_exception_wrapped(
+        self,
+        mock_build: MagicMock,
+        tmp_path: pathlib.Path,
+    ) -> None:
+        """Generic exceptions are wrapped in AnvilUserError."""
+        import pytest
+
+        from anvilcv.cli.score_command.score_command import _render_yaml_for_scoring
+
+        yaml_file = tmp_path / "cv.yaml"
+        yaml_file.write_text("cv:\n  name: Test\n")
+        mock_build.side_effect = RuntimeError("build failed")
+
+        with pytest.raises(AnvilUserError, match="Failed to render"):
+            _render_yaml_for_scoring(yaml_file)

@@ -80,3 +80,34 @@ class TestExportCommand:
             exported = yaml.load(f)
 
         assert exported["cv"] == original["cv"]
+
+    def test_empty_yaml_file(self, tmp_path: pathlib.Path):
+        """Empty YAML file raises AnvilUserError."""
+        empty_file = tmp_path / "empty.yaml"
+        empty_file.write_text("")
+        result = runner.invoke(app, ["export", str(empty_file)])
+        # AnvilUserError is raised — check via exception
+        assert result.exit_code == 1
+        assert result.exception is not None
+        assert "Empty YAML file" in str(result.exception)
+
+    def test_invalid_yaml_file(self, tmp_path: pathlib.Path):
+        """Malformed YAML file raises AnvilUserError."""
+        bad_file = tmp_path / "bad.yaml"
+        bad_file.write_text(":\n  :\n    - [\n")
+        result = runner.invoke(app, ["export", str(bad_file)])
+        assert result.exit_code == 1
+        assert result.exception is not None
+        assert "Failed to read" in str(result.exception)
+
+    def test_write_failure(self, sample_anvil_yaml: pathlib.Path, tmp_path: pathlib.Path):
+        """Write failure raises AnvilUserError."""
+        # Point output to a non-existent nested directory (won't auto-create)
+        output = tmp_path / "no" / "such" / "dir" / "out.yaml"
+        result = runner.invoke(
+            app,
+            ["export", str(sample_anvil_yaml), "--output", str(output)],
+        )
+        assert result.exit_code == 1
+        assert result.exception is not None
+        assert "Failed to write" in str(result.exception)
