@@ -5,6 +5,8 @@ from typing import Annotated, get_args
 
 import pydantic
 
+from anvilcv.themes.devforge.theme import DevforgeTheme
+
 from ...variant_pydantic_model_generator import create_variant_pydantic_model
 from ...yaml_reader import read_yaml
 from .classic_theme import ClassicTheme
@@ -38,9 +40,9 @@ def discover_other_themes() -> list[type[ClassicTheme]]:
     return discovered
 
 
-# Build discriminated union dynamically
+# Build discriminated union dynamically — includes devforge (Anvil-specific theme)
 type BuiltInDesign = Annotated[
-    ClassicTheme | reduce(or_, discover_other_themes()),  # ty: ignore[invalid-type-form]
+    DevforgeTheme | ClassicTheme | reduce(or_, discover_other_themes()),  # ty: ignore[invalid-type-form]
     pydantic.Field(discriminator="theme"),
 ]
 available_themes: list[str] = [

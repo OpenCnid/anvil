@@ -19,6 +19,7 @@ Files where new functionality was appended without altering existing code.
 | E-002 | `vendor/rendercv/cli/render_command/run_rendercv.py` | Extended: Added ATS HTML generation step after standard HTML in the render pipeline | **Low** |
 | E-003 | `vendor/rendercv/renderer/html.py` | Extended: Added `generate_ats_html()` function for ATS HTML file generation with path derivation | **Low** |
 | E-004 | `vendor/rendercv/renderer/templater/templater.py` | Extended: Added `render_ats_html()` bridge function that converts RenderCVModel to dict for ATS renderer, including social_networks extraction | **Low** |
+| E-005 | `schema/models/design/built_in_design.py` | Extended: Imported DevforgeTheme and added to BuiltInDesign discriminated union for theme registration | **Low** |
 
 Risk levels:
 - **Low** — Simple additions or renames. Unlikely to conflict with upstream.

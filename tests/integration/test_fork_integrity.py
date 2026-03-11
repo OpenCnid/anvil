@@ -39,6 +39,7 @@ MODIFIED_FILES: frozenset[str] = frozenset(
         "cli/render_command/run_rendercv.py",
         "renderer/html.py",
         "renderer/templater/templater.py",
+        "schema/models/design/built_in_design.py",
     }
 )
 

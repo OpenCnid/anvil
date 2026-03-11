@@ -1,10 +1,10 @@
 # Implementation Plan
 
-Status: **Phase 0 complete. Phase 1 complete. Phase 2 in progress.** Foundation in place: vendor import hook (find_spec API for Python 3.12+), 4 Modified vendored files patched, CLI scaffold with all 11 commands registered, exceptions, config, cache utilities. AI provider abstraction (F-ANV-09) complete. Extended YAML schema (F-ANV-02) complete. ATS score checker (F-ANV-04, F-ANV-05) complete with keyword matching. Export command (F-ANV-17) complete. AI tailoring pipeline (F-ANV-10) complete. JSON Schema generation (F-ANV-16) complete. Multi-variant rendering (F-ANV-08) complete. GitHub scanner (F-ANV-11) complete. ATS HTML renderer (F-ANV-06) complete. Interview prep (F-ANV-12) complete. Cover letter (F-ANV-13) complete. Compatibility corpus with 66 integration tests (F-ANV-01). Fork integrity tests in place. 521 tests passing.
+Status: **Phase 0 complete. Phase 1 complete. Phase 2 in progress.** Foundation in place: vendor import hook (find_spec API for Python 3.12+), 4 Modified vendored files patched, CLI scaffold with all 11 commands registered, exceptions, config, cache utilities. AI provider abstraction (F-ANV-09) complete. Extended YAML schema (F-ANV-02) complete. ATS score checker (F-ANV-04, F-ANV-05) complete with keyword matching. Export command (F-ANV-17) complete. AI tailoring pipeline (F-ANV-10) complete. JSON Schema generation (F-ANV-16) complete. Multi-variant rendering (F-ANV-08) complete. GitHub scanner (F-ANV-11) complete. ATS HTML renderer (F-ANV-06) complete. Interview prep (F-ANV-12) complete. Cover letter (F-ANV-13) complete. Compatibility corpus with 66 integration tests (F-ANV-01). Fork integrity tests in place. DevForge theme core implemented (Pydantic model, Typst templates, registration, tests). 544 tests passing.
 
 **Vendored file key:** Tasks annotate which vendored files they touch.
 - `[Modified]` = change internals of vendored file (4 files total)
-- `[Extended]` = add to vendored file (13 files total)
+- `[Extended]` = add to vendored file (14 files total)
 - `[Wrapped]` = use through adapter in new file (1 file)
 - All other vendored files are **Untouched** — do NOT modify them.
 
@@ -101,13 +101,13 @@ These tasks are prerequisites for all features and must be completed first.
 
 ### F-ANV-07: Modern Engineer Theme — devforge (depends on F-ANV-01)
 
-- [ ] **2.5 Author devforge design spec** — Create `specs/devforge-theme.md` with detailed visual design: layout grid, typography (font family, sizes, weights), color palette, skill chip rendering, project metadata line (★ stars · language · updated), section header styling, spacing system, responsive behavior for HTML output. **This MUST precede implementation** per feature tracker success criteria.
-- [ ] **2.6 DevForge Pydantic model** — Create `src/anvilcv/themes/devforge/theme.py` — unique design model inheriting from vendored `BuiltInDesign` (`anvilcv.vendor.rendercv.schema.models.design.built_in_design`); configure colors, fonts, spacing, skill chips, project metadata
-- [ ] **2.7 DevForge Typst templates** — Create Jinja2 `.j2.typ` templates in `src/anvilcv/themes/devforge/templates/typst/` for ALL entry types: education, experience, normal, bullet, numbered, reversed_numbered, one_line, publication, text
+- [x] **2.5 Author devforge design spec** — Create `specs/devforge-theme.md` with detailed visual design: layout grid, typography (font family, sizes, weights), color palette, skill chip rendering, project metadata line (★ stars · language · updated), section header styling, spacing system, responsive behavior for HTML output. **This MUST precede implementation** per feature tracker success criteria.
+- [x] **2.6 DevForge Pydantic model** — Create `src/anvilcv/themes/devforge/theme.py` — unique design model inheriting from vendored `BuiltInDesign` (`anvilcv.vendor.rendercv.schema.models.design.built_in_design`); configure colors, fonts, spacing, skill chips, project metadata
+- [x] **2.7 DevForge Typst templates** — Create Jinja2 `.j2.typ` templates in `src/anvilcv/themes/devforge/templates/typst/` for ALL entry types: education, experience, normal, bullet, numbered, reversed_numbered, one_line, publication, text
 - [ ] **2.8 DevForge Markdown templates** — Create `.j2.md` templates in `src/anvilcv/themes/devforge/templates/markdown/` for all entry types
 - [ ] **2.9 DevForge HTML template** — Create `Full.html` template in `src/anvilcv/themes/devforge/templates/html/`
-- [ ] **2.10 Register devforge theme** — Patch vendored `design.py` `[Extended]` to register devforge in the theme discriminator alongside existing themes (classic, moderncv, sb2nov, engineeringresumes, engineeringclassic)
-- [ ] **2.11 DevForge theme tests** — Render sample CV with devforge; snapshot tests for Typst, Markdown, HTML output; verify ALL entry types render correctly; `tests/unit/test_devforge_theme.py`
+- [x] **2.10 Register devforge theme** — Patch vendored `design.py` `[Extended]` to register devforge in the theme discriminator alongside existing themes (classic, moderncv, sb2nov, engineeringresumes, engineeringclassic)
+- [x] **2.11 DevForge theme tests** — Render sample CV with devforge; snapshot tests for Typst, Markdown, HTML output; verify ALL entry types render correctly; `tests/unit/test_devforge_theme.py`
 
 ### F-ANV-16: JSON Schema Generation (depends on F-ANV-02)
 
@@ -178,7 +178,7 @@ These tasks are prerequisites for all features and must be completed first.
 
 ## Missing Specifications (Must Author Before Implementation)
 
-- [ ] **S.1 `specs/devforge-theme.md`** — Detailed visual design spec for the devforge theme. Required by F-ANV-07 success criteria: "Design mockup or detailed design spec must precede implementation." Must define: layout grid, typography (font family, sizes, weights), color palette, skill chip rendering, project metadata line format, section header styling, spacing system, and responsive behavior for HTML output.
+- [x] **S.1 `specs/devforge-theme.md`** — Detailed visual design spec for the devforge theme. Required by F-ANV-07 success criteria: "Design mockup or detailed design spec must precede implementation." Must define: layout grid, typography (font family, sizes, weights), color palette, skill chip rendering, project metadata line format, section header styling, spacing system, and responsive behavior for HTML output.
 
 ---
 
@@ -256,7 +256,7 @@ Quick reference for build agents — files classified by modification status:
 - `vendor/rendercv/cli/entry_point.py` — binary entry point
 - `vendor/rendercv/cli/app.py` — Typer app replacement
 
-**Extended (13):** Add functionality, document in patches/README.md
+**Extended (14):** Add functionality, document in patches/README.md
 - `vendor/rendercv/cli/error_handler.py` — AI/API error formatting
 - `vendor/rendercv/cli/render_command/render_command.py` — `--variant`, `--no-ats-html` flags
 - `vendor/rendercv/cli/render_command/run_rendercv.py` — ATS HTML generation step
@@ -266,6 +266,7 @@ Quick reference for build agents — files classified by modification status:
 - `vendor/rendercv/schema/sample_content.yaml` — developer-focused samples
 - `vendor/rendercv/schema/error_dictionary.yaml` — Anvil error messages
 - `vendor/rendercv/schema/models/rendercv_model.py` — AnvilModel subclass target
+- `vendor/rendercv/schema/models/design/built_in_design.py` — devforge theme registration
 - `vendor/rendercv/schema/models/design/design.py` — devforge theme registration
 - `vendor/rendercv/renderer/html.py` — ATS HTML output path
 - `vendor/rendercv/renderer/path_resolver.py` — variant-aware paths

@@ -12,6 +12,10 @@ from .model_processor import download_photo_from_url, process_model
 from .string_processor import clean_url
 
 templates_directory = pathlib.Path(__file__).parent / "templates"
+# Devforge theme templates live in the Anvil themes directory (not vendored).
+# The Jinja2 loader searches this path so devforge/ templates are found when
+# the theme-specific lookup tries "{theme_name}/{template_path}".
+_anvil_themes_directory = pathlib.Path(__file__).parents[4] / "themes"
 
 
 @functools.lru_cache(maxsize=1)
@@ -37,6 +41,7 @@ def get_jinja2_environment(
                 (  # To allow users to override the templates:
                     input_file_path.parent if input_file_path else pathlib.Path.cwd()
                 ),
+                _anvil_themes_directory,
                 templates_directory,
             ]
         ),

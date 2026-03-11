@@ -18,12 +18,12 @@ AnvilCV is a developer-native AI-powered resume engine forked from rendercv v2.7
 - `typst` binary available for PDF generation
 - ruff config excludes `src/anvilcv/vendor/`
 
-## Implementation Status (v0.0.11, 511 tests)
+## Implementation Status (v0.0.12, 521 tests)
 - **Phase 0**: Complete (foundation, vendor patches, CLI scaffold)
 - **Phase 1**: Complete (F-ANV-01, F-ANV-02, F-ANV-03, F-ANV-04, F-ANV-05, F-ANV-09)
-- **Phase 2**: Nearly complete (F-ANV-06 renderer done/pipeline pending, F-ANV-08, F-ANV-10, F-ANV-11, F-ANV-16, F-ANV-17)
+- **Phase 2**: Nearly complete (F-ANV-06 complete, F-ANV-08, F-ANV-10, F-ANV-11, F-ANV-16, F-ANV-17)
 - **Phase 3**: Complete (F-ANV-12, F-ANV-13)
-- **Remaining**: F-ANV-07 (devforge theme, blocked on spec S.1), F-ANV-06 tasks 2.2-2.3 (pipeline integration), cross-cutting X.1-X.8
+- **Remaining**: F-ANV-07 (devforge theme, blocked on spec S.1), cross-cutting X.1-X.8
 
 ## Common Lint Issues
 - I001: Import block sorting — fix with `ruff check --fix`
