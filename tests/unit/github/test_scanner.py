@@ -718,6 +718,33 @@ class TestScanUser:
         # old_repo pushed 2020-01-01 => not within 90 days
         assert profile.summary.active_repos_last_90_days == 1
 
+    @patch("anvilcv.github.scanner.httpx.get")
+    def test_scan_user_invalid_push_date(self, mock_get):
+        """Cover lines 322-323: ValueError on malformed pushed_at date.
+
+        GitHub API should always return valid ISO dates, but the defensive
+        try/except handles edge cases where the date string is corrupt.
+        """
+        from anvilcv.github.scanner import scan_user
+
+        bad_date_repo = {
+            **SAMPLE_REPO_DATA,
+            "name": "bad-date",
+            "pushed_at": "not-a-date",
+        }
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = [bad_date_repo]
+        mock_response.headers = {
+            "X-RateLimit-Remaining": "4999",
+            "X-RateLimit-Limit": "5000",
+        }
+        mock_get.return_value = mock_response
+
+        profile = scan_user("testuser", token="ghp_test", max_repos=10, include_metrics=False)
+        # Invalid date should be skipped in active count, not crash
+        assert profile.summary.active_repos_last_90_days == 0
+
 
 # --- CLI tests ---
 

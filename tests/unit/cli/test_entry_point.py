@@ -110,3 +110,16 @@ class TestDunderMain:
             importlib.reload(importlib.import_module("anvilcv.__main__"))
             # When imported normally, __name__ is 'anvilcv.__main__', not '__main__'
             mock_main.assert_not_called()
+
+    @pytest.mark.filterwarnings("ignore::RuntimeWarning")
+    def test_dunder_main_calls_main_when_run_as_module(self) -> None:
+        """__main__.py calls main() when run via ``python -m anvilcv`` (line 6).
+
+        Uses runpy.run_module to simulate the ``python -m`` invocation,
+        which sets __name__ to '__main__' and triggers the guarded call.
+        """
+        import runpy
+
+        with patch("anvilcv.cli.entry_point.main") as mock_main:
+            runpy.run_module("anvilcv", run_name="__main__", alter_sys=False)
+            mock_main.assert_called_once()

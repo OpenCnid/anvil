@@ -700,7 +700,12 @@ class TestTextExtractor:
 
 
 class TestS06NonNumericYear:
-    """Cover lines 162-163: ValueError when date part isn't numeric."""
+    """Cover lines 162-163: ValueError when date part isn't numeric.
+
+    The DATE_PATTERN regex requires \\d{4}, so non-numeric years are filtered
+    by the regex itself. We patch DATE_PATTERN to allow non-numeric suffixes
+    so we can exercise the defensive try/except in the year parser.
+    """
 
     def test_non_numeric_year_skipped(self):
         """Dates like 'January present' should not crash year parsing."""
@@ -711,6 +716,65 @@ class TestS06NonNumericYear:
         )
         result = check_s06_chronological_dates(doc)
         # 'present' causes ValueError on int(), is skipped; remaining years pass
+        assert result.status == "pass"
+
+    def test_non_numeric_year_via_patched_regex(self):
+        """Directly exercise the ValueError path (lines 162-163).
+
+        The production regex filters non-numeric years, making the except
+        unreachable. We patch the regex to allow 'present' through so we
+        can verify the defensive code handles it gracefully.
+        """
+        import re
+        from unittest.mock import patch as mock_patch
+
+        loose_pattern = re.compile(
+            r"(?:jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|"
+            r"jul(?:y)?|aug(?:ust)?|sep(?:tember)?|oct(?:ober)?|nov(?:ember)?|"
+            r"dec(?:ember)?)\s+\S+",
+            re.IGNORECASE,
+        )
+        doc = ExtractedDocument(
+            full_text="January present\nMarch 2022\nJune 2020"
+        )
+        with mock_patch("anvilcv.scoring.structure_checker.DATE_PATTERN", loose_pattern):
+            result = check_s06_chronological_dates(doc)
+        # 'present' triggers ValueError, is skipped; 2022 and 2020 remain
+        assert result.status == "pass"
+
+
+class TestS05NonStandardHeaders:
+    """Cover lines 129-130: non-standard section headers warning.
+
+    The section detector always sets is_standard=True, so in practice
+    check_s05 never hits the non-standard branch. We construct a SectionMap
+    directly to exercise the defensive code path.
+    """
+
+    def test_non_standard_header_warns(self):
+        from anvilcv.scoring.section_detector import DetectedSection, SectionMap
+
+        sections = SectionMap(sections=[
+            DetectedSection(
+                name="experience", header_text="Experience",
+                line_index=0, is_standard=True,
+            ),
+            DetectedSection(
+                name="hobbies", header_text="My Hobbies",
+                line_index=10, is_standard=False,
+            ),
+        ])
+        result = check_s05_standard_headers(sections)
+        assert result.status == "warn"
+        assert "My Hobbies" in result.detail
+
+
+class TestS08ZeroPages:
+    """Cover line 240: fallback when page_count is 0 (e.g., empty or HTML input)."""
+
+    def test_zero_pages_passes(self):
+        doc = ExtractedDocument(page_count=0)
+        result = check_s08_resume_length(doc)
         assert result.status == "pass"
 
 
