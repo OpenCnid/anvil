@@ -165,10 +165,10 @@ These tasks are prerequisites for all features and must be completed first.
 
 ## Cross-Cutting Concerns (Ongoing Throughout)
 
-- [x] **X.1 Vendor patch documentation** — All 4 Modified and 6 Extended vendored files documented in `patches/README.md` (P-001 to P-004, E-001 to E-006) with file, purpose, and risk level
+- [x] **X.1 Vendor patch documentation** — All 4 Modified and 7 Extended vendored files documented in `patches/README.md` (P-001 to P-004, E-001 to E-007) with file, purpose, and risk level
 - [x] **X.2 Extend vendored `error_handler.py`** `[Extended]` — Added AnvilError handling with exit codes 1-4, category-specific Rich panel styling (Error/CLI Error/Service Error/AI Provider Error), 10 tests
 - [ ] **X.3 Extend vendored `sample_generator.py` and `sample_content.yaml`** `[Extended]` — Add Anvil-specific and developer-focused sample content for `anvil new`
-- [ ] **X.4 Extend vendored `error_dictionary.yaml`** `[Extended]` — Add error messages for Anvil-specific validation failures
+- [x] **X.4 Extend vendored `error_dictionary.yaml`** `[Extended]` — Added error messages for devforge theme tag, AI provider validation, URL format, empty string validation
 - [ ] **X.5 Test coverage target** — Maintain ≥80% line coverage on Anvil-specific code; 100% coverage on ATS scoring rules (P-01 through P-08, S-01 through S-08, K-01 through K-05) per `specs/success-criteria.md`
 - [ ] **X.6 Ruff + mypy compliance** — All code passes `ruff check` and `mypy` on every commit
 - [ ] **X.7 Compatibility corpus maintenance** — Grow corpus to ≥20 files covering all 5 themes and all entry types; include 5+ community contribution examples

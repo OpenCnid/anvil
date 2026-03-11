@@ -21,6 +21,7 @@ Files where new functionality was appended without altering existing code.
 | E-004 | `vendor/rendercv/renderer/templater/templater.py` | Extended: Added `render_ats_html()` bridge, theme-specific template lookup for all formats (not just Typst), devforge themes directory | **Low** |
 | E-005 | `vendor/rendercv/schema/models/design/built_in_design.py` | Extended: Imported DevforgeTheme and added to BuiltInDesign discriminated union for theme registration | **Low** |
 | E-006 | `vendor/rendercv/cli/error_handler.py` | Extended: Added AnvilError handling with exit codes 1-4 and category-specific Rich panel styling | **Low** |
+| E-007 | `vendor/rendercv/schema/error_dictionary.yaml` | Extended: Added Anvil-specific error messages for devforge theme, AI providers, URL/string validation | **Low** |
 
 Risk levels:
 - **Low** — Simple additions or renames. Unlikely to conflict with upstream.

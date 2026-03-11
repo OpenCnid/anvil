@@ -12,3 +12,9 @@ must be in range: The day is out of range for the month.
 Extra inputs are not permitted: This field is unknown for this object. Please remove it.
 Input should be a valid list: This field should contain a list of items but it doesn't.
 "value is not a valid color": 'This is not a valid color. Here are some examples of valid colors: "red", "#ff0000", "rgb(255, 0, 0)", "hsl(0, 100%, 50%)"'
+
+# Anvil-specific error messages
+Input tag 'devforge' found using 'theme' does not match any of the expected tags: 'The "devforge" theme is an Anvil-specific theme. Make sure you are running with `anvil render`, not `rendercv render`.'
+Input should be 'anthropic', 'openai' or 'ollama': 'This is not a valid AI provider. Supported providers are: "anthropic", "openai", "ollama".'
+Input should be a valid URL, relative URL without a base: This is not a valid URL. Please provide a full URL starting with "https://".
+String should have at least 1 character: This field cannot be empty.
