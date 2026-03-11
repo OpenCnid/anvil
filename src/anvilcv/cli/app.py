@@ -52,26 +52,6 @@ def _not_implemented(command_name: str) -> None:
 
 
 @app.command(
-    name="prep",
-    help="Generate interview preparation notes.",
-)
-def cli_command_prep(
-    input_file: Annotated[str, typer.Argument(help="YAML input file")] = "",
-):
-    _not_implemented("anvil prep")
-
-
-@app.command(
-    name="cover",
-    help="Generate a cover letter from your resume and a job description.",
-)
-def cli_command_cover(
-    input_file: Annotated[str, typer.Argument(help="YAML input file")] = "",
-):
-    _not_implemented("anvil cover")
-
-
-@app.command(
     name="watch",
     help="Monitor GitHub for new activity.",
 )

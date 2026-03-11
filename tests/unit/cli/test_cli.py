@@ -9,7 +9,9 @@ Why:
 
 from typer.testing import CliRunner
 
+import anvilcv.cli.cover_command.cover_command  # noqa: F401
 import anvilcv.cli.export_command  # noqa: F401
+import anvilcv.cli.prep_command.prep_command  # noqa: F401
 import anvilcv.cli.scan_command.scan_command  # noqa: F401
 import anvilcv.cli.score_command.score_command  # noqa: F401
 import anvilcv.cli.tailor_command.tailor_command  # noqa: F401
@@ -60,15 +62,13 @@ class TestStubCommands:
         result = runner.invoke(app, ["scan"])
         assert result.exit_code == 1  # --github is required
 
-    def test_prep_stub(self):
+    def test_prep_requires_input(self):
         result = runner.invoke(app, ["prep"])
-        assert result.exit_code == 0
-        assert "not yet implemented" in result.output
+        assert result.exit_code == 2  # Missing required argument
 
-    def test_cover_stub(self):
+    def test_cover_requires_input(self):
         result = runner.invoke(app, ["cover"])
-        assert result.exit_code == 0
-        assert "not yet implemented" in result.output
+        assert result.exit_code == 2  # Missing required argument
 
     def test_watch_stub(self):
         result = runner.invoke(app, ["watch"])

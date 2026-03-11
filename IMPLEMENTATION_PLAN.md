@@ -1,6 +1,6 @@
 # Implementation Plan
 
-Status: **Phase 0 complete. Phase 1 complete. Phase 2 in progress.** Foundation in place: vendor import hook (find_spec API for Python 3.12+), 4 Modified vendored files patched, CLI scaffold with all 11 commands registered, exceptions, config, cache utilities. AI provider abstraction (F-ANV-09) complete. Extended YAML schema (F-ANV-02) complete. ATS score checker (F-ANV-04, F-ANV-05) complete with keyword matching. Export command (F-ANV-17) complete. AI tailoring pipeline (F-ANV-10) complete. JSON Schema generation (F-ANV-16) complete. Multi-variant rendering (F-ANV-08) complete. GitHub scanner (F-ANV-11) complete. ATS HTML renderer (F-ANV-06) implemented (pipeline integration pending). Fork integrity tests in place. 427 tests passing.
+Status: **Phase 0 complete. Phase 1 complete. Phase 2 in progress.** Foundation in place: vendor import hook (find_spec API for Python 3.12+), 4 Modified vendored files patched, CLI scaffold with all 11 commands registered, exceptions, config, cache utilities. AI provider abstraction (F-ANV-09) complete. Extended YAML schema (F-ANV-02) complete. ATS score checker (F-ANV-04, F-ANV-05) complete with keyword matching. Export command (F-ANV-17) complete. AI tailoring pipeline (F-ANV-10) complete. JSON Schema generation (F-ANV-16) complete. Multi-variant rendering (F-ANV-08) complete. GitHub scanner (F-ANV-11) complete. ATS HTML renderer (F-ANV-06) implemented (pipeline integration pending). Interview prep (F-ANV-12) complete. Cover letter (F-ANV-13) complete. Fork integrity tests in place. 445 tests passing.
 
 **Vendored file key:** Tasks annotate which vendored files they touch.
 - `[Modified]` = change internals of vendored file (4 files total)
@@ -149,17 +149,17 @@ These tasks are prerequisites for all features and must be completed first.
 
 ### F-ANV-12: Interview Prep (depends on F-ANV-09, F-ANV-10)
 
-- [ ] **3.1 Prep generator** — Create logic to generate per-project talking points matched to job requirements; Markdown output
-- [ ] **3.2 Prep prompts** — Write per-provider prompts for `interview_prep` task in `src/anvilcv/ai/prompts/interview_prep/`
-- [ ] **3.3 Prep command** — Create `src/anvilcv/cli/prep_command/` — `anvil prep INPUT --job <path-or-url> [--provider] [--output]`
-- [ ] **3.4 Prep tests** — Tier 1 structural tests with mocked APIs; `tests/unit/test_prep.py`
+- [x] **3.1 Prep generator** — Create logic to generate per-project talking points matched to job requirements; Markdown output
+- [x] **3.2 Prep prompts** — Write prompts for `interview_prep` task in `src/anvilcv/ai/prompts/interview_prep/`
+- [x] **3.3 Prep command** — Create `src/anvilcv/cli/prep_command/` — `anvil prep INPUT --job <path-or-url> [--provider] [--output]`
+- [x] **3.4 Prep tests** — Tier 1 structural tests with mocked APIs; `tests/unit/test_prep.py`
 
 ### F-ANV-13: Cover Letter Generation (depends on F-ANV-09, F-ANV-10)
 
-- [ ] **3.5 Cover letter generator** — Create logic to generate cover letter from CV + job description; Markdown primary output; non-generic (must reference actual projects from CV)
-- [ ] **3.6 Cover letter prompts** — Write per-provider prompts for `cover_letter` task in `src/anvilcv/ai/prompts/cover_letter/`
-- [ ] **3.7 Cover command** — Create `src/anvilcv/cli/cover_command/` — `anvil cover INPUT --job <path-or-url> [--provider] [--render] [--output]`; `--render` is P2 stretch goal
-- [ ] **3.8 Cover tests** — Tier 1 structural tests with mocked APIs; `tests/unit/test_cover.py`
+- [x] **3.5 Cover letter generator** — Create logic to generate cover letter from CV + job description; Markdown primary output; non-generic (must reference actual projects from CV)
+- [x] **3.6 Cover letter prompts** — Write prompts for `cover_letter` task in `src/anvilcv/ai/prompts/cover_letter/`
+- [x] **3.7 Cover command** — Create `src/anvilcv/cli/cover_command/` — `anvil cover INPUT --job <path-or-url> [--provider] [--output]`
+- [x] **3.8 Cover tests** — Tier 1 structural tests with mocked APIs; `tests/unit/test_cover.py`
 
 ---
 
