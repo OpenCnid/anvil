@@ -245,7 +245,7 @@ def _render_variant(variant_path: pathlib.Path) -> None:
 
 def _score_variant(
     variant_path: pathlib.Path,
-    job_desc: "JobDescription | None" = None,
+    job_desc: JobDescription | None = None,
 ) -> None:
     """Score a rendered variant against the job description."""
     typer.echo("Scoring variant...")
