@@ -110,6 +110,102 @@ class TestExtractFromPdf:
         assert doc.page_count == 1  # max(0, 1)
         assert doc.source_type == "pdf"
 
+    @patch("pdfminer.high_level.extract_pages")
+    def test_image_only_page_counted(self, mock_extract_pages, tmp_path: pathlib.Path):
+        """Pages with figures but no text are counted as image pages."""
+        from pdfminer.layout import LTFigure
+
+        from anvilcv.scoring.text_extractor import extract_from_pdf
+
+        pdf_path = tmp_path / "scanned.pdf"
+        pdf_path.write_bytes(b"%PDF-1.4 fake")
+
+        mock_figure = MagicMock(spec=LTFigure)
+        mock_page = MagicMock()
+        mock_page.__iter__ = lambda self: iter([mock_figure])
+
+        mock_extract_pages.return_value = [mock_page]
+        doc = extract_from_pdf(pdf_path)
+
+        assert doc.image_page_count == 1
+        assert doc.is_empty is True
+        assert doc.is_partial is False  # empty, not partial
+
+    @patch("pdfminer.high_level.extract_pages")
+    def test_mixed_pages_partial(self, mock_extract_pages, tmp_path: pathlib.Path):
+        """Mix of text and image-only pages → partial extraction."""
+        from pdfminer.layout import LTChar, LTFigure, LTTextBox, LTTextLine
+
+        from anvilcv.scoring.text_extractor import extract_from_pdf
+
+        pdf_path = tmp_path / "mixed.pdf"
+        pdf_path.write_bytes(b"%PDF-1.4 fake")
+
+        # Page 1: text
+        mock_char = MagicMock(spec=LTChar)
+        mock_char.fontname = "Helvetica"
+        mock_char.size = 12.0
+        mock_line = MagicMock(spec=LTTextLine)
+        mock_line.get_text.return_value = "Real text\n"
+        mock_line.x0 = mock_line.y0 = 0.0
+        mock_line.x1 = mock_line.y1 = 100.0
+        mock_line.__iter__ = lambda self: iter([mock_char])
+        mock_textbox = MagicMock(spec=LTTextBox)
+        mock_textbox.__iter__ = lambda self: iter([mock_line])
+        text_page = MagicMock()
+        text_page.__iter__ = lambda self: iter([mock_textbox])
+
+        # Page 2: image only
+        mock_figure = MagicMock(spec=LTFigure)
+        image_page = MagicMock()
+        image_page.__iter__ = lambda self: iter([mock_figure])
+
+        mock_extract_pages.return_value = [text_page, image_page]
+        doc = extract_from_pdf(pdf_path)
+
+        assert doc.page_count == 2
+        assert doc.image_page_count == 1
+        assert doc.is_partial is True
+        assert doc.is_empty is False
+
+
+class TestExtractedDocumentProperties:
+    """Test ExtractedDocument helper properties."""
+
+    def test_is_empty_true(self):
+        doc = ExtractedDocument(full_text="", source_type="pdf")
+        assert doc.is_empty is True
+
+    def test_is_empty_whitespace_only(self):
+        doc = ExtractedDocument(full_text="   \n  ", source_type="pdf")
+        assert doc.is_empty is True
+
+    def test_is_empty_false(self):
+        doc = ExtractedDocument(full_text="Hello", source_type="pdf")
+        assert doc.is_empty is False
+
+    def test_is_partial_with_images(self):
+        doc = ExtractedDocument(
+            full_text="Some text",
+            source_type="pdf",
+            image_page_count=1,
+        )
+        assert doc.is_partial is True
+
+    def test_is_partial_no_images(self):
+        doc = ExtractedDocument(full_text="Some text", source_type="pdf")
+        assert doc.is_partial is False
+
+    def test_is_partial_empty_not_partial(self):
+        """Empty + images = empty, not partial."""
+        doc = ExtractedDocument(
+            full_text="",
+            source_type="pdf",
+            image_page_count=2,
+        )
+        assert doc.is_partial is False
+        assert doc.is_empty is True
+
 
 class TestExtractTextDispatch:
     """Tests for extract_text auto-detection (lines 177, 179)."""

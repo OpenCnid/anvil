@@ -67,12 +67,39 @@ def score(
     Scores a PDF, HTML, or YAML resume for parsability, structure, and (with --job)
     keyword match against a job description. YAML inputs are rendered first.
     """
-    from anvilcv.scoring.ats_scorer import score_document
+    from anvilcv.scoring.text_extractor import extract_text
 
     # If input is YAML, render it first and score the HTML output
     scorable_file = input_file
     if input_file.suffix in (".yaml", ".yml"):
         scorable_file = _render_yaml_for_scoring(input_file)
+
+    # Extract text and check for PDF extraction issues
+    try:
+        doc = extract_text(scorable_file)
+    except AnvilUserError as e:
+        typer.echo(f"Error: {e}", err=True)
+        raise typer.Exit(code=1) from None
+
+    if doc.is_empty and doc.source_type == "pdf":
+        typer.echo(
+            f"Could not extract text from {scorable_file}. "
+            "The PDF may be image-based (scanned) rather than "
+            "machine-readable. Try scoring the HTML output instead: "
+            "`anvil score output/resume.html`",
+            err=True,
+        )
+        raise typer.Exit(code=1) from None
+
+    if doc.is_partial and doc.source_type == "pdf":
+        extracted = doc.page_count - doc.image_page_count
+        typer.echo(
+            f"Warning: Text extraction from {scorable_file} may be "
+            f"incomplete. {extracted} pages extracted, "
+            f"{doc.image_page_count} appear to be images. "
+            "Score may be inaccurate.",
+            err=True,
+        )
 
     # Parse job description if provided
     job_desc = None
@@ -90,7 +117,9 @@ def score(
             raise typer.Exit(code=1) from None
 
     try:
-        report = score_document(scorable_file, job=job_desc)
+        from anvilcv.scoring.ats_scorer import score_extracted_document
+
+        report = score_extracted_document(doc, file_path=str(scorable_file), job=job_desc)
     except AnvilUserError as e:
         typer.echo(f"Error: {e}", err=True)
         raise typer.Exit(code=1) from None

@@ -54,3 +54,7 @@ Run these after implementing to get immediate feedback:
 ### Extended Vendored Files
 
 When extending a vendored file: (1) add to MODIFIED_FILES in `tests/integration/test_fork_integrity.py`, (2) add entry in `patches/README.md`, (3) run `ruff check --fix` on the file (import sorting frequently breaks)
+
+### Score Command Testing
+
+The score command uses a two-step flow: `extract_text()` → `score_extracted_document()`. When mocking in tests, mock both `anvilcv.scoring.text_extractor.extract_text` (returns `ExtractedDocument`) and `anvilcv.scoring.ats_scorer.score_extracted_document` (returns `ScoreReport`). Do NOT mock `score_document` — the command no longer calls it directly.

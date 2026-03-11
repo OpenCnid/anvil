@@ -1,6 +1,6 @@
 # Implementation Plan
 
-Status: **Phase 0-3 complete. CLI spec compliance complete (C.1-C.6).** All features implemented. 762 tests passing + 30 golden-set tests (skipped without --run-golden). 85% coverage.
+Status: **Phase 0-3 complete. CLI spec compliance complete (C.1-C.7).** All features implemented. 546 unit tests passing + 30 golden-set tests (skipped without --run-golden). 85% coverage.
 
 **Vendored file key:** Tasks annotate which vendored files they touch.
 - `[Modified]` = change internals of vendored file (4 files total)
@@ -208,6 +208,8 @@ Addressed gaps between implementation and `specs/cli-interface.md` / `specs/comp
 
 - [x] **C.6 Render --variant flag** — Wired `anvil render --variant <dir>` to batch variant renderer. Discovers YAML files in directory, renders each into a subfolder. Empty directory exits with code 1.
 
+- [x] **C.7 PDF extraction failure handling** — `anvil score` now detects image-based/scanned PDFs (no extractable text) and exits with code 1 and helpful guidance to use HTML instead. Partial extraction (some pages are images) warns with page counts and continues scoring. Error message for unsupported file formats updated to match spec.
+
 ### Remaining CLI Spec Gaps
 
 - `anvil render --override KEY=VALUE` not implemented — rendercv uses dot-notation internally (e.g., `--cv.phone "..."`)
@@ -219,12 +221,6 @@ Addressed gaps between implementation and `specs/cli-interface.md` / `specs/comp
 
 - F-ANV-14: Living Resume Monitor (`anvil watch`) — Deferred (stub only in CLI)
 - F-ANV-15: Web Deployment (`anvil deploy`) — Deferred (stub only in CLI)
-
----
-
-## Scaffolding Note
-
-The `src/anvilcv/scoring/rules/` directory exists but is **unused scaffolding**. Scoring rules are implemented directly in `parsability_checker.py` (P-01 to P-08), `structure_checker.py` (S-01 to S-08), and `keyword_matcher.py` (K-01 to K-05). The `rules/` directory can be removed or repurposed.
 
 ---
 

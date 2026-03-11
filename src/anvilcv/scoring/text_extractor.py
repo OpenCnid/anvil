@@ -8,11 +8,14 @@ Why:
 
 from __future__ import annotations
 
+import logging
 import pathlib
 from dataclasses import dataclass, field
 from html.parser import HTMLParser
 
 from anvilcv.exceptions import AnvilUserError
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -40,11 +43,22 @@ class ExtractedDocument:
     has_tables: bool = False
     has_images: bool = False
     fonts_used: set[str] = field(default_factory=set)
+    image_page_count: int = 0
 
     @property
     def lines(self) -> list[str]:
         """Split full text into non-empty lines."""
         return [line for line in self.full_text.splitlines() if line.strip()]
+
+    @property
+    def is_empty(self) -> bool:
+        """True if no meaningful text was extracted."""
+        return not self.full_text.strip()
+
+    @property
+    def is_partial(self) -> bool:
+        """True if some pages appear to be images with no extractable text."""
+        return self.image_page_count > 0 and not self.is_empty
 
 
 def extract_from_pdf(path: pathlib.Path) -> ExtractedDocument:
@@ -65,6 +79,7 @@ def extract_from_pdf(path: pathlib.Path) -> ExtractedDocument:
     fonts_used: set[str] = set()
     has_images = False
     has_tables = False
+    image_page_count = 0
 
     laparams = LAParams(
         line_margin=0.5,
@@ -75,6 +90,8 @@ def extract_from_pdf(path: pathlib.Path) -> ExtractedDocument:
 
     for page_layout in extract_pages(str(path), laparams=laparams):
         page_count += 1
+        page_has_text = False
+        page_has_figure = False
         for element in page_layout:
             if isinstance(element, LTTextBox):
                 for line in element:
@@ -83,6 +100,7 @@ def extract_from_pdf(path: pathlib.Path) -> ExtractedDocument:
                         if not text:
                             continue
 
+                        page_has_text = True
                         font_name = None
                         font_size = None
                         for char in line:
@@ -108,6 +126,11 @@ def extract_from_pdf(path: pathlib.Path) -> ExtractedDocument:
 
             elif isinstance(element, LTFigure):
                 has_images = True
+                page_has_figure = True
+
+        # A page with figures but no text is likely an image/scanned page
+        if page_has_figure and not page_has_text:
+            image_page_count += 1
 
     return ExtractedDocument(
         elements=elements,
@@ -117,6 +140,7 @@ def extract_from_pdf(path: pathlib.Path) -> ExtractedDocument:
         has_tables=has_tables,
         has_images=has_images,
         fonts_used=fonts_used,
+        image_page_count=image_page_count,
     )
 
 
@@ -180,7 +204,7 @@ def extract_text(path: pathlib.Path) -> ExtractedDocument:
     else:
         raise AnvilUserError(
             message=(
-                f"Unsupported file format: {suffix}. "
-                "Supported formats: PDF (.pdf), HTML (.html, .htm)"
+                f"Unsupported format. Provide a .pdf, .html, or .yaml file, "
+                f"not '{suffix}'."
             )
         )

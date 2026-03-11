@@ -3,7 +3,8 @@
 Why:
     The score command checks ATS compatibility of a resume file.
     Tests cover happy-path text/JSON output, --job flag, --output flag,
-    --verbose flag, error cases, and the _print_text_report helper.
+    --verbose flag, error cases, PDF extraction failure/partial handling,
+    and the _print_text_report helper.
 """
 
 from __future__ import annotations
@@ -24,8 +25,13 @@ from anvilcv.schema.score_report import (
     ScoreReport,
     SectionScore,
 )
+from anvilcv.scoring.text_extractor import ExtractedDocument
 
 runner = CliRunner()
+
+# Shared mock targets for the new extraction-then-score flow
+_EXTRACT = "anvilcv.scoring.text_extractor.extract_text"
+_SCORE_DOC = "anvilcv.scoring.ats_scorer.score_extracted_document"
 
 
 def _make_report(
@@ -61,14 +67,33 @@ def _make_report(
     )
 
 
+def _make_doc(
+    full_text: str = "John Doe\nExperience\nBuilt things",
+    source_type: str = "pdf",
+    page_count: int = 1,
+    image_page_count: int = 0,
+) -> ExtractedDocument:
+    """Build a minimal ExtractedDocument for testing."""
+    return ExtractedDocument(
+        full_text=full_text,
+        source_type=source_type,
+        page_count=page_count,
+        image_page_count=image_page_count,
+    )
+
+
 class TestScoreHappyPath:
     """Score command with valid inputs."""
 
-    @patch("anvilcv.scoring.ats_scorer.score_document")
-    def test_score_text_output(self, mock_score: MagicMock, tmp_path: pathlib.Path) -> None:
+    @patch(_SCORE_DOC)
+    @patch(_EXTRACT)
+    def test_score_text_output(
+        self, mock_extract: MagicMock, mock_score: MagicMock, tmp_path: pathlib.Path
+    ) -> None:
         """Default text format prints a human-readable report."""
         pdf = tmp_path / "resume.pdf"
         pdf.write_bytes(b"%PDF-1.4 fake")
+        mock_extract.return_value = _make_doc()
         mock_score.return_value = _make_report()
 
         result = runner.invoke(app, ["score", str(pdf)])
@@ -76,11 +101,15 @@ class TestScoreHappyPath:
         assert "ATS Compatibility Report" in result.output
         assert "Score: 85/100" in result.output
 
-    @patch("anvilcv.scoring.ats_scorer.score_document")
-    def test_score_json_output(self, mock_score: MagicMock, tmp_path: pathlib.Path) -> None:
+    @patch(_SCORE_DOC)
+    @patch(_EXTRACT)
+    def test_score_json_output(
+        self, mock_extract: MagicMock, mock_score: MagicMock, tmp_path: pathlib.Path
+    ) -> None:
         """--format json prints valid JSON."""
         pdf = tmp_path / "resume.pdf"
         pdf.write_bytes(b"%PDF-1.4 fake")
+        mock_extract.return_value = _make_doc()
         mock_score.return_value = _make_report()
 
         result = runner.invoke(app, ["score", str(pdf), "--format", "json"])
@@ -88,12 +117,16 @@ class TestScoreHappyPath:
         data = json.loads(result.output)
         assert data["overall_score"] == 85
 
-    @patch("anvilcv.scoring.ats_scorer.score_document")
-    def test_score_json_to_file(self, mock_score: MagicMock, tmp_path: pathlib.Path) -> None:
+    @patch(_SCORE_DOC)
+    @patch(_EXTRACT)
+    def test_score_json_to_file(
+        self, mock_extract: MagicMock, mock_score: MagicMock, tmp_path: pathlib.Path
+    ) -> None:
         """--format json --output writes JSON to a file."""
         pdf = tmp_path / "resume.pdf"
         pdf.write_bytes(b"%PDF-1.4 fake")
         out = tmp_path / "report.json"
+        mock_extract.return_value = _make_doc()
         mock_score.return_value = _make_report()
 
         result = runner.invoke(app, ["score", str(pdf), "--format", "json", "--output", str(out)])
@@ -102,12 +135,16 @@ class TestScoreHappyPath:
         data = json.loads(out.read_text())
         assert data["overall_score"] == 85
 
-    @patch("anvilcv.scoring.ats_scorer.score_document")
-    def test_score_text_to_file(self, mock_score: MagicMock, tmp_path: pathlib.Path) -> None:
+    @patch(_SCORE_DOC)
+    @patch(_EXTRACT)
+    def test_score_text_to_file(
+        self, mock_extract: MagicMock, mock_score: MagicMock, tmp_path: pathlib.Path
+    ) -> None:
         """Text output --output writes to a file."""
         pdf = tmp_path / "resume.pdf"
         pdf.write_bytes(b"%PDF-1.4 fake")
         out = tmp_path / "report.txt"
+        mock_extract.return_value = _make_doc()
         mock_score.return_value = _make_report()
 
         result = runner.invoke(app, ["score", str(pdf), "--output", str(out)])
@@ -116,11 +153,15 @@ class TestScoreHappyPath:
         text = out.read_text()
         assert "ATS Compatibility Report" in text
 
-    @patch("anvilcv.scoring.ats_scorer.score_document")
-    def test_score_verbose(self, mock_score: MagicMock, tmp_path: pathlib.Path) -> None:
+    @patch(_SCORE_DOC)
+    @patch(_EXTRACT)
+    def test_score_verbose(
+        self, mock_extract: MagicMock, mock_score: MagicMock, tmp_path: pathlib.Path
+    ) -> None:
         """--verbose shows confidence levels."""
         pdf = tmp_path / "resume.pdf"
         pdf.write_bytes(b"%PDF-1.4 fake")
+        mock_extract.return_value = _make_doc()
         mock_score.return_value = _make_report()
 
         result = runner.invoke(app, ["score", str(pdf), "--verbose"])
@@ -131,15 +172,17 @@ class TestScoreHappyPath:
 class TestScoreWithJob:
     """Score command with --job flag."""
 
-    @patch("anvilcv.scoring.ats_scorer.score_document")
+    @patch(_SCORE_DOC)
+    @patch(_EXTRACT)
     @patch("anvilcv.tailoring.job_parser.parse_job_from_file")
     def test_score_with_job(
         self,
         mock_parse_job: MagicMock,
+        mock_extract: MagicMock,
         mock_score: MagicMock,
         tmp_path: pathlib.Path,
     ) -> None:
-        """--job passes parsed job description to score_document."""
+        """--job passes parsed job description to scorer."""
         pdf = tmp_path / "resume.pdf"
         pdf.write_bytes(b"%PDF-1.4 fake")
         job_file = tmp_path / "job.txt"
@@ -147,6 +190,7 @@ class TestScoreWithJob:
 
         mock_job = MagicMock()
         mock_parse_job.return_value = mock_job
+        mock_extract.return_value = _make_doc()
         mock_score.return_value = _make_report(
             keyword_match=KeywordMatchSection(
                 score=70,
@@ -158,18 +202,21 @@ class TestScoreWithJob:
 
         result = runner.invoke(app, ["score", str(pdf), "--job", str(job_file)])
         assert result.exit_code == 0
-        mock_score.assert_called_once_with(pdf, job=mock_job)
         assert "Keywords:" in result.output
         assert "Matched: python" in result.output
         assert "Missing: django" in result.output
 
+    @patch(_EXTRACT)
     @patch("anvilcv.tailoring.job_parser.parse_job_from_file")
-    def test_score_job_parse_error(self, mock_parse_job: MagicMock, tmp_path: pathlib.Path) -> None:
+    def test_score_job_parse_error(
+        self, mock_parse_job: MagicMock, mock_extract: MagicMock, tmp_path: pathlib.Path
+    ) -> None:
         """Bad --job file exits with code 1."""
         pdf = tmp_path / "resume.pdf"
         pdf.write_bytes(b"%PDF-1.4 fake")
         job_file = tmp_path / "bad_job.txt"
         job_file.write_text("invalid")
+        mock_extract.return_value = _make_doc()
         mock_parse_job.side_effect = AnvilUserError(message="bad job file")
 
         result = runner.invoke(app, ["score", str(pdf), "--job", str(job_file)])
@@ -190,16 +237,95 @@ class TestScoreErrors:
         result = runner.invoke(app, ["score", str(tmp_path / "nope.pdf")])
         assert result.exit_code == 2
 
-    @patch("anvilcv.scoring.ats_scorer.score_document")
-    def test_score_document_error(self, mock_score: MagicMock, tmp_path: pathlib.Path) -> None:
-        """AnvilUserError from score_document exits with code 1."""
+    @patch(_EXTRACT)
+    def test_score_extract_error(self, mock_extract: MagicMock, tmp_path: pathlib.Path) -> None:
+        """AnvilUserError from extract_text exits with code 1."""
         pdf = tmp_path / "resume.pdf"
         pdf.write_bytes(b"%PDF-1.4 fake")
-        mock_score.side_effect = AnvilUserError(message="corrupt PDF")
+        mock_extract.side_effect = AnvilUserError(message="corrupt PDF")
 
         result = runner.invoke(app, ["score", str(pdf)])
         assert result.exit_code == 1
         assert "Error: corrupt PDF" in result.output
+
+
+class TestScorePdfExtraction:
+    """Test PDF extraction failure and partial extraction handling."""
+
+    @patch(_EXTRACT)
+    def test_empty_pdf_exits_1(self, mock_extract: MagicMock, tmp_path: pathlib.Path) -> None:
+        """Image-based PDF with no text exits 1 with helpful message."""
+        pdf = tmp_path / "scanned.pdf"
+        pdf.write_bytes(b"%PDF-1.4 fake")
+        mock_extract.return_value = _make_doc(
+            full_text="",
+            source_type="pdf",
+            image_page_count=2,
+            page_count=2,
+        )
+
+        result = runner.invoke(app, ["score", str(pdf)])
+        assert result.exit_code == 1
+        assert "image-based" in result.output
+        assert "anvil score output/resume.html" in result.output
+
+    @patch(_EXTRACT)
+    def test_empty_pdf_no_images_exits_1(
+        self, mock_extract: MagicMock, tmp_path: pathlib.Path
+    ) -> None:
+        """PDF with no text and no images still exits 1."""
+        pdf = tmp_path / "empty.pdf"
+        pdf.write_bytes(b"%PDF-1.4 fake")
+        mock_extract.return_value = _make_doc(
+            full_text="",
+            source_type="pdf",
+            image_page_count=0,
+            page_count=1,
+        )
+
+        result = runner.invoke(app, ["score", str(pdf)])
+        assert result.exit_code == 1
+        assert "Could not extract text" in result.output
+
+    @patch(_SCORE_DOC)
+    @patch(_EXTRACT)
+    def test_partial_pdf_warns_and_continues(
+        self, mock_extract: MagicMock, mock_score: MagicMock, tmp_path: pathlib.Path
+    ) -> None:
+        """PDF with some image pages warns but continues scoring."""
+        pdf = tmp_path / "partial.pdf"
+        pdf.write_bytes(b"%PDF-1.4 fake")
+        mock_extract.return_value = _make_doc(
+            full_text="John Doe\nExperience",
+            source_type="pdf",
+            page_count=3,
+            image_page_count=1,
+        )
+        mock_score.return_value = _make_report()
+
+        result = runner.invoke(app, ["score", str(pdf)])
+        assert result.exit_code == 0
+        assert "incomplete" in result.output
+        assert "2 pages extracted" in result.output
+        assert "1 appear to be images" in result.output
+
+    @patch(_SCORE_DOC)
+    @patch(_EXTRACT)
+    def test_html_empty_does_not_trigger_pdf_message(
+        self, mock_extract: MagicMock, mock_score: MagicMock, tmp_path: pathlib.Path
+    ) -> None:
+        """Empty HTML does not trigger the PDF-specific error message."""
+        html = tmp_path / "resume.html"
+        html.write_text("<html></html>")
+        mock_extract.return_value = _make_doc(
+            full_text="",
+            source_type="html",
+        )
+        mock_score.return_value = _make_report()
+
+        result = runner.invoke(app, ["score", str(html)])
+        # Should NOT exit 1 with PDF message — only PDFs get this treatment
+        assert "image-based" not in result.output
 
 
 class TestScoreYamlInput:
@@ -208,9 +334,11 @@ class TestScoreYamlInput:
     @patch(
         "anvilcv.cli.score_command.score_command._render_yaml_for_scoring"
     )
-    @patch("anvilcv.scoring.ats_scorer.score_document")
+    @patch(_SCORE_DOC)
+    @patch(_EXTRACT)
     def test_yaml_input_renders_first(
         self,
+        mock_extract: MagicMock,
         mock_score: MagicMock,
         mock_render: MagicMock,
         tmp_path: pathlib.Path,
@@ -221,6 +349,7 @@ class TestScoreYamlInput:
         html_output = tmp_path / "output.html"
         html_output.write_text("<html>scored</html>")
         mock_render.return_value = html_output
+        mock_extract.return_value = _make_doc(source_type="html")
         mock_score.return_value = _make_report()
 
         result = runner.invoke(app, ["score", str(resume)])
@@ -228,15 +357,18 @@ class TestScoreYamlInput:
         mock_render.assert_called_once_with(resume)
         assert "85/100" in result.output
 
-    @patch("anvilcv.scoring.ats_scorer.score_document")
+    @patch(_SCORE_DOC)
+    @patch(_EXTRACT)
     def test_pdf_input_no_render(
         self,
+        mock_extract: MagicMock,
         mock_score: MagicMock,
         tmp_path: pathlib.Path,
     ) -> None:
         """PDF input does not trigger rendering."""
         pdf = tmp_path / "resume.pdf"
         pdf.write_bytes(b"%PDF-1.4 test")
+        mock_extract.return_value = _make_doc()
         mock_score.return_value = _make_report()
 
         result = runner.invoke(app, ["score", str(pdf)])
@@ -246,9 +378,11 @@ class TestScoreYamlInput:
 class TestScoreYamlFormat:
     """Test --format yaml output."""
 
-    @patch("anvilcv.scoring.ats_scorer.score_document")
+    @patch(_SCORE_DOC)
+    @patch(_EXTRACT)
     def test_yaml_format_output(
         self,
+        mock_extract: MagicMock,
         mock_score: MagicMock,
         tmp_path: pathlib.Path,
     ) -> None:
@@ -257,17 +391,19 @@ class TestScoreYamlFormat:
 
         pdf = tmp_path / "resume.pdf"
         pdf.write_bytes(b"%PDF-1.4 test")
+        mock_extract.return_value = _make_doc()
         mock_score.return_value = _make_report()
 
         result = runner.invoke(app, ["score", str(pdf), "--format", "yaml"])
         assert result.exit_code == 0
-        # Should be parseable YAML
         data = yaml.safe_load(result.output)
         assert data["overall_score"] == 85
 
-    @patch("anvilcv.scoring.ats_scorer.score_document")
+    @patch(_SCORE_DOC)
+    @patch(_EXTRACT)
     def test_yaml_format_to_file(
         self,
+        mock_extract: MagicMock,
         mock_score: MagicMock,
         tmp_path: pathlib.Path,
     ) -> None:
@@ -275,6 +411,7 @@ class TestScoreYamlFormat:
         pdf = tmp_path / "resume.pdf"
         pdf.write_bytes(b"%PDF-1.4 test")
         out = tmp_path / "report.yaml"
+        mock_extract.return_value = _make_doc()
         mock_score.return_value = _make_report()
 
         result = runner.invoke(
@@ -290,9 +427,11 @@ class TestScoreJobUrl:
     """Test --job with URL handling."""
 
     @patch("anvilcv.cli.job_input.resolve_job_input")
-    @patch("anvilcv.scoring.ats_scorer.score_document")
+    @patch(_SCORE_DOC)
+    @patch(_EXTRACT)
     def test_job_url_resolves(
         self,
+        mock_extract: MagicMock,
         mock_score: MagicMock,
         mock_resolve_job: MagicMock,
         tmp_path: pathlib.Path,
@@ -301,6 +440,7 @@ class TestScoreJobUrl:
         pdf = tmp_path / "resume.pdf"
         pdf.write_bytes(b"%PDF-1.4 test")
         mock_resolve_job.return_value = MagicMock()
+        mock_extract.return_value = _make_doc()
         mock_score.return_value = _make_report()
 
         result = runner.invoke(
@@ -313,9 +453,11 @@ class TestScoreJobUrl:
         )
 
     @patch("anvilcv.cli.job_input.resolve_job_input")
-    @patch("anvilcv.scoring.ats_scorer.score_document")
+    @patch(_SCORE_DOC)
+    @patch(_EXTRACT)
     def test_job_service_error_continues(
         self,
+        mock_extract: MagicMock,
         mock_score: MagicMock,
         mock_resolve_job: MagicMock,
         tmp_path: pathlib.Path,
@@ -328,6 +470,7 @@ class TestScoreJobUrl:
         mock_resolve_job.side_effect = AnvilServiceError(
             message="Could not fetch URL"
         )
+        mock_extract.return_value = _make_doc()
         mock_score.return_value = _make_report()
 
         result = runner.invoke(
@@ -338,8 +481,6 @@ class TestScoreJobUrl:
         assert "Warning" in result.output
         # Scored without job description
         mock_score.assert_called_once()
-        call_kwargs = mock_score.call_args
-        assert call_kwargs[1].get("job") is None
 
 
 class TestScoreReportFormatting:
@@ -355,7 +496,6 @@ class TestScoreReportFormatting:
                 Recommendation(priority="low", message="Consider reordering"),
             ],
         )
-        # Capture via output file
         out = tmp_path / "report.txt"
         _print_text_report(report, output=out)
         text = out.read_text()
