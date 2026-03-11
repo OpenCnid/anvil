@@ -1,6 +1,6 @@
 # Implementation Plan
 
-Status: **Phase 0-3 complete. CLI spec compliance complete (C.1-C.7).** All features implemented. 807 unit tests passing + 30 golden-set tests (skipped without --run-golden). 86% coverage.
+Status: **Phase 0-3 complete. CLI spec compliance complete (C.1-C.8).** All features implemented. 812 unit tests passing + 30 golden-set tests (skipped without --run-golden). 86% coverage.
 
 **Vendored file key:** Tasks annotate which vendored files they touch.
 - `[Modified]` = change internals of vendored file (4 files total)
@@ -212,7 +212,7 @@ Addressed gaps between implementation and `specs/cli-interface.md` / `specs/comp
 
 ### Remaining CLI Spec Gaps
 
-- `anvil render --override KEY=VALUE` not implemented — rendercv uses dot-notation internally (e.g., `--cv.phone "..."`)
+- [x] `anvil render --override KEY=VALUE` — Implemented. Accepts repeatable `--override KEY=VALUE` flags that merge with rendercv's native dotted-path overrides. Both syntaxes work: `--override design.theme=devforge` (Anvil) and `--design.theme devforge` (rendercv native).
 - `anvil watch` and `anvil deploy` remain P3 stubs (intentionally deferred)
 
 ---

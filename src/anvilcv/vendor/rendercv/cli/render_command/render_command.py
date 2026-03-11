@@ -165,6 +165,16 @@ def cli_command_render(
             help="If provided, the PNG file will not be generated.",
         ),
     ] = None,
+    override: Annotated[
+        list[str] | None,
+        typer.Option(
+            "--override",
+            help=(
+                "Override YAML values. Format: KEY=VALUE. Repeatable."
+                ' Example: --override design.theme=devforge --override cv.name="Jane Doe"'
+            ),
+        ),
+    ] = None,
     no_ats_html: Annotated[
         bool,
         typer.Option(
@@ -231,6 +241,19 @@ def cli_command_render(
         "dont_generate_png": dont_generate_png,
         "overrides": parse_override_arguments(extra_data_model_override_arguments),
     }
+
+    # Merge --override KEY=VALUE pairs into overrides dict
+    if override:
+        overrides_dict = arguments.get("overrides") or {}
+        for item in override:
+            if "=" not in item:
+                typer.echo(
+                    f"Invalid --override format: '{item}'. Expected KEY=VALUE"
+                )
+                raise typer.Exit(code=1)
+            key, _, value = item.partition("=")
+            overrides_dict[key] = value
+        arguments["overrides"] = overrides_dict
 
     # Variant batch rendering: render all YAML files in a directory
     if variant is not None:

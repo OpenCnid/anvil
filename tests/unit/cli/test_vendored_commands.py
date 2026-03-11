@@ -47,6 +47,72 @@ def test_render_variant_empty_dir_exits_1(tmp_path):
     assert "No YAML files found" in result.output
 
 
+def test_render_override_flag_in_help():
+    """The render command has --override flag."""
+    import anvilcv.vendor.rendercv.cli.app  # noqa: F401
+    from anvilcv.cli.app import app
+
+    result = runner.invoke(app, ["render", "--help"])
+    assert result.exit_code == 0
+    assert "--override" in result.output
+    assert "KEY=VALUE" in result.output
+
+
+def test_render_override_invalid_format():
+    """--override without = sign exits with code 1."""
+    import anvilcv.vendor.rendercv.cli.app  # noqa: F401
+    from anvilcv.cli.app import app
+
+    result = runner.invoke(
+        app,
+        ["render", "dummy.yaml", "--override", "noequals"],
+    )
+    assert result.exit_code == 1
+    assert "Invalid --override format" in result.output
+
+
+def test_render_override_parses_key_value():
+    """--override KEY=VALUE is parsed correctly into overrides dict."""
+    import anvilcv.vendor.rendercv.cli.app  # noqa: F401
+    from anvilcv.cli.app import app
+
+    # With a non-existent file, it will fail on file-not-found, not on override parsing
+    result = runner.invoke(
+        app,
+        ["render", "nonexistent.yaml", "--override", "design.theme=devforge"],
+    )
+    # Should NOT fail with "Invalid --override format"
+    assert "Invalid --override format" not in result.output
+
+
+def test_render_override_multiple_values():
+    """Multiple --override flags are all accepted."""
+    import anvilcv.vendor.rendercv.cli.app  # noqa: F401
+    from anvilcv.cli.app import app
+
+    result = runner.invoke(
+        app,
+        [
+            "render", "nonexistent.yaml",
+            "--override", "design.theme=devforge",
+            "--override", "cv.name=Jane Doe",
+        ],
+    )
+    assert "Invalid --override format" not in result.output
+
+
+def test_render_override_value_with_equals():
+    """--override handles values containing = signs."""
+    import anvilcv.vendor.rendercv.cli.app  # noqa: F401
+    from anvilcv.cli.app import app
+
+    result = runner.invoke(
+        app,
+        ["render", "nonexistent.yaml", "--override", "cv.note=a=b=c"],
+    )
+    assert "Invalid --override format" not in result.output
+
+
 def test_new_command_registered():
     """Vendored new command is available."""
     import anvilcv.vendor.rendercv.cli.app  # noqa: F401
