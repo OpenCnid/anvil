@@ -150,7 +150,7 @@ class TestSpaDetection:
         assert _looks_like_spa(html)
 
     def test_spa_with_next_data(self) -> None:
-        assert _looks_like_spa('<html><script>window.__NEXT_DATA__={}</script></html>')
+        assert _looks_like_spa("<html><script>window.__NEXT_DATA__={}</script></html>")
 
     def test_normal_html(self) -> None:
         html = """

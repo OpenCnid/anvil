@@ -137,9 +137,7 @@ def _extract_readable_text(html: str, url: str) -> str:
         lines = [line.strip() for line in text.splitlines()]
         return "\n".join(line for line in lines if line)
     except Exception as e:
-        logger.warning(
-            "readability-lxml extraction failed: %s. Falling back.", e
-        )
+        logger.warning("readability-lxml extraction failed: %s. Falling back.", e)
         return _basic_html_to_text(html)
 
 

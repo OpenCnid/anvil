@@ -25,8 +25,7 @@ def pytest_configure(config: pytest.Config) -> None:
     """Register the 'golden' marker for Tier 2 golden-set tests."""
     config.addinivalue_line(
         "markers",
-        "golden: Tier 2 golden-set regression test (requires live AI APIs, "
-        "run with --run-golden)",
+        "golden: Tier 2 golden-set regression test (requires live AI APIs, run with --run-golden)",
     )
 
 
@@ -40,9 +39,7 @@ def pytest_addoption(parser: pytest.Parser) -> None:
     )
 
 
-def pytest_collection_modifyitems(
-    config: pytest.Config, items: list[pytest.Item]
-) -> None:
+def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
     """Skip golden-set tests unless --run-golden is specified."""
     if config.getoption("--run-golden"):
         return
@@ -61,9 +58,7 @@ def golden_dir() -> pathlib.Path:
     return GOLDEN_DIR
 
 
-def load_case_data(
-    feature: str, case_name: str
-) -> tuple[dict, dict, list[dict]]:
+def load_case_data(feature: str, case_name: str) -> tuple[dict, dict, list[dict]]:
     """Load input resume, job description, and rubric for a golden-set case.
 
     Returns:

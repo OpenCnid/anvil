@@ -56,9 +56,7 @@ def load_rubric(rubric_path: Path) -> list[dict[str, Any]]:
     return data.get("rubric", [])
 
 
-def evaluate_keyword_presence(
-    output: str, criterion: dict[str, Any]
-) -> CriterionResult:
+def evaluate_keyword_presence(output: str, criterion: dict[str, Any]) -> CriterionResult:
     """Check if required keywords are present in output.
 
     Criterion format:
@@ -84,14 +82,13 @@ def evaluate_keyword_presence(
         criterion_type="keyword_presence",
         weight=criterion["weight"],
         score=score,
-        evidence=f"Found {match_count}/{len(keywords)} keywords. "
-        f"Missing: {missing}" if missing else f"All {len(keywords)} keywords found",
+        evidence=f"Found {match_count}/{len(keywords)} keywords. Missing: {missing}"
+        if missing
+        else f"All {len(keywords)} keywords found",
     )
 
 
-def evaluate_structural_check(
-    output: str, criterion: dict[str, Any]
-) -> CriterionResult:
+def evaluate_structural_check(output: str, criterion: dict[str, Any]) -> CriterionResult:
     """Check structural properties of the output.
 
     Criterion format:
@@ -120,9 +117,7 @@ def evaluate_structural_check(
             )
         elif check_type == "contains_section":
             ok = bool(re.search(rf"(?:^|\n)#{{1,3}}\s*.*{re.escape(value)}", output, re.IGNORECASE))
-            evidence_parts.append(
-                f"contains_section({value}): {'PASS' if ok else 'FAIL'}"
-            )
+            evidence_parts.append(f"contains_section({value}): {'PASS' if ok else 'FAIL'}")
         elif check_type == "line_count_min":
             lines = len(output.strip().splitlines())
             ok = lines >= value
@@ -137,14 +132,10 @@ def evaluate_structural_check(
             )
         elif check_type == "regex_match":
             ok = bool(re.search(value, output, re.IGNORECASE | re.MULTILINE))
-            evidence_parts.append(
-                f"regex_match({value}): {'PASS' if ok else 'FAIL'}"
-            )
+            evidence_parts.append(f"regex_match({value}): {'PASS' if ok else 'FAIL'}")
         elif check_type == "not_contains":
             ok = value.lower() not in output.lower()
-            evidence_parts.append(
-                f"not_contains({value}): {'PASS' if ok else 'FAIL'}"
-            )
+            evidence_parts.append(f"not_contains({value}): {'PASS' if ok else 'FAIL'}")
         else:
             ok = False
             evidence_parts.append(f"unknown_check({check_type}): SKIP")
@@ -162,9 +153,7 @@ def evaluate_structural_check(
     )
 
 
-def evaluate_factual_accuracy(
-    output: str, criterion: dict[str, Any]
-) -> CriterionResult:
+def evaluate_factual_accuracy(output: str, criterion: dict[str, Any]) -> CriterionResult:
     """Check that output doesn't fabricate facts.
 
     Criterion format:
@@ -230,7 +219,7 @@ async def evaluate_subjective_quality(
                 f"CRITERION: {description}\n"
                 f"SCORING GUIDE: {scoring_guide}\n\n"
                 f"OUTPUT TO EVALUATE:\n{output[:3000]}\n\n"
-                f"Return JSON: {{\"score\": <0-100>, \"reasoning\": \"...\"}}"
+                f'Return JSON: {{"score": <0-100>, "reasoning": "..."}}'
             )
 
             request = GenerationRequest(
@@ -297,9 +286,7 @@ async def evaluate_subjective_quality(
         weight=criterion["weight"],
         score=score,
         evidence=(
-            f"Heuristic: {', '.join(evidence_parts)}"
-            if evidence_parts
-            else "Heuristic baseline"
+            f"Heuristic: {', '.join(evidence_parts)}" if evidence_parts else "Heuristic baseline"
         ),
     )
 
@@ -337,9 +324,7 @@ async def evaluate_output(
         elif ctype == "factual_accuracy":
             result = evaluate_factual_accuracy(output, criterion)
         elif ctype == "subjective_quality":
-            result = await evaluate_subjective_quality(
-                output, criterion, judge_provider
-            )
+            result = await evaluate_subjective_quality(output, criterion, judge_provider)
         else:
             logger.warning("Unknown criterion type: %s", ctype)
             continue

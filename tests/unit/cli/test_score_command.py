@@ -331,9 +331,7 @@ class TestScorePdfExtraction:
 class TestScoreYamlInput:
     """Test scoring YAML input (auto-renders then scores)."""
 
-    @patch(
-        "anvilcv.cli.score_command.score_command._render_yaml_for_scoring"
-    )
+    @patch("anvilcv.cli.score_command.score_command._render_yaml_for_scoring")
     @patch(_SCORE_DOC)
     @patch(_EXTRACT)
     def test_yaml_input_renders_first(
@@ -448,9 +446,7 @@ class TestScoreJobUrl:
             ["score", str(pdf), "--job", "https://example.com/job"],
         )
         assert result.exit_code == 0
-        mock_resolve_job.assert_called_once_with(
-            "https://example.com/job"
-        )
+        mock_resolve_job.assert_called_once_with("https://example.com/job")
 
     @patch("anvilcv.cli.job_input.resolve_job_input")
     @patch(_SCORE_DOC)
@@ -467,9 +463,7 @@ class TestScoreJobUrl:
 
         pdf = tmp_path / "resume.pdf"
         pdf.write_bytes(b"%PDF-1.4 test")
-        mock_resolve_job.side_effect = AnvilServiceError(
-            message="Could not fetch URL"
-        )
+        mock_resolve_job.side_effect = AnvilServiceError(message="Could not fetch URL")
         mock_extract.return_value = _make_doc()
         mock_score.return_value = _make_report()
 

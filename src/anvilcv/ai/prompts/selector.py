@@ -65,9 +65,13 @@ def get_prompt_builder(task: str, provider_name: str):
     common = _load_common_module(task)
     if common is not None:
         # Common modules use varied function names — check both patterns
-        for fn_name in ("build_prompt", "build_tailor_prompt",
-                        "build_cover_letter_prompt", "build_prep_prompt",
-                        "build_extraction_prompt"):
+        for fn_name in (
+            "build_prompt",
+            "build_tailor_prompt",
+            "build_cover_letter_prompt",
+            "build_prep_prompt",
+            "build_extraction_prompt",
+        ):
             if hasattr(common, fn_name):
                 logger.debug("Using common prompt for %s (no %s-specific)", task, provider_name)
                 return getattr(common, fn_name)

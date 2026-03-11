@@ -40,9 +40,7 @@ def build_rewrite_prompt(
                 result: tuple[str, str] = builder(bullet, job, match)
                 return result
             except TypeError:
-                logger.debug(
-                    "Per-provider prompt builder signature mismatch, using common"
-                )
+                logger.debug("Per-provider prompt builder signature mismatch, using common")
 
     # Fall back to common prompt
     return build_tailor_prompt(bullet, job, match)

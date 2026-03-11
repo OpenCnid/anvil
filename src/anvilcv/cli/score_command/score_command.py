@@ -173,15 +173,11 @@ def _render_yaml_for_scoring(yaml_path: pathlib.Path) -> pathlib.Path:
         if html_path and html_path.exists():
             return html_path
 
-        raise AnvilUserError(
-            message=f"Rendering {yaml_path} produced no scorable output."
-        )
+        raise AnvilUserError(message=f"Rendering {yaml_path} produced no scorable output.")
     except AnvilUserError:
         raise
     except Exception as e:
-        raise AnvilUserError(
-            message=f"Failed to render {yaml_path} for scoring: {e}"
-        ) from e
+        raise AnvilUserError(message=f"Failed to render {yaml_path} for scoring: {e}") from e
 
 
 def _print_yaml_report(

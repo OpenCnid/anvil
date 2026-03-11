@@ -69,16 +69,12 @@ def _run_tailor(resume_data: dict, job: JobDescription, provider) -> str:
 
     # Get bullets to rewrite
     bullets_to_rewrite = [
-        (m.section_path, m.content)
-        for m in match.matches
-        if m.relevance_score > 0
+        (m.section_path, m.content) for m in match.matches if m.relevance_score > 0
     ][:10]
 
     if not bullets_to_rewrite:
         # If no matches found, use all experience bullets
-        bullets_to_rewrite = [
-            (m.section_path, m.content) for m in match.matches
-        ][:10]
+        bullets_to_rewrite = [(m.section_path, m.content) for m in match.matches][:10]
 
     changes = asyncio.run(
         rewrite_top_bullets(provider, bullets_to_rewrite, job, match, max_rewrites=10)
@@ -129,20 +125,19 @@ def test_tailor_golden(case_name: str, provider_name: str) -> None:
     )
 
     # Log detailed results for debugging
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"TAILOR | {case_name} | {provider_name}")
     print(f"Total Score: {result.total_score:.1f}/100")
     for cr in result.criterion_results:
         print(f"  [{cr.criterion_type}] {cr.name}: {cr.score:.2f} (w={cr.weight})")
         print(f"    Evidence: {cr.evidence}")
-    print(f"{'='*60}\n")
+    print(f"{'=' * 60}\n")
 
     assert result.total_score >= MIN_SCORE, (
         f"Tailor golden-set {case_name} ({provider_name}) scored "
         f"{result.total_score:.1f}/100, minimum is {MIN_SCORE}/100.\n"
         f"Criterion details:\n"
         + "\n".join(
-            f"  {cr.name}: {cr.score:.2f} — {cr.evidence}"
-            for cr in result.criterion_results
+            f"  {cr.name}: {cr.score:.2f} — {cr.evidence}" for cr in result.criterion_results
         )
     )

@@ -91,20 +91,19 @@ def test_cover_golden(case_name: str, provider_name: str) -> None:
     )
 
     # Log detailed results for debugging
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"COVER | {case_name} | {provider_name}")
     print(f"Total Score: {result.total_score:.1f}/100")
     for cr in result.criterion_results:
         print(f"  [{cr.criterion_type}] {cr.name}: {cr.score:.2f} (w={cr.weight})")
         print(f"    Evidence: {cr.evidence}")
-    print(f"{'='*60}\n")
+    print(f"{'=' * 60}\n")
 
     assert result.total_score >= MIN_SCORE, (
         f"Cover golden-set {case_name} ({provider_name}) scored "
         f"{result.total_score:.1f}/100, minimum is {MIN_SCORE}/100.\n"
         f"Criterion details:\n"
         + "\n".join(
-            f"  {cr.name}: {cr.score:.2f} — {cr.evidence}"
-            for cr in result.criterion_results
+            f"  {cr.name}: {cr.score:.2f} — {cr.evidence}" for cr in result.criterion_results
         )
     )

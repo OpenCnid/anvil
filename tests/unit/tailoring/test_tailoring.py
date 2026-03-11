@@ -219,9 +219,7 @@ class TestRewriter:
         job = _sample_job()
         match = ResumeMatch(missing_required=["Kubernetes"])
 
-        result = asyncio.run(
-            rewrite_bullet(provider, "Built Python microservices", job, match)
-        )
+        result = asyncio.run(rewrite_bullet(provider, "Built Python microservices", job, match))
         assert result == "Deployed Python services on Kubernetes"
 
     def test_rewrite_bullet_fallback_on_error(self):

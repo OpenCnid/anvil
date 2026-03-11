@@ -203,8 +203,5 @@ def extract_text(path: pathlib.Path) -> ExtractedDocument:
         return extract_from_html(path)
     else:
         raise AnvilUserError(
-            message=(
-                f"Unsupported format. Provide a .pdf, .html, or .yaml file, "
-                f"not '{suffix}'."
-            )
+            message=(f"Unsupported format. Provide a .pdf, .html, or .yaml file, not '{suffix}'.")
         )
