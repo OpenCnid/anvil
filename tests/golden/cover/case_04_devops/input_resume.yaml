@@ -1,0 +1,36 @@
+cv:
+  name: Sam Okafor
+  email: sam.okafor@example.com
+  location: Austin, TX
+  sections:
+    experience:
+      - company: InfraForge Technologies
+        position: Infrastructure Engineer
+        start_date: 2020-09
+        end_date: present
+        highlights:
+          - Architected multi-region Terraform codebase managing 400+ AWS resources across 3 accounts
+          - Built GitOps deployment pipeline with ArgoCD reducing release cycle from 2 weeks to 4 hours
+          - Designed zero-downtime migration strategy moving 120 services from EC2 to EKS
+          - Implemented cost optimization reducing monthly cloud spend by $45K through right-sizing and spot instances
+      - company: Velocity Software
+        position: Systems Engineer
+        start_date: 2018-03
+        end_date: 2020-08
+        highlights:
+          - Managed fleet of 200+ Linux servers with Ansible achieving 99.95% uptime
+          - Built centralized logging with ELK stack ingesting 500GB/day across production systems
+          - Created automated disaster recovery runbooks reducing RTO from 4 hours to 30 minutes
+    education:
+      - institution: University of Texas at Austin
+        area: Computer Engineering
+        degree: BS
+        start_date: 2014-09
+        end_date: 2018-05
+    skills:
+      - label: Languages
+        details: Python, Go, Bash, HCL
+      - label: Infrastructure
+        details: Terraform, Ansible, Pulumi, CloudFormation, Packer
+      - label: Platforms
+        details: AWS, Kubernetes, Docker, GitHub Actions, Jenkins, ArgoCD

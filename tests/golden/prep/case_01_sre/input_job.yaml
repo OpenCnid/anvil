@@ -1,0 +1,46 @@
+title: Site Reliability Engineer
+company: Netflix
+experience_years: 3
+requirements:
+  required:
+    - "Experience operating large-scale distributed systems"
+    - "Strong knowledge of Linux systems and networking"
+    - "Proficiency in at least one programming language (Python, Go, or Java)"
+    - "Experience with container orchestration (Kubernetes)"
+    - "Incident management and on-call experience"
+  preferred:
+    - "Experience with chaos engineering practices"
+    - "Familiarity with CI/CD pipelines and infrastructure as code"
+    - "Knowledge of observability tools and SLO-based alerting"
+    - "Experience operating in multi-region cloud environments"
+raw_text: |
+  Site Reliability Engineer - Netflix
+
+  About the Role:
+  Netflix is looking for a Site Reliability Engineer to join our Cloud Infrastructure
+  team. You will be responsible for ensuring the reliability and performance of
+  services that deliver streaming content to over 200 million subscribers worldwide.
+
+  What You'll Do:
+  - Design, build, and maintain infrastructure that supports high-availability services
+  - Develop tooling and automation to improve operational efficiency
+  - Participate in on-call rotations and lead incident response
+  - Collaborate with software engineers to improve service reliability
+  - Define and track SLOs/SLIs for critical services
+  - Conduct chaos engineering experiments to proactively find weaknesses
+
+  Requirements:
+  - 3+ years of experience in SRE, DevOps, or infrastructure engineering
+  - Experience operating large-scale distributed systems in production
+  - Strong knowledge of Linux systems, networking, and cloud platforms (AWS preferred)
+  - Proficiency in Python, Go, or Java
+  - Experience with Kubernetes and container orchestration at scale
+  - Incident management and blameless postmortem experience
+
+  Nice to Have:
+  - Experience with chaos engineering (Chaos Monkey, Litmus, etc.)
+  - Familiarity with Terraform, Ansible, or similar IaC tools
+  - Knowledge of observability stacks (Prometheus, Grafana, OpenTelemetry)
+  - Experience in multi-region cloud deployments
+
+  Compensation: $180,000 - $250,000 base + stock options

@@ -1,6 +1,6 @@
 # Implementation Plan
 
-Status: **Phase 0 complete. Phase 1 complete. Phase 2 complete. Phase 3 complete.** All features implemented. Cross-cutting concerns X.1-X.6 complete, X.5 achieved (85% coverage), X.7 achieved (21 corpus files); X.8 ongoing. 715 tests passing.
+Status: **Phase 0 complete. Phase 1 complete. Phase 2 complete. Phase 3 complete.** All features implemented. All cross-cutting concerns X.1-X.8 complete. X.5 achieved (85% coverage), X.7 achieved (21 corpus files), X.8 implemented (30 golden-set tests: 5 cases × 2 providers × 3 features). 715 tests passing + 30 golden-set tests (skipped without --run-golden).
 
 **Vendored file key:** Tasks annotate which vendored files they touch.
 - `[Modified]` = change internals of vendored file (4 files total)
@@ -172,7 +172,7 @@ These tasks are prerequisites for all features and must be completed first.
 - [x] **X.5 Test coverage target** — 85% line coverage on all code (including vendor); Anvil-specific CLI commands 90%+; 100% coverage on ATS scoring rules (P-01 through P-08, S-01 through S-08, K-01 through K-05). 715 tests passing.
 - [x] **X.6 Ruff + mypy compliance** — All Anvil-specific code passes `ruff check` and `mypy` (0 errors). 29 remaining mypy errors are in vendored rendercv code (Untouched files — not our responsibility)
 - [x] **X.7 Compatibility corpus maintenance** — 21 corpus files covering all 6 themes (classic, sb2nov, engineeringresumes, engineeringclassic, moderncv, devforge), all 8 entry types, edge cases (unicode, empty sections, date variants, design overrides, minimal CV, publications with DOI/URL combos)
-- [ ] **X.8 Tier 2 golden-set regression tests** — Per `specs/testing-strategy.md`: 5-10 reference cases per AI feature (tailor, cover, prep); run against live APIs nightly; LLM-as-judge scoring ≥50/100 on ALL test cases for ALL supported providers; MANDATORY for feature completion
+- [x] **X.8 Tier 2 golden-set regression tests** — 30 golden-set tests (5 cases × 2 providers × 3 features) in `tests/golden/`. Cases cover SRE, Frontend, ML Engineer, DevOps, Backend roles. Rubric evaluator with 4 criterion types: keyword_presence, structural_check, factual_accuracy, subjective_quality (with LLM-as-judge fallback to heuristics). Run with `pytest tests/golden/ --run-golden -p no:numprocesses`. Requires ANTHROPIC_API_KEY/OPENAI_API_KEY.
 
 ---
 

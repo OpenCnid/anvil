@@ -1,0 +1,38 @@
+cv:
+  name: Jordan Rivera
+  email: jordan.rivera@example.com
+  location: San Francisco, CA
+  sections:
+    experience:
+      - company: RecSys Labs
+        position: Machine Learning Engineer
+        start_date: 2020-08
+        end_date: present
+        highlights:
+          - Designed collaborative filtering recommendation engine serving 8M daily active users
+          - Trained and deployed transformer-based NLP models reducing customer support tickets by 30%
+          - Built feature pipelines in PySpark processing 2TB of clickstream data daily
+          - Reduced model inference latency from 120ms to 35ms through ONNX optimization
+          - Implemented A/B testing framework for model comparison across 15 experiments per quarter
+      - company: Quantix Analytics
+        position: Data Scientist
+        start_date: 2018-05
+        end_date: 2020-07
+        highlights:
+          - Developed time-series forecasting models improving demand prediction accuracy by 22%
+          - Built ETL pipelines with Airflow orchestrating 40+ daily data workflows
+          - Created interactive model performance dashboards in Streamlit for stakeholders
+          - Published internal research paper on attention mechanisms for tabular data
+    education:
+      - institution: Stanford University
+        area: Computer Science (Machine Learning focus)
+        degree: MS
+        start_date: 2016-09
+        end_date: 2018-06
+    skills:
+      - label: ML/AI
+        details: PyTorch, TensorFlow, scikit-learn, Hugging Face, ONNX, XGBoost
+      - label: Languages
+        details: Python, SQL, Scala, R
+      - label: Data & MLOps
+        details: PySpark, Airflow, MLflow, Kubeflow, DVC, Docker, AWS SageMaker

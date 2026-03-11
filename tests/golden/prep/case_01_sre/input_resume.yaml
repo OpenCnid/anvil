@@ -1,0 +1,36 @@
+cv:
+  name: Jordan Alvarez
+  email: jordan.alvarez@example.com
+  phone: "+1-503-555-0147"
+  location: Portland, OR
+  sections:
+    experience:
+      - company: Cloudtrace Systems
+        position: Site Reliability Engineer
+        start_date: 2021-06
+        end_date: 2024-02
+        highlights:
+          - "Designed and maintained Kubernetes clusters serving 14M requests/day across 3 AWS regions with 99.97% uptime"
+          - "Built Prometheus and Grafana monitoring stack that reduced mean-time-to-detect from 12 minutes to under 90 seconds"
+          - "Led incident response for 47 SEV-2+ incidents; authored blameless postmortems that cut repeat incidents by 35%"
+          - "Automated toil reduction pipeline with Python and Terraform, saving the team 20 hours/week of manual work"
+      - company: Bridgeport Financial
+        position: Infrastructure Engineer
+        start_date: 2019-03
+        end_date: 2021-05
+        highlights:
+          - "Migrated legacy VM fleet of 200+ servers to containerized microservices on EKS, reducing infrastructure costs by 40%"
+          - "Implemented HashiCorp Vault for secrets management across 60 services, eliminating all hardcoded credentials"
+          - "Created CI/CD pipelines in Jenkins and GitHub Actions that decreased deployment time from 45 minutes to 8 minutes"
+    education:
+      - institution: Oregon State University
+        area: Computer Science
+        degree: BS
+        end_date: 2019-05
+    skills:
+      - label: Infrastructure
+        details: Kubernetes, Docker, Terraform, AWS (EC2, EKS, S3, IAM), GCP, Helm, Ansible
+      - label: Observability
+        details: Prometheus, Grafana, Datadog, PagerDuty, ELK Stack, OpenTelemetry
+      - label: Programming
+        details: Python, Go, Bash, SQL

@@ -1,0 +1,34 @@
+rubric:
+  - criterion: "Tailored bullets mention backend-relevant skills"
+    weight: 0.25
+    type: keyword_presence
+    keywords:
+      - Java
+      - PostgreSQL
+      - API
+      - distributed
+      - microservice
+    min_matches: 3
+  - criterion: "Output is valid YAML that preserves resume structure"
+    weight: 0.25
+    type: structural_check
+    checks:
+      - type: regex_match
+        value: "^cv:"
+      - type: regex_match
+        value: "experience:"
+      - type: regex_match
+        value: "highlights:"
+      - type: not_contains
+        value: "```"
+  - criterion: "No fabricated metrics or experiences"
+    weight: 0.25
+    type: factual_accuracy
+    forbidden_patterns:
+      - "\\b(?:Square|millions of sellers)\\b"
+      - "\\bcommerce platform\\b"
+  - criterion: "Rewritten bullets are specific and quantified"
+    weight: 0.25
+    type: subjective_quality
+    description: "Bullets should contain specific metrics, technologies, and outcomes rather than generic descriptions"
+    scoring_guide: "Score 80+ if most bullets have concrete numbers and specific tech. Score 50-80 if some bullets are specific. Below 50 if mostly generic."

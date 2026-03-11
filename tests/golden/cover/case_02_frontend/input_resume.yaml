@@ -1,0 +1,36 @@
+cv:
+  name: Maya Patel
+  email: maya.patel@example.com
+  location: Toronto, ON
+  sections:
+    experience:
+      - company: PixelCraft Studios
+        position: Frontend Developer
+        start_date: 2021-03
+        end_date: present
+        highlights:
+          - Led migration of legacy jQuery app to React 18, reducing bundle size by 35%
+          - Built accessible component library used by 4 product teams with 98% Lighthouse score
+          - Implemented real-time collaboration features using WebSockets serving 2K concurrent users
+          - Improved Core Web Vitals LCP from 4.2s to 1.1s through code splitting and lazy loading
+      - company: BrightWeb Agency
+        position: Junior Frontend Engineer
+        start_date: 2019-05
+        end_date: 2021-02
+        highlights:
+          - Developed responsive e-commerce interfaces for 15+ client projects
+          - Created reusable TypeScript utility library adopted across the engineering org
+          - Integrated Stripe payment flows processing $2M+ monthly transactions
+    education:
+      - institution: University of Toronto
+        area: Computer Science
+        degree: BSc
+        start_date: 2015-09
+        end_date: 2019-04
+    skills:
+      - label: Languages
+        details: TypeScript, JavaScript, HTML, CSS, Python
+      - label: Frameworks
+        details: React, Next.js, Vue.js, Tailwind CSS, Storybook
+      - label: Tools
+        details: Webpack, Vite, Jest, Playwright, Figma, Git

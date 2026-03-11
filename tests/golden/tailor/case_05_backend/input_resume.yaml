@@ -1,0 +1,38 @@
+cv:
+  name: Sam Nakamura
+  email: sam.nakamura@example.com
+  location: New York, NY
+  sections:
+    experience:
+      - company: PayRoute Financial
+        position: Backend Engineer
+        start_date: 2019-09
+        end_date: present
+        highlights:
+          - Designed payment processing service handling 50K transactions per hour with 99.95% success rate
+          - Built event-driven architecture using Kafka for async communication between 8 microservices
+          - Optimized PostgreSQL queries reducing P95 latency from 800ms to 120ms on critical endpoints
+          - Implemented idempotency layer preventing duplicate charges, saving $2M annually in refunds
+          - Led migration from monolithic Java application to Spring Boot microservices over 9 months
+      - company: InfoStream Corp
+        position: Software Developer
+        start_date: 2017-06
+        end_date: 2019-08
+        highlights:
+          - Developed RESTful APIs in Java serving 3M API calls daily with comprehensive OpenAPI documentation
+          - Designed and normalized relational database schemas for customer data platform
+          - Implemented rate limiting and authentication middleware reducing unauthorized access by 95%
+          - Built automated data migration scripts for PostgreSQL handling 500GB+ datasets
+    education:
+      - institution: Columbia University
+        area: Computer Science
+        degree: BS
+        start_date: 2013-09
+        end_date: 2017-05
+    skills:
+      - label: Languages
+        details: Java, Python, SQL, Kotlin, Go
+      - label: Backend
+        details: Spring Boot, FastAPI, gRPC, Kafka, RabbitMQ, Redis
+      - label: Data
+        details: PostgreSQL, DynamoDB, Elasticsearch, Flyway, Liquibase

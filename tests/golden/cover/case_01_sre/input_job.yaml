@@ -1,0 +1,34 @@
+title: Site Reliability Engineer
+company: Netflix
+requirements:
+  required_skills:
+    - Kubernetes
+    - Prometheus
+    - Terraform
+    - Python
+    - Linux
+    - Incident management
+  preferred_skills:
+    - Chaos engineering
+    - Service mesh
+    - SLO/SLI definition
+    - Go
+  experience_years: 3
+raw_text: |
+  Netflix is looking for a Site Reliability Engineer to join our cloud infrastructure team.
+  You will be responsible for maintaining 99.99% uptime for streaming services serving 200M+ subscribers.
+
+  Requirements:
+  - 3+ years experience in SRE or DevOps roles
+  - Strong Kubernetes expertise (deployment, troubleshooting, scaling)
+  - Experience with monitoring (Prometheus, Grafana) and alerting
+  - Infrastructure as Code (Terraform)
+  - Strong Python scripting skills
+  - Linux systems administration
+  - Incident management and on-call experience
+
+  Preferred:
+  - Chaos engineering practices
+  - Service mesh (Istio/Envoy)
+  - SLO/SLI definition and tracking
+  - Go programming

@@ -1,0 +1,38 @@
+cv:
+  name: Morgan Patel
+  email: morgan.patel@example.com
+  location: Austin, TX
+  sections:
+    experience:
+      - company: ScaleRight Technologies
+        position: Infrastructure Engineer
+        start_date: 2019-06
+        end_date: present
+        highlights:
+          - Managed AWS infrastructure spanning 3 accounts with 200+ EC2 instances and 40 RDS databases
+          - Wrote Terraform modules provisioning VPCs, EKS clusters, and IAM policies across 4 environments
+          - Designed CI/CD pipelines in GitLab CI deploying 25 services with zero-downtime blue-green strategy
+          - Reduced cloud spend by 28% through right-sizing instances and implementing spot fleet policies
+          - Automated certificate rotation and secrets management using HashiCorp Vault
+      - company: NetBridge Solutions
+        position: Systems Administrator
+        start_date: 2017-03
+        end_date: 2019-05
+        highlights:
+          - Containerized 18 legacy applications using Docker, cutting deployment time from hours to minutes
+          - Configured Ansible playbooks automating server provisioning for 50+ bare-metal hosts
+          - Set up centralized logging with ELK stack aggregating logs from 30 services
+          - Maintained 99.9% uptime SLA for production environment serving 500K monthly users
+    education:
+      - institution: University of Texas at Austin
+        area: Computer Engineering
+        degree: BS
+        start_date: 2013-09
+        end_date: 2017-05
+    skills:
+      - label: Cloud
+        details: AWS (EC2, EKS, RDS, S3, Lambda, CloudFormation), Azure (basic)
+      - label: IaC & Automation
+        details: Terraform, Ansible, Packer, CloudFormation, Bash, Python
+      - label: Containers & CI/CD
+        details: Docker, Kubernetes, GitLab CI, GitHub Actions, ArgoCD, Helm

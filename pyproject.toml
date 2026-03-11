@@ -79,4 +79,5 @@ warn_unused_configs = true
 testpaths = ["tests"]
 markers = [
     "nightly: marks tests that run nightly against live APIs",
+    "golden: Tier 2 golden-set regression test (requires --run-golden and live AI API keys)",
 ]

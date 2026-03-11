@@ -1,0 +1,38 @@
+cv:
+  name: Priya Sharma
+  email: priya.sharma@example.com
+  location: Toronto, ON
+  sections:
+    experience:
+      - company: CartWave Commerce
+        position: Full-Stack Developer
+        start_date: 2019-03
+        end_date: present
+        highlights:
+          - Rebuilt product catalog UI in React, reducing page load time from 4.2s to 1.1s
+          - Developed reusable component library with 60+ components used across 5 teams
+          - Migrated legacy jQuery codebase to Vue.js, improving developer velocity by 35%
+          - Implemented responsive layouts achieving 98% Lighthouse accessibility score
+          - Integrated GraphQL API layer replacing 23 REST endpoints with unified queries
+      - company: BrightLoop SaaS
+        position: Frontend Developer
+        start_date: 2017-01
+        end_date: 2019-02
+        highlights:
+          - Built interactive dashboards with D3.js visualizing real-time analytics for 2K+ users
+          - Reduced JavaScript bundle size by 45% through code splitting and tree shaking
+          - Wrote end-to-end tests with Cypress covering 15 critical user flows
+          - Collaborated with UX team to implement design system tokens across 8 products
+    education:
+      - institution: University of Toronto
+        area: Software Engineering
+        degree: BEng
+        start_date: 2012-09
+        end_date: 2016-06
+    skills:
+      - label: Frontend
+        details: React, Vue.js, TypeScript, JavaScript, HTML5, CSS3, Tailwind
+      - label: Tools
+        details: Webpack, Vite, Jest, Cypress, Storybook, Figma
+      - label: Backend
+        details: Node.js, Express, GraphQL, PostgreSQL, Redis

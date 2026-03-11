@@ -1,0 +1,47 @@
+title: Senior Backend Engineer
+company: Square
+experience_years: 5
+requirements:
+  required:
+    - "Strong experience designing and building distributed systems"
+    - "Proficiency in Go, Java, or Python"
+    - "Experience with event-driven architectures and message queues"
+    - "Deep understanding of relational databases and data modeling"
+    - "Experience with API design (REST and/or gRPC)"
+  preferred:
+    - "Experience in payments or financial services domain"
+    - "Familiarity with microservices patterns (circuit breakers, service mesh)"
+    - "Knowledge of caching strategies and performance optimization"
+    - "Experience with system design at scale"
+raw_text: |
+  Senior Backend Engineer - Square
+
+  About the Role:
+  Square is looking for a Senior Backend Engineer to join the Payments
+  Platform team. You will design and build the core systems that process
+  billions of dollars in payments for millions of sellers worldwide.
+
+  What You'll Do:
+  - Design and build high-throughput, low-latency payment processing services
+  - Develop event-driven architectures for reliable transaction processing
+  - Optimize database performance and design scalable data models
+  - Build and maintain APIs consumed by internal and external developers
+  - Collaborate with cross-functional teams on system design and architecture
+  - Mentor engineers and contribute to backend engineering best practices
+
+  Requirements:
+  - 5+ years of backend engineering experience
+  - Strong experience designing distributed systems at scale
+  - Proficiency in Go, Java, or Python
+  - Experience with event-driven architectures and message queues (Kafka, RabbitMQ, SQS)
+  - Deep understanding of relational databases (PostgreSQL, MySQL) and data modeling
+  - Experience designing REST and/or gRPC APIs
+  - Strong system design and problem-solving skills
+
+  Nice to Have:
+  - Experience in payments, fintech, or financial services
+  - Familiarity with microservices patterns (circuit breakers, retries, service mesh)
+  - Experience with caching layers (Redis, Memcached)
+  - Track record of leading system design for complex projects
+
+  Compensation: $175,000 - $265,000 base + equity

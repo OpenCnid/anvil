@@ -1,0 +1,38 @@
+rubric:
+  - criterion: "Cover letter mentions target company by name"
+    weight: 0.2
+    type: keyword_presence
+    keywords:
+      - Datadog
+      - DevOps
+    min_matches: 1
+  - criterion: "References specific projects or metrics from resume"
+    weight: 0.3
+    type: keyword_presence
+    keywords:
+      - "400+"
+      - ArgoCD
+      - "$45K"
+      - InfraForge
+      - zero-downtime
+      - "500GB"
+    min_matches: 2
+  - criterion: "Has proper cover letter structure"
+    weight: 0.25
+    type: structural_check
+    checks:
+      - type: min_length
+        value: 500
+      - type: max_length
+        value: 5000
+      - type: line_count_min
+        value: 10
+      - type: not_contains
+        value: "[Your Name]"
+  - criterion: "No fabricated experiences or skills"
+    weight: 0.25
+    type: factual_accuracy
+    forbidden_patterns:
+      - "worked at Datadog"
+      - "my time at Datadog"
+      - "during my tenure at Datadog"

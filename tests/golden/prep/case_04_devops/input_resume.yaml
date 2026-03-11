@@ -1,0 +1,36 @@
+cv:
+  name: Elena Vasquez
+  email: elena.vasquez@example.com
+  phone: "+1-720-555-0312"
+  location: Denver, CO
+  sections:
+    experience:
+      - company: Ridgewell Software
+        position: Senior DevOps Engineer
+        start_date: 2021-03
+        end_date: 2024-06
+        highlights:
+          - "Designed multi-account AWS infrastructure using Terraform modules, managing 350+ cloud resources across 4 environments"
+          - "Built GitOps deployment pipeline with ArgoCD and Helm that enabled 50+ deployments/week with zero-downtime rollouts"
+          - "Reduced CI pipeline execution time by 62% through parallelization, caching strategies, and runner optimization"
+          - "Implemented centralized logging with ELK Stack ingesting 2TB/day, enabling cross-service debugging in under 5 minutes"
+      - company: Apexion Technologies
+        position: DevOps Engineer
+        start_date: 2018-09
+        end_date: 2021-02
+        highlights:
+          - "Migrated 30 microservices from Docker Compose to Kubernetes on GKE, improving resource utilization by 35%"
+          - "Created self-service developer platform with Backstage, reducing new service onboarding from 2 weeks to 4 hours"
+          - "Established SLO-based alerting with Prometheus and PagerDuty, decreasing alert fatigue by 70%"
+    education:
+      - institution: Colorado School of Mines
+        area: Computer Science
+        degree: BS
+        end_date: 2018-05
+    skills:
+      - label: IaC & Cloud
+        details: Terraform, Pulumi, AWS (ECS, EKS, Lambda, RDS), GCP (GKE), CloudFormation
+      - label: CI/CD & GitOps
+        details: GitHub Actions, Jenkins, ArgoCD, Helm, Kustomize, Spinnaker
+      - label: Observability
+        details: Prometheus, Grafana, ELK Stack, Datadog, OpenTelemetry, PagerDuty
