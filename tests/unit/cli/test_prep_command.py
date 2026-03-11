@@ -11,7 +11,6 @@ from __future__ import annotations
 import pathlib
 from unittest.mock import MagicMock, patch
 
-import pytest
 from typer.testing import CliRunner
 
 import anvilcv.cli.prep_command.prep_command  # noqa: F401
@@ -53,12 +52,12 @@ class TestPrepHappyPath:
 
     @patch("anvilcv.prep.generator.write_prep_notes")
     @patch("anvilcv.prep.generator.generate_prep_notes")
-    @patch("anvilcv.cli.prep_command.prep_command._resolve_provider")
+    @patch("anvilcv.cli.provider_resolver.resolve_provider")
     @patch("anvilcv.tailoring.matcher.match_resume_to_job")
-    @patch("anvilcv.tailoring.job_parser.parse_job_from_file")
+    @patch("anvilcv.cli.job_input.resolve_job_input")
     def test_prep_writes_notes(
         self,
-        mock_parse_job: MagicMock,
+        mock_resolve_job: MagicMock,
         mock_match: MagicMock,
         mock_resolve: MagicMock,
         mock_gen: MagicMock,
@@ -68,7 +67,7 @@ class TestPrepHappyPath:
         resume, job = _write_resume_and_job(tmp_path)
         out = tmp_path / "prep.md"
 
-        mock_parse_job.return_value = MagicMock(company="TechCo")
+        mock_resolve_job.return_value = MagicMock(company="TechCo")
         mock_match.return_value = _make_match()
         mock_resolve.return_value = MagicMock(name="anthropic")
         mock_gen.return_value = "# Interview Prep\n\n- Talk about data pipeline"
@@ -80,12 +79,12 @@ class TestPrepHappyPath:
 
     @patch("anvilcv.prep.generator.write_prep_notes")
     @patch("anvilcv.prep.generator.generate_prep_notes")
-    @patch("anvilcv.cli.prep_command.prep_command._resolve_provider")
+    @patch("anvilcv.cli.provider_resolver.resolve_provider")
     @patch("anvilcv.tailoring.matcher.match_resume_to_job")
-    @patch("anvilcv.tailoring.job_parser.parse_job_from_file")
+    @patch("anvilcv.cli.job_input.resolve_job_input")
     def test_prep_default_output_path(
         self,
-        mock_parse_job: MagicMock,
+        mock_resolve_job: MagicMock,
         mock_match: MagicMock,
         mock_resolve: MagicMock,
         mock_gen: MagicMock,
@@ -95,7 +94,7 @@ class TestPrepHappyPath:
         """When --output is not given, uses {name}_prep.md."""
         resume, job = _write_resume_and_job(tmp_path)
 
-        mock_parse_job.return_value = MagicMock(company="TechCo")
+        mock_resolve_job.return_value = MagicMock(company="TechCo")
         mock_match.return_value = _make_match()
         mock_resolve.return_value = MagicMock(name="anthropic")
         mock_gen.return_value = "# Prep notes"
@@ -107,12 +106,12 @@ class TestPrepHappyPath:
 
     @patch("anvilcv.prep.generator.write_prep_notes")
     @patch("anvilcv.prep.generator.generate_prep_notes")
-    @patch("anvilcv.cli.prep_command.prep_command._resolve_provider")
+    @patch("anvilcv.cli.provider_resolver.resolve_provider")
     @patch("anvilcv.tailoring.matcher.match_resume_to_job")
-    @patch("anvilcv.tailoring.job_parser.parse_job_from_file")
+    @patch("anvilcv.cli.job_input.resolve_job_input")
     def test_prep_with_provider_flag(
         self,
-        mock_parse_job: MagicMock,
+        mock_resolve_job: MagicMock,
         mock_match: MagicMock,
         mock_resolve: MagicMock,
         mock_gen: MagicMock,
@@ -123,7 +122,7 @@ class TestPrepHappyPath:
         resume, job = _write_resume_and_job(tmp_path)
         out = tmp_path / "prep.md"
 
-        mock_parse_job.return_value = MagicMock(company="TechCo")
+        mock_resolve_job.return_value = MagicMock(company="TechCo")
         mock_match.return_value = _make_match()
         mock_resolve.return_value = MagicMock(name="openai")
         mock_gen.return_value = "# Prep"
@@ -159,33 +158,33 @@ class TestPrepErrors:
         result = runner.invoke(app, ["prep", str(resume)])
         assert result.exit_code == 2
 
-    @patch("anvilcv.tailoring.job_parser.parse_job_from_file")
-    def test_bad_job_file(self, mock_parse_job: MagicMock, tmp_path: pathlib.Path) -> None:
+    @patch("anvilcv.cli.job_input.resolve_job_input")
+    def test_bad_job_file(self, mock_resolve_job: MagicMock, tmp_path: pathlib.Path) -> None:
         resume, job = _write_resume_and_job(tmp_path)
-        mock_parse_job.side_effect = AnvilUserError(message="bad job")
+        mock_resolve_job.side_effect = AnvilUserError(message="bad job")
 
         result = runner.invoke(app, ["prep", str(resume), "--job", str(job)])
         assert result.exit_code == 1
         assert "Error reading job description" in result.output
 
-    @patch("anvilcv.tailoring.job_parser.parse_job_from_file")
-    def test_bad_resume_yaml(self, mock_parse_job: MagicMock, tmp_path: pathlib.Path) -> None:
+    @patch("anvilcv.cli.job_input.resolve_job_input")
+    def test_bad_resume_yaml(self, mock_resolve_job: MagicMock, tmp_path: pathlib.Path) -> None:
         resume = tmp_path / "bad.yaml"
         resume.write_text(": invalid [\n")
         job = tmp_path / "job.txt"
         job.write_text("Engineer")
-        mock_parse_job.return_value = MagicMock(company="Corp")
+        mock_resolve_job.return_value = MagicMock(company="Corp")
 
         result = runner.invoke(app, ["prep", str(resume), "--job", str(job)])
         assert result.exit_code in (0, 1)
 
     @patch("anvilcv.prep.generator.generate_prep_notes")
-    @patch("anvilcv.cli.prep_command.prep_command._resolve_provider")
+    @patch("anvilcv.cli.provider_resolver.resolve_provider")
     @patch("anvilcv.tailoring.matcher.match_resume_to_job")
-    @patch("anvilcv.tailoring.job_parser.parse_job_from_file")
+    @patch("anvilcv.cli.job_input.resolve_job_input")
     def test_ai_error_exits_4(
         self,
-        mock_parse_job: MagicMock,
+        mock_resolve_job: MagicMock,
         mock_match: MagicMock,
         mock_resolve: MagicMock,
         mock_gen: MagicMock,
@@ -193,7 +192,7 @@ class TestPrepErrors:
     ) -> None:
         resume, job = _write_resume_and_job(tmp_path)
 
-        mock_parse_job.return_value = MagicMock(company="TechCo")
+        mock_resolve_job.return_value = MagicMock(company="TechCo")
         mock_match.return_value = _make_match()
         mock_resolve.return_value = MagicMock(name="anthropic")
         mock_gen.side_effect = AnvilAIProviderError(message="rate limited")
@@ -201,67 +200,3 @@ class TestPrepErrors:
         result = runner.invoke(app, ["prep", str(resume), "--job", str(job)])
         assert result.exit_code == 4
         assert "AI error" in result.output
-
-
-class TestPrepResolveProvider:
-    """Test _resolve_provider for prep command."""
-
-    @patch("anvilcv.ai.anthropic.AnthropicProvider")
-    def test_resolve_default_anthropic(self, mock_cls: MagicMock) -> None:
-        from anvilcv.cli.prep_command.prep_command import _resolve_provider
-
-        instance = MagicMock()
-        instance.is_configured.return_value = True
-        mock_cls.return_value = instance
-
-        result = _resolve_provider(None, {})
-        assert result is instance
-
-    @patch("anvilcv.ai.ollama.OllamaProvider")
-    def test_resolve_ollama(self, mock_cls: MagicMock) -> None:
-        from anvilcv.cli.prep_command.prep_command import _resolve_provider
-
-        instance = MagicMock()
-        instance.is_configured.return_value = True
-        mock_cls.return_value = instance
-
-        result = _resolve_provider("ollama", {})
-        assert result is instance
-
-    def test_resolve_unknown_provider(self) -> None:
-        from anvilcv.cli.prep_command.prep_command import _resolve_provider
-
-        with pytest.raises(AnvilUserError, match="Unknown provider"):
-            _resolve_provider("fakeprovider", {})
-
-    @patch("anvilcv.ai.anthropic.AnthropicProvider")
-    def test_resolve_unconfigured(self, mock_cls: MagicMock) -> None:
-        from anvilcv.cli.prep_command.prep_command import _resolve_provider
-
-        instance = MagicMock()
-        instance.is_configured.return_value = False
-        instance.get_setup_instructions.return_value = "Set API key"
-        mock_cls.return_value = instance
-
-        with pytest.raises(AnvilAIProviderError, match="not configured"):
-            _resolve_provider("anthropic", {})
-
-    @patch("anvilcv.ai.anthropic.AnthropicProvider")
-    def test_resolve_from_yaml_config(self, mock_cls: MagicMock) -> None:
-        from anvilcv.cli.prep_command.prep_command import _resolve_provider
-
-        instance = MagicMock()
-        instance.is_configured.return_value = True
-        mock_cls.return_value = instance
-
-        resume_data = {
-            "anvil": {
-                "providers": {
-                    "default": "anthropic",
-                    "anthropic": {"model": "claude-sonnet-4-20250514"},
-                },
-            },
-        }
-
-        result = _resolve_provider(None, resume_data)
-        assert result is instance

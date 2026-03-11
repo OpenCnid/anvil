@@ -1,23 +1,26 @@
 """CLI command for `anvil tailor` — AI-tailor resume to a job description.
 
 Why:
-    `anvil tailor INPUT --job <path>` reads a resume YAML and job description,
+    `anvil tailor INPUT --job <path-or-url>` reads a resume YAML and job description,
     uses AI to rewrite relevant bullet points, and writes a tailored variant
     to the variants/ directory. Never modifies the original file.
+    Supports --render and --score for end-to-end pipeline composition.
 """
 
 from __future__ import annotations
 
 import asyncio
 import pathlib
-from typing import Annotated
+from typing import TYPE_CHECKING, Annotated
 
 import typer
 from ruamel.yaml import YAML
 
-from anvilcv.ai.provider import AIProvider
 from anvilcv.cli.app import app
 from anvilcv.exceptions import AnvilAIProviderError, AnvilUserError
+
+if TYPE_CHECKING:
+    from anvilcv.schema.job_description import JobDescription
 
 
 @app.command(name="tailor")
@@ -31,12 +34,11 @@ def tailor_command(
         ),
     ],
     job: Annotated[
-        pathlib.Path,
+        str,
         typer.Option(
             "--job",
             "-j",
-            help="Job description file (text or YAML).",
-            exists=True,
+            help="Job description: file path, URL, or '-' for stdin.",
         ),
     ],
     provider: Annotated[
@@ -77,6 +79,20 @@ def tailor_command(
             help="Maximum number of bullets to rewrite.",
         ),
     ] = 10,
+    render: Annotated[
+        bool,
+        typer.Option(
+            "--render",
+            help="Also render the tailored variant after generating.",
+        ),
+    ] = False,
+    score: Annotated[
+        bool,
+        typer.Option(
+            "--score",
+            help="Also score the tailored variant (implies --render).",
+        ),
+    ] = False,
 ) -> None:
     """AI-tailor your resume to a specific job description.
 
@@ -84,13 +100,13 @@ def tailor_command(
     relevant bullets, rewrites them using AI to match the job, and
     writes a tailored variant with provenance metadata.
     """
-    from anvilcv.tailoring.job_parser import parse_job_from_file
+    from anvilcv.cli.job_input import resolve_job_input
     from anvilcv.tailoring.matcher import match_resume_to_job
 
-    # Parse job description
+    # Parse job description (URL, file, or stdin)
     try:
-        job_desc = parse_job_from_file(job)
-    except AnvilUserError as e:
+        job_desc = resolve_job_input(job)
+    except (AnvilUserError, Exception) as e:
         typer.echo(f"Error reading job description: {e}", err=True)
         raise typer.Exit(code=1) from None
 
@@ -125,7 +141,9 @@ def tailor_command(
         raise typer.Exit(0)
 
     # Resolve provider
-    provider_instance = _resolve_provider(
+    from anvilcv.cli.provider_resolver import resolve_provider
+
+    provider_instance = resolve_provider(
         provider_name=provider,
         model_name=model,
         resume_data=resume_data,
@@ -177,7 +195,7 @@ def tailor_command(
         original_data=resume_data,
         changes=changes,
         source_path=str(input_file),
-        job_path=str(job),
+        job_path=job,
         provider_name=provider_instance.name,
         model_name=model or "default",
         output_path=output,
@@ -185,48 +203,63 @@ def tailor_command(
 
     typer.echo(f"Variant written to {variant_path} ({len(changes)} changes)")
 
+    # --score implies --render
+    if score:
+        render = True
 
-def _resolve_provider(
-    provider_name: str | None,
-    model_name: str | None,
-    resume_data: dict,
-) -> AIProvider:
-    """Resolve which AI provider to use."""
-    from anvilcv.ai.anthropic import AnthropicProvider
-    from anvilcv.ai.ollama import OllamaProvider
-    from anvilcv.ai.openai import OpenAIProvider
+    # Post-processing: render the variant
+    if render:
+        _render_variant(variant_path)
 
-    # Check YAML config first
-    anvil_config = resume_data.get("anvil", {})
-    providers_config = anvil_config.get("providers", {})
+    # Post-processing: score the variant
+    if score:
+        _score_variant(variant_path, job_desc)
 
-    if provider_name is None:
-        provider_name = providers_config.get("default", "anthropic")
 
-    provider_map = {
-        "anthropic": lambda: AnthropicProvider(
-            model=model_name or providers_config.get("anthropic", {}).get("model"),
-        ),
-        "openai": lambda: OpenAIProvider(
-            model=model_name or providers_config.get("openai", {}).get("model"),
-        ),
-        "ollama": lambda: OllamaProvider(
-            model=model_name or providers_config.get("ollama", {}).get("model"),
-            base_url=providers_config.get("ollama", {}).get("base_url"),
-        ),
-    }
-
-    factory = provider_map.get(provider_name)
-    if factory is None:
-        raise AnvilUserError(
-            message=(f"Unknown provider: {provider_name}. Supported: anthropic, openai, ollama")
+def _render_variant(variant_path: pathlib.Path) -> None:
+    """Render a tailored variant using the render pipeline."""
+    typer.echo(f"Rendering {variant_path}...")
+    try:
+        from anvilcv.vendor.rendercv.renderer.html import generate_ats_html, generate_html
+        from anvilcv.vendor.rendercv.renderer.markdown import generate_markdown
+        from anvilcv.vendor.rendercv.renderer.typst import generate_typst
+        from anvilcv.vendor.rendercv.schema.rendercv_model_builder import (
+            build_rendercv_dictionary_and_model,
         )
 
-    provider = factory()
-    if not provider.is_configured():
-        instructions = provider.get_setup_instructions()
-        raise AnvilAIProviderError(
-            message=(f"Provider {provider_name} is not configured.\n{instructions}")
+        main_yaml = variant_path.read_text(encoding="utf-8")
+        _, model = build_rendercv_dictionary_and_model(
+            main_yaml,
+            input_file_path=variant_path,
         )
 
-    return provider
+        generate_typst(model)
+        md_path = generate_markdown(model)
+        generate_html(model, md_path)
+        generate_ats_html(model)
+
+        typer.echo(f"Rendered variant outputs alongside {variant_path}")
+    except Exception as e:
+        typer.echo(f"Warning: rendering failed: {e}", err=True)
+
+
+def _score_variant(
+    variant_path: pathlib.Path,
+    job_desc: "JobDescription | None" = None,
+) -> None:
+    """Score a rendered variant against the job description."""
+    typer.echo("Scoring variant...")
+    try:
+        from anvilcv.cli.score_command.score_command import _render_yaml_for_scoring
+        from anvilcv.scoring.ats_scorer import score_document
+
+        scorable = _render_yaml_for_scoring(variant_path)
+        report = score_document(scorable, job=job_desc)
+
+        typer.echo(f"\nVariant ATS Score: {report.overall_score}/100")
+        if report.keyword_match:
+            typer.echo(f"  Keyword match: {report.keyword_match.score}/100")
+            if report.keyword_match.missing:
+                typer.echo(f"  Missing keywords: {', '.join(report.keyword_match.missing[:10])}")
+    except Exception as e:
+        typer.echo(f"Warning: scoring failed: {e}", err=True)

@@ -1,8 +1,9 @@
 """CLI command for `anvil score` — ATS compatibility checker.
 
 Why:
-    `anvil score INPUT` evaluates a resume (PDF or HTML) for ATS compatibility.
+    `anvil score INPUT` evaluates a resume (PDF, HTML, or YAML) for ATS compatibility.
     Outputs a color-coded report to terminal or structured JSON/YAML.
+    If YAML is provided, Anvil renders it first, then scores the output.
 """
 
 from __future__ import annotations
@@ -14,7 +15,7 @@ from typing import Annotated
 import typer
 
 from anvilcv.cli.app import app
-from anvilcv.exceptions import AnvilUserError
+from anvilcv.exceptions import AnvilServiceError, AnvilUserError
 from anvilcv.schema.score_report import ScoreReport
 
 
@@ -23,7 +24,7 @@ def score(
     input_file: Annotated[
         pathlib.Path,
         typer.Argument(
-            help="Resume file to score (PDF or HTML).",
+            help="Resume file to score (PDF, HTML, or YAML).",
             exists=True,
             readable=True,
         ),
@@ -33,7 +34,7 @@ def score(
         typer.Option(
             "--format",
             "-f",
-            help="Output format: text (default) or json.",
+            help="Output format: text (default), json, or yaml.",
         ),
     ] = "text",
     output: Annotated[
@@ -45,11 +46,11 @@ def score(
         ),
     ] = None,
     job: Annotated[
-        pathlib.Path | None,
+        str | None,
         typer.Option(
             "--job",
             "-j",
-            help="Job description file (text or YAML) for keyword matching.",
+            help="Job description: file path, URL, or '-' for stdin.",
         ),
     ] = None,
     verbose: Annotated[
@@ -63,23 +64,33 @@ def score(
 ) -> None:
     """Check ATS compatibility of a resume file.
 
-    Scores a PDF or HTML resume for parsability, structure, and (with --job)
-    keyword match against a job description.
+    Scores a PDF, HTML, or YAML resume for parsability, structure, and (with --job)
+    keyword match against a job description. YAML inputs are rendered first.
     """
     from anvilcv.scoring.ats_scorer import score_document
 
+    # If input is YAML, render it first and score the HTML output
+    scorable_file = input_file
+    if input_file.suffix in (".yaml", ".yml"):
+        scorable_file = _render_yaml_for_scoring(input_file)
+
+    # Parse job description if provided
     job_desc = None
     if job is not None:
-        from anvilcv.tailoring.job_parser import parse_job_from_file
+        from anvilcv.cli.job_input import resolve_job_input
 
         try:
-            job_desc = parse_job_from_file(job)
+            job_desc = resolve_job_input(job)
+        except AnvilServiceError as e:
+            # Per spec: URL errors → warn and continue with structure-only scoring
+            typer.echo(f"Warning: {e}", err=True)
+            typer.echo("Scoring without job keywords.", err=True)
         except AnvilUserError as e:
             typer.echo(f"Error reading job description: {e}", err=True)
             raise typer.Exit(code=1) from None
 
     try:
-        report = score_document(input_file, job=job_desc)
+        report = score_document(scorable_file, job=job_desc)
     except AnvilUserError as e:
         typer.echo(f"Error: {e}", err=True)
         raise typer.Exit(code=1) from None
@@ -92,8 +103,72 @@ def score(
             typer.echo(f"Report written to {output}")
         else:
             typer.echo(json_output)
+    elif format == "yaml":
+        _print_yaml_report(report, output=output)
     else:
         _print_text_report(report, verbose=verbose, output=output)
+
+
+def _render_yaml_for_scoring(yaml_path: pathlib.Path) -> pathlib.Path:
+    """Render a YAML resume and return the path to the ATS HTML output for scoring.
+
+    Why ATS HTML: semantic structure is the most reliable format for text
+    extraction and scoring, better than PDF or styled HTML.
+    """
+    import tempfile
+
+    from anvilcv.vendor.rendercv.renderer.html import generate_ats_html, generate_html
+    from anvilcv.vendor.rendercv.renderer.markdown import generate_markdown
+    from anvilcv.vendor.rendercv.schema.rendercv_model_builder import (
+        build_rendercv_dictionary_and_model,
+    )
+
+    try:
+        main_yaml = yaml_path.read_text(encoding="utf-8")
+        output_dir = pathlib.Path(tempfile.mkdtemp(prefix="anvil_score_"))
+
+        _, model = build_rendercv_dictionary_and_model(
+            main_yaml,
+            input_file_path=yaml_path,
+            output_folder=str(output_dir),
+        )
+
+        # Try ATS HTML first (best for scoring)
+        ats_path = generate_ats_html(model)
+        if ats_path and ats_path.exists():
+            return ats_path
+
+        # Fall back to regular HTML via Markdown
+        md_path = generate_markdown(model)
+        html_path = generate_html(model, md_path)
+        if html_path and html_path.exists():
+            return html_path
+
+        raise AnvilUserError(
+            message=f"Rendering {yaml_path} produced no scorable output."
+        )
+    except AnvilUserError:
+        raise
+    except Exception as e:
+        raise AnvilUserError(
+            message=f"Failed to render {yaml_path} for scoring: {e}"
+        ) from e
+
+
+def _print_yaml_report(
+    report: ScoreReport,
+    output: pathlib.Path | None = None,
+) -> None:
+    """Print a YAML-formatted report."""
+    import yaml  # type: ignore[import-untyped]
+
+    report_dict = report.model_dump(mode="json")
+    yaml_output = yaml.dump(report_dict, default_flow_style=False, sort_keys=False)
+    if output:
+        output.write_text(yaml_output)
+        typer.echo(f"Report written to {output}")
+    else:
+        typer.echo(yaml_output)
 
 
 def _print_text_report(

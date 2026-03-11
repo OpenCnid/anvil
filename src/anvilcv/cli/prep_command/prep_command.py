@@ -1,7 +1,7 @@
 """CLI command for `anvil prep` — generate interview preparation notes.
 
 Why:
-    `anvil prep INPUT --job <path>` reads a resume YAML and job description,
+    `anvil prep INPUT --job <path-or-url>` reads a resume YAML and job description,
     uses AI to generate per-project talking points matched to job requirements,
     and writes Markdown output.
 """
@@ -15,7 +15,6 @@ from typing import Annotated
 import typer
 from ruamel.yaml import YAML
 
-from anvilcv.ai.provider import AIProvider
 from anvilcv.cli.app import app
 from anvilcv.exceptions import AnvilAIProviderError, AnvilUserError
 
@@ -31,12 +30,11 @@ def prep_command(
         ),
     ],
     job: Annotated[
-        pathlib.Path,
+        str,
         typer.Option(
             "--job",
             "-j",
-            help="Job description file (text or YAML).",
-            exists=True,
+            help="Job description: file path, URL, or '-' for stdin.",
         ),
     ],
     provider: Annotated[
@@ -61,13 +59,13 @@ def prep_command(
     Reads your resume and a job description, matches skills and experience,
     then generates structured talking points for each project/experience entry.
     """
-    from anvilcv.tailoring.job_parser import parse_job_from_file
+    from anvilcv.cli.job_input import resolve_job_input
     from anvilcv.tailoring.matcher import match_resume_to_job
 
-    # Parse job description
+    # Parse job description (URL, file, or stdin)
     try:
-        job_desc = parse_job_from_file(job)
-    except AnvilUserError as e:
+        job_desc = resolve_job_input(job)
+    except (AnvilUserError, Exception) as e:
         typer.echo(f"Error reading job description: {e}", err=True)
         raise typer.Exit(code=1) from None
 
@@ -89,7 +87,9 @@ def prep_command(
     )
 
     # Resolve provider
-    provider_instance = _resolve_provider(
+    from anvilcv.cli.provider_resolver import resolve_provider
+
+    provider_instance = resolve_provider(
         provider_name=provider,
         resume_data=resume_data,
     )
@@ -111,47 +111,3 @@ def prep_command(
 
     write_prep_notes(content, output)
     typer.echo(f"Prep notes written to {output}")
-
-
-def _resolve_provider(
-    provider_name: str | None,
-    resume_data: dict,
-) -> AIProvider:
-    """Resolve which AI provider to use."""
-    from anvilcv.ai.anthropic import AnthropicProvider
-    from anvilcv.ai.ollama import OllamaProvider
-    from anvilcv.ai.openai import OpenAIProvider
-
-    anvil_config = resume_data.get("anvil", {})
-    providers_config = anvil_config.get("providers", {})
-
-    if provider_name is None:
-        provider_name = providers_config.get("default", "anthropic")
-
-    provider_map = {
-        "anthropic": lambda: AnthropicProvider(
-            model=providers_config.get("anthropic", {}).get("model"),
-        ),
-        "openai": lambda: OpenAIProvider(
-            model=providers_config.get("openai", {}).get("model"),
-        ),
-        "ollama": lambda: OllamaProvider(
-            model=providers_config.get("ollama", {}).get("model"),
-            base_url=providers_config.get("ollama", {}).get("base_url"),
-        ),
-    }
-
-    factory = provider_map.get(provider_name)
-    if factory is None:
-        raise AnvilUserError(
-            message=(f"Unknown provider: {provider_name}. Supported: anthropic, openai, ollama")
-        )
-
-    provider_instance = factory()
-    if not provider_instance.is_configured():
-        instructions = provider_instance.get_setup_instructions()
-        raise AnvilAIProviderError(
-            message=(f"Provider {provider_name} is not configured.\n{instructions}")
-        )
-
-    return provider_instance
