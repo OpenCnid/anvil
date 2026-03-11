@@ -1,6 +1,6 @@
 # Implementation Plan
 
-Status: **Phase 0 complete. Phase 1 complete. Phase 2 complete. Phase 3 complete. CLI spec compliance pass complete.** All features implemented. All cross-cutting concerns X.1-X.8 complete. X.5 achieved (85% coverage), X.7 achieved (21 corpus files), X.8 implemented (30 golden-set tests: 5 cases × 2 providers × 3 features). 752 tests passing + 30 golden-set tests (skipped without --run-golden). Per-provider prompt registry fully implemented (tailor_bullets, keyword_extraction, cover_letter, interview_prep).
+Status: **Phase 0-3 complete. CLI spec compliance complete (C.1-C.6).** All features implemented. 754 tests passing + 30 golden-set tests (skipped without --run-golden).
 
 **Vendored file key:** Tasks annotate which vendored files they touch.
 - `[Modified]` = change internals of vendored file (4 files total)
@@ -200,16 +200,17 @@ These tasks are prerequisites for all features and must be completed first.
 
 Addressed gaps between implementation and `specs/cli-interface.md` / `specs/composition-pipelines.md`.
 
-- [x] **C.1 Unified job input handling** — Extracted `src/anvilcv/cli/shared/job_input.py` to provide consistent `--job` flag support (file path, URL, stdin via `--job -`) across `score`, `tailor`, `cover`, and `prep` commands. Eliminates duplicated URL-fetch and stdin-read logic.
-- [x] **C.2 Shared provider resolver** — Extracted `src/anvilcv/cli/shared/provider_resolver.py` to centralize `--provider`/`--model` flag resolution and API key validation. Used by `tailor`, `cover`, and `prep` commands.
+- [x] **C.1 Unified job input handling** — Extracted `src/anvilcv/cli/job_input.py` to provide consistent `--job` flag support (file path, URL, stdin via `--job -`) across `score`, `tailor`, `cover`, and `prep` commands. URL fetching uses httpx + readability-lxml with SPA detection.
+- [x] **C.2 Shared provider resolver** — Extracted `src/anvilcv/cli/provider_resolver.py` to centralize `--provider`/`--model` flag resolution and API key validation. Used by `tailor`, `cover`, and `prep` commands.
 - [x] **C.3 Tailor composition flags** — Added `--render` and `--score` flags to `anvil tailor` per `specs/composition-pipelines.md`. `--render` triggers automatic rendering of the generated variant; `--score` runs ATS scoring on the result.
 - [x] **C.4 Cover `--render` flag** — Added `--render` flag stub to `anvil cover` for future P2 Typst template rendering of cover letters.
 - [x] **C.5 Score YAML input and YAML output** — `anvil score` now accepts YAML resume input (auto-renders to HTML, then scores) in addition to PDF/HTML. Added `yaml` as a `--format` option for machine-readable score output.
 
+- [x] **C.6 Render --variant flag** — Wired `anvil render --variant <dir>` to batch variant renderer. Discovers YAML files in directory, renders each into a subfolder. Empty directory exits with code 1.
+
 ### Remaining CLI Spec Gaps
 
-- `anvil render --variant` flag exists but is not connected to the variant renderer (discovery/batch logic in `variant_renderer.py` is not wired to the CLI flag)
-- `anvil render --override KEY=VALUE` not implemented — rendercv uses dot-notation internally, so the spec's `KEY=VALUE` syntax needs an adapter
+- `anvil render --override KEY=VALUE` not implemented — rendercv uses dot-notation internally (e.g., `--cv.phone "..."`)
 - `anvil watch` and `anvil deploy` remain P3 stubs (intentionally deferred)
 
 ---
