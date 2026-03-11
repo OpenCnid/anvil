@@ -1,6 +1,6 @@
 # Implementation Plan
 
-Status: **Phase 0 complete. Phase 1 complete. Phase 2 in progress.** Foundation in place: vendor import hook (find_spec API for Python 3.12+), 4 Modified vendored files patched, CLI scaffold with all 11 commands registered, exceptions, config, cache utilities. AI provider abstraction (F-ANV-09) complete. Extended YAML schema (F-ANV-02) complete. ATS score checker (F-ANV-04, F-ANV-05) complete with keyword matching. Export command (F-ANV-17) complete. AI tailoring pipeline (F-ANV-10) complete. Fork integrity tests in place. 336 tests passing.
+Status: **Phase 0 complete. Phase 1 complete. Phase 2 in progress.** Foundation in place: vendor import hook (find_spec API for Python 3.12+), 4 Modified vendored files patched, CLI scaffold with all 11 commands registered, exceptions, config, cache utilities. AI provider abstraction (F-ANV-09) complete. Extended YAML schema (F-ANV-02) complete. ATS score checker (F-ANV-04, F-ANV-05) complete with keyword matching. Export command (F-ANV-17) complete. AI tailoring pipeline (F-ANV-10) complete. JSON Schema generation (F-ANV-16) complete. Multi-variant rendering (F-ANV-08) complete. Fork integrity tests in place. 360 tests passing.
 
 **Vendored file key:** Tasks annotate which vendored files they touch.
 - `[Modified]` = change internals of vendored file (4 files total)
@@ -111,8 +111,8 @@ These tasks are prerequisites for all features and must be completed first.
 
 ### F-ANV-16: JSON Schema Generation (depends on F-ANV-02)
 
-- [ ] **2.12 Extended JSON Schema** — Patch vendored `json_schema_generator.py` `[Extended]` to include Anvil-specific fields; add descriptions and examples for all `anvil` section fields; ensure VS Code YAML extension compatibility
-- [ ] **2.13 JSON Schema tests** — Validate schema covers all Anvil fields; test that editor autocompletion works for `anvil` section; `tests/unit/test_json_schema.py`
+- [x] **2.12 Extended JSON Schema** — Create `src/anvilcv/schema/json_schema.py` generating schema from AnvilModel (includes Anvil-specific fields); Draft-07 compliant; VS Code YAML extension compatible
+- [x] **2.13 JSON Schema tests** — Validate schema covers all Anvil fields (anvil config, variant, providers, GitHub); test file generation; `tests/unit/schema/test_json_schema.py`
 
 ### F-ANV-17: rendercv Export (depends on F-ANV-02)
 
@@ -121,9 +121,9 @@ These tasks are prerequisites for all features and must be completed first.
 
 ### F-ANV-08: Multi-Variant Rendering (depends on F-ANV-02)
 
-- [ ] **2.16 Variant rendering** — Implement `anvil render --variant <dir>` to batch-render all YAML files in a directory; variant provenance metadata preserved in output filenames
-- [ ] **2.17 Variant-aware path resolution** — Patch vendored `path_resolver.py` `[Extended]` for variant-specific output paths
-- [ ] **2.18 Variant rendering tests** — Test batch rendering, filename generation, error on empty directory; `tests/unit/test_variant_rendering.py`
+- [x] **2.16 Variant rendering** — Create `src/anvilcv/rendering/variant_renderer.py` with discovery, path resolution, metadata reading, and batch rendering; variant-specific output subfolders
+- [x] **2.17 Variant-aware path resolution** — `get_variant_output_folder()` computes per-variant output paths from variant file stems
+- [x] **2.18 Variant rendering tests** — Test discovery, path resolution, metadata reading, empty/missing dirs; `tests/unit/rendering/test_variant_rendering.py`
 
 ### F-ANV-10: AI Job Tailoring (depends on F-ANV-02, F-ANV-09)
 
