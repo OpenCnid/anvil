@@ -4,7 +4,6 @@ import pathlib
 from typing import Literal
 
 import jinja2
-
 from rendercv.schema.models.rendercv_model import RenderCVModel
 
 from .markdown_parser import markdown_to_html
@@ -230,12 +229,12 @@ def render_single_template(
     """
     jinja2_environment = get_jinja2_environment(rendercv_model._input_file_path)
     template = None
-    if file_type == "typst":
-        # Try user's own Typst templates first:
-        with contextlib.suppress(jinja2.TemplateNotFound):
-            template = jinja2_environment.get_template(
-                f"{rendercv_model.design.theme}/{relative_template_path}"
-            )
+    # Try theme-specific templates first (for all formats, not just Typst).
+    # This enables themes like devforge to override markdown and HTML templates.
+    with contextlib.suppress(jinja2.TemplateNotFound):
+        template = jinja2_environment.get_template(
+            f"{rendercv_model.design.theme}/{relative_template_path}"
+        )
 
     if template is None:
         template = jinja2_environment.get_template(

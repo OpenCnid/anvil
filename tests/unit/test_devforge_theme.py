@@ -282,3 +282,82 @@ class TestMarkdownGeneration:
         md = render_full_template(model, "markdown")
         assert "TechCorp" in md
         assert "MIT" in md
+
+    def test_markdown_uses_devforge_header(self, devforge_yaml: pathlib.Path):
+        """Devforge Header.j2.md uses '# Name's CV' format."""
+        from anvilcv.vendor.rendercv.renderer.templater.templater import (
+            render_full_template,
+        )
+
+        model = _build_model(devforge_yaml)
+        md = render_full_template(model, "markdown")
+        assert "# Test Developer's CV" in md
+
+    def test_markdown_uses_devforge_section_headings(
+        self, devforge_yaml: pathlib.Path
+    ):
+        """Devforge SectionBeginning.j2.md uses '# title' (h1) not '## title'."""
+        from anvilcv.vendor.rendercv.renderer.templater.templater import (
+            render_full_template,
+        )
+
+        model = _build_model(devforge_yaml)
+        md = render_full_template(model, "markdown")
+        # Section titles should be h1 in devforge
+        assert "\n# Experience" in md or md.startswith("# Experience")
+
+
+# ---------------------------------------------------------------------------
+# Tests: HTML generation (Full.html template)
+# ---------------------------------------------------------------------------
+
+
+class TestHtmlGeneration:
+    """Test that devforge HTML uses the devforge Full.html template."""
+
+    def test_generates_html(self, devforge_yaml: pathlib.Path):
+        from anvilcv.vendor.rendercv.renderer.templater.templater import (
+            render_full_template,
+            render_html,
+        )
+
+        model = _build_model(devforge_yaml)
+        md = render_full_template(model, "markdown")
+        html = render_html(model, md)
+        assert html is not None
+        assert "<!DOCTYPE html>" in html
+
+    def test_html_uses_devforge_css_vars(self, devforge_yaml: pathlib.Path):
+        """Devforge Full.html uses CSS custom properties like --accent-primary."""
+        from anvilcv.vendor.rendercv.renderer.templater.templater import (
+            render_full_template,
+            render_html,
+        )
+
+        model = _build_model(devforge_yaml)
+        md = render_full_template(model, "markdown")
+        html = render_html(model, md)
+        assert "--accent-primary" in html
+        assert "--chip-bg" in html
+
+    def test_html_contains_name(self, devforge_yaml: pathlib.Path):
+        from anvilcv.vendor.rendercv.renderer.templater.templater import (
+            render_full_template,
+            render_html,
+        )
+
+        model = _build_model(devforge_yaml)
+        md = render_full_template(model, "markdown")
+        html = render_html(model, md)
+        assert "Test Developer" in html
+
+    def test_html_has_print_styles(self, devforge_yaml: pathlib.Path):
+        from anvilcv.vendor.rendercv.renderer.templater.templater import (
+            render_full_template,
+            render_html,
+        )
+
+        model = _build_model(devforge_yaml)
+        md = render_full_template(model, "markdown")
+        html = render_html(model, md)
+        assert "@media print" in html
