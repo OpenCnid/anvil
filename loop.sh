@@ -59,11 +59,13 @@ while true; do
         --model opus \
         --verbose
 
-    # Push changes after each iteration
-    git push origin "$CURRENT_BRANCH" || {
-        echo "Failed to push. Creating remote branch..."
-        git push -u origin "$CURRENT_BRANCH"
-    }
+    # Push changes after each iteration (skip if no remote configured)
+    if git remote | grep -q origin; then
+        git push origin "$CURRENT_BRANCH" || {
+            echo "Failed to push. Creating remote branch..."
+            git push -u origin "$CURRENT_BRANCH"
+        }
+    fi
 
     ITERATION=$((ITERATION + 1))
     echo -e "\n\n======================== LOOP $ITERATION ========================\n"
