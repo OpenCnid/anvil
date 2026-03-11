@@ -44,3 +44,13 @@ Run these after implementing to get immediate feedback:
 - Typer for CLI commands
 - Jinja2 templates for rendering (Typst, Markdown, HTML)
 - `src/anvilcv/vendor/rendercv/` is the vendored upstream — treat as read-only unless spec says otherwise
+
+### Theme Template Lookup
+
+- `render_single_template()` in `templater.py` tries `{theme_name}/{template_path}` first, then `{file_type}/{template_path}` — works for ALL formats (Typst, Markdown, HTML)
+- Theme templates go in `src/anvilcv/themes/{theme_name}/` (NOT in the vendor tree)
+- Devforge theme: model at `themes/devforge/theme.py`, Typst templates in `themes/devforge/entries/*.j2.typ`, Markdown templates in `themes/devforge/*.j2.md` and `entries/*.j2.md`, HTML template at `themes/devforge/Full.html`
+
+### Extended Vendored Files
+
+When extending a vendored file: (1) add to MODIFIED_FILES in `tests/integration/test_fork_integrity.py`, (2) add entry in `patches/README.md`, (3) run `ruff check --fix` on the file (import sorting frequently breaks)
