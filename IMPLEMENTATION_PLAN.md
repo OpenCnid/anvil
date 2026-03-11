@@ -1,6 +1,6 @@
 # Implementation Plan
 
-Status: **Phase 0 complete. Phase 1 in progress.** Foundation in place: vendor import hook (find_spec API for Python 3.12+), 4 Modified vendored files patched, CLI scaffold with all 11 commands registered, exceptions, config, cache utilities. AI provider abstraction (F-ANV-09) complete. Fork integrity tests in place. 199 tests passing.
+Status: **Phase 0 complete. Phase 1 in progress.** Foundation in place: vendor import hook (find_spec API for Python 3.12+), 4 Modified vendored files patched, CLI scaffold with all 11 commands registered, exceptions, config, cache utilities. AI provider abstraction (F-ANV-09) complete. Extended YAML schema (F-ANV-02) complete. Fork integrity tests in place. 228 tests passing.
 
 **Vendored file key:** Tasks annotate which vendored files they touch.
 - `[Modified]` = change internals of vendored file (4 files total)
@@ -34,9 +34,9 @@ These tasks are prerequisites for all features and must be completed first.
 
 ### F-ANV-03: CLI Scaffold (no dependencies)
 
-- [ ] **1.1 Create `src/anvilcv/cli/app.py`** — Anvil Typer app with global `--version` and `--help`; register subcommands: `render`, `new`, `score`, `tailor`, `scan`, `prep`, `cover`, `watch`, `deploy`, `export`
-- [ ] **1.2 Wire render command** — `anvil render` delegates to vendored `rendercv` render pipeline via `anvilcv.vendor.rendercv.cli.render_command`; verify identical behavior to `rendercv render`
-- [ ] **1.3 Wire new command** — `anvil new` delegates to vendored `new_command` with Anvil extensions (`--theme devforge`, `--rendercv-compat` flag to output pure rendercv YAML without `anvil` section)
+- [x] **1.1 Create `src/anvilcv/cli/app.py`** — Anvil Typer app with global `--version` and `--help`; register subcommands: `render`, `new`, `score`, `tailor`, `scan`, `prep`, `cover`, `watch`, `deploy`, `export`
+- [x] **1.2 Wire render command** — `anvil render` delegates to vendored `rendercv` render pipeline via `anvilcv.vendor.rendercv.cli.render_command`; verify identical behavior to `rendercv render`
+- [x] **1.3 Wire new command** — `anvil new` delegates to vendored `new_command` with Anvil extensions (`--theme devforge`, `--rendercv-compat` flag to output pure rendercv YAML without `anvil` section)
 - [x] **1.4 Stub remaining subcommands** — Each subcommand (`score`, `tailor`, `scan`, `prep`, `cover`, `watch`, `deploy`, `export`) prints "Not yet implemented" with exit code 0; ensures `anvil --help` lists all commands and each has `--help`
 - [ ] **1.5 Tests for CLI scaffold** — Test `--help` output, `--version`, exit codes, and that `render` delegates correctly; add to `tests/unit/cli/test_cli.py`
 
@@ -60,14 +60,14 @@ These tasks are prerequisites for all features and must be completed first.
 
 ### F-ANV-02: Extended YAML Schema (depends on F-ANV-01)
 
-- [ ] **1.18 AnvilModel** — Create `src/anvilcv/schema/anvil_model.py` extending `RenderCVModel` with optional `anvil` field; subclass from `anvilcv.vendor.rendercv.schema.models.rendercv_model.RenderCVModel`; the `anvil` field is an `AnvilConfig` Pydantic model
-- [ ] **1.19 AnvilConfig model** — Create `src/anvilcv/schema/anvil_config.py` with Pydantic models for `providers`, `github`, `variants`, `deploy` sections per `specs/data-model.md`
-- [ ] **1.20 Job description model** — Create `src/anvilcv/schema/job_description.py` with `JobDescription` Pydantic model (title, company, URL, requirements list, raw_text)
-- [ ] **1.21 Variant model** — Create `src/anvilcv/schema/variant.py` with provenance metadata (source, job, created_at, provider, model, changes list)
-- [ ] **1.22 GitHub profile model** — Create `src/anvilcv/schema/github_profile.py` with repo metadata (name, description, url, stars, forks, languages, topics, commits, has_tests, has_ci, license)
-- [ ] **1.23 Score report model** — Create `src/anvilcv/schema/score_report.py` with overall_score (0-100), parsability, structure, keyword_match sections, recommendations list
-- [ ] **1.24 Model builder wrapper** — Create `src/anvilcv/schema/model_builder.py` — adapter that wraps vendored `rendercv_model_builder.py` `[Wrapped]` to build `AnvilModel` from YAML; parses and validates the `anvil` section; passes everything else through to vendored builder unchanged
-- [ ] **1.25 Schema validation tests** — Test that rendercv YAML without `anvil` validates identically to rendercv; test `anvil` section validation; test unknown field rejection; test clear error messages; `tests/unit/schema/test_schema.py`
+- [x] **1.18 AnvilModel** — Create `src/anvilcv/schema/anvil_model.py` extending `RenderCVModel` with optional `anvil` field; subclass from `anvilcv.vendor.rendercv.schema.models.rendercv_model.RenderCVModel`; the `anvil` field is an `AnvilConfig` Pydantic model
+- [x] **1.19 AnvilConfig model** — Create `src/anvilcv/schema/anvil_config.py` with Pydantic models for `providers`, `github`, `variants`, `deploy` sections per `specs/data-model.md`
+- [x] **1.20 Job description model** — Create `src/anvilcv/schema/job_description.py` with `JobDescription` Pydantic model (title, company, URL, requirements list, raw_text)
+- [x] **1.21 Variant model** — Create `src/anvilcv/schema/variant.py` with provenance metadata (source, job, created_at, provider, model, changes list)
+- [x] **1.22 GitHub profile model** — Create `src/anvilcv/schema/github_profile.py` with repo metadata (name, description, url, stars, forks, languages, topics, commits, has_tests, has_ci, license)
+- [x] **1.23 Score report model** — Create `src/anvilcv/schema/score_report.py` with overall_score (0-100), parsability, structure, keyword_match sections, recommendations list
+- [x] **1.24 Model builder wrapper** — Create `src/anvilcv/schema/model_builder.py` — adapter that wraps vendored `rendercv_model_builder.py` `[Wrapped]` to build `AnvilModel` from YAML; parses and validates the `anvil` section; passes everything else through to vendored builder unchanged
+- [x] **1.25 Schema validation tests** — Test that rendercv YAML without `anvil` validates identically to rendercv; test `anvil` section validation; test unknown field rejection; test clear error messages; `tests/unit/schema/test_schema.py`
 
 ### F-ANV-04: ATS Score Checker (depends on F-ANV-01)
 
