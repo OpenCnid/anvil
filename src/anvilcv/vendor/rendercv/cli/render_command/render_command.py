@@ -166,6 +166,13 @@ def cli_command_render(
             help="If provided, the PNG file will not be generated.",
         ),
     ] = None,
+    no_ats_html: Annotated[
+        bool,
+        typer.Option(
+            "--no-ats-html",
+            help="If provided, ATS-optimized semantic HTML will not be generated.",
+        ),
+    ] = False,
     watch: Annotated[
         bool | None,
         typer.Option(
@@ -227,7 +234,17 @@ def cli_command_render(
                         input_file_path, design, locale, settings
                     ).values()
                 ),
-                lambda: run_rendercv(input_file_path, progress_panel, **arguments),
+                lambda: run_rendercv(
+                    input_file_path,
+                    progress_panel,
+                    dont_generate_ats_html=no_ats_html,
+                    **arguments,
+                ),
             )
         else:
-            run_rendercv(input_file_path, progress_panel, **arguments)
+            run_rendercv(
+                input_file_path,
+                progress_panel,
+                dont_generate_ats_html=no_ats_html,
+                **arguments,
+            )

@@ -7,7 +7,7 @@ from typing import Literal, Unpack
 import jinja2
 
 from rendercv.exception import RenderCVUserError, RenderCVUserValidationError
-from rendercv.renderer.html import generate_html
+from rendercv.renderer.html import generate_ats_html, generate_html
 from rendercv.renderer.markdown import generate_markdown
 from rendercv.renderer.pdf_png import generate_pdf, generate_png
 from rendercv.renderer.typst import generate_typst
@@ -127,6 +127,7 @@ def collect_input_file_paths(
 def run_rendercv(
     input_file_path: pathlib.Path,
     progress: ProgressPanel,
+    dont_generate_ats_html: bool = False,
     **kwargs: Unpack[BuildRendercvModelArguments],
 ):
     """Execute complete CV generation pipeline with progress tracking and error handling.
@@ -134,6 +135,7 @@ def run_rendercv(
     Args:
         input_file_path: Path to the main YAML input file.
         progress: Progress panel for output display.
+        dont_generate_ats_html: If True, skip ATS HTML generation.
         kwargs: Optional YAML overlay strings, output paths, and generation flags.
     """
     try:
@@ -179,6 +181,13 @@ def run_rendercv(
             generate_html,
             rendercv_model,
             md_path,
+        )
+        timed_step(
+            "Generated ATS HTML",
+            progress,
+            generate_ats_html,
+            rendercv_model,
+            dont_generate_ats_html,
         )
         progress.finish_progress()
     except RenderCVUserError as e:

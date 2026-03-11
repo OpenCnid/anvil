@@ -156,6 +156,37 @@ def render_html(rendercv_model: RenderCVModel, markdown: str) -> str:
     )
 
 
+def render_ats_html(rendercv_model: RenderCVModel) -> str:
+    """Render ATS-optimized semantic HTML from CV model.
+
+    Why:
+        ATS systems need semantic HTML with all text in the DOM. Standard HTML
+        is derived from Markdown and optimized for visual presentation. This
+        bridges the RenderCVModel to Anvil's semantic ATS HTML renderer which
+        uses <section>, <article>, <h1>-<h3> elements.
+
+    Args:
+        rendercv_model: CV model to render.
+
+    Returns:
+        Complete ATS-optimized HTML5 document string.
+    """
+    from anvilcv.renderer.ats_html import render_ats_html as _ats_render
+
+    cv_data = rendercv_model.cv.model_dump()
+
+    # Extract linkedin/github from social_networks into top-level keys
+    # so the ATS renderer can display them in the header contact info.
+    for sn in cv_data.get("social_networks") or []:
+        network = sn.get("network", "").lower()
+        if network == "linkedin":
+            cv_data.setdefault("linkedin", sn.get("username", ""))
+        elif network == "github":
+            cv_data.setdefault("github", sn.get("username", ""))
+
+    return _ats_render(cv_data)
+
+
 def render_single_template(
     file_type: Literal["markdown", "typst", "html"],
     relative_template_path: str,

@@ -3,11 +3,8 @@
 Ensures that all vendored files which are supposed to remain untouched are
 byte-for-byte identical to the upstream baseline (rendercv v2.7).
 
-Files that have been intentionally *Modified* in the fork are skipped:
-  - __init__.py  (top-level)
-  - __main__.py  (top-level)
-  - cli/entry_point.py
-  - cli/app.py
+Files that have been intentionally *Modified* or *Extended* in the fork are
+skipped — see specs/architecture.md module inventory for classifications.
 """
 
 from __future__ import annotations
@@ -25,16 +22,23 @@ _BASELINE_DIR = _REPO_ROOT / "baseline" / "rendercv-v2.7"
 _VENDOR_DIR = _REPO_ROOT / "src" / "anvilcv" / "vendor" / "rendercv"
 
 # ---------------------------------------------------------------------------
-# Modified files — these are intentionally changed and must NOT be checked.
+# Intentionally changed files — Modified or Extended per specs/architecture.md.
+# These are NOT checked against the baseline.
 # Paths are relative to the rendercv root (both baseline and vendor).
 # ---------------------------------------------------------------------------
 
 MODIFIED_FILES: frozenset[str] = frozenset(
     {
+        # Modified (4) — internals changed
         "__init__.py",
         "__main__.py",
         "cli/entry_point.py",
         "cli/app.py",
+        # Extended — functionality added
+        "cli/render_command/render_command.py",
+        "cli/render_command/run_rendercv.py",
+        "renderer/html.py",
+        "renderer/templater/templater.py",
     }
 )
 
