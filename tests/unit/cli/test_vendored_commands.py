@@ -93,9 +93,12 @@ def test_render_override_multiple_values():
     result = runner.invoke(
         app,
         [
-            "render", "nonexistent.yaml",
-            "--override", "design.theme=devforge",
-            "--override", "cv.name=Jane Doe",
+            "render",
+            "nonexistent.yaml",
+            "--override",
+            "design.theme=devforge",
+            "--override",
+            "cv.name=Jane Doe",
         ],
     )
     assert "Invalid --override format" not in result.output

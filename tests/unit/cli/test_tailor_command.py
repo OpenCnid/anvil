@@ -359,9 +359,7 @@ class TestTailorAutoOutputPath:
         mock_rewrite.return_value = [{"path": "experience.0.highlights.0", "new": "Improved"}]
         mock_write.return_value = tmp_path / "variant.yaml"
 
-        result = runner.invoke(
-            app, ["tailor", str(resume), "--job", str(job)]
-        )
+        result = runner.invoke(app, ["tailor", str(resume), "--job", str(job)])
         assert result.exit_code == 0
         # Verify write_variant was called with an auto-generated path
         call_kwargs = mock_write.call_args
@@ -404,9 +402,7 @@ class TestRenderVariantHelper:
         mock_html.assert_called_once()
         mock_ats.assert_called_once()
 
-    def test_render_variant_handles_exception(
-        self, tmp_path: pathlib.Path, capsys
-    ) -> None:
+    def test_render_variant_handles_exception(self, tmp_path: pathlib.Path, capsys) -> None:
         from anvilcv.cli.tailor_command.tailor_command import _render_variant
 
         variant = tmp_path / "variant.yaml"

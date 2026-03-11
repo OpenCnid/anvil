@@ -112,9 +112,7 @@ class TestGenerateWithRetry:
         response = GenerationResponse(content="good", model="m", provider="p")
         gen_fn = AsyncMock(return_value=response)
 
-        result = asyncio.run(
-            generate_with_retry(gen_fn, self._make_request(), "anthropic")
-        )
+        result = asyncio.run(generate_with_retry(gen_fn, self._make_request(), "anthropic"))
         assert result.content == "good"
         assert gen_fn.call_count == 1
 
@@ -211,9 +209,7 @@ class TestGenerateWithRetry:
 
     def test_ai_provider_error_not_retried(self):
         """AnvilAIProviderError (auth/rate-limit) should NOT be retried (line 118-119)."""
-        gen_fn = AsyncMock(
-            side_effect=AnvilAIProviderError(message="rate limited")
-        )
+        gen_fn = AsyncMock(side_effect=AnvilAIProviderError(message="rate limited"))
 
         with pytest.raises(AnvilAIProviderError, match="rate limited"):
             asyncio.run(
