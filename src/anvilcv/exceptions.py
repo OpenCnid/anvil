@@ -21,6 +21,9 @@ class AnvilError(Exception):
     message: str
     exit_code: int = 1
 
+    def __str__(self) -> str:
+        return self.message
+
 
 @dataclass
 class AnvilUserError(AnvilError):

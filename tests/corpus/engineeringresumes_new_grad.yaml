@@ -1,0 +1,93 @@
+cv:
+  name: Émilie Zhao-Petersen
+  location: Boston, MA
+  email: emilie.zp@example.com
+  website: https://emiliezp.com
+  social_networks:
+    - network: GitHub
+      username: emilie-zp
+    - network: LinkedIn
+      username: emiliezhaopetersen
+  sections:
+    education:
+      - institution: Massachusetts Institute of Technology
+        area: Electrical Engineering & Computer Science
+        degree: MEng
+        start_date: 2023-09
+        end_date: 2024-06
+        location: Cambridge, MA
+        highlights:
+          - "Concentration: Systems & Networking"
+          - "Thesis: Verifiable Computation on Untrusted Edge Nodes"
+      - institution: Massachusetts Institute of Technology
+        area: Computer Science with minor in Mathematics
+        degree: SB
+        start_date: 2019-09
+        end_date: 2023-06
+        location: Cambridge, MA
+        highlights:
+          - "GPA: 4.9/5.0"
+          - "Relevant coursework: 6.824 Distributed Systems, 6.858 Computer Security, 6.854 Advanced Algorithms, 18.065 Matrix Methods"
+          - "Activities: MIT Competitive Programming Club (ICPC NAC qualifier 2022), HackMIT organizer"
+    experience:
+      - company: Jane Street Capital
+        position: Software Engineering Intern
+        start_date: 2023-06
+        end_date: 2023-08
+        location: New York, NY
+        highlights:
+          - Built real-time market data reconciliation system in OCaml processing 50K messages/sec
+          - "Reduced trade booking discrepancies by 94% (from ~300/day to <20/day)"
+      - company: Meta Platforms
+        position: Production Engineering Intern
+        start_date: 2022-05
+        end_date: 2022-08
+        location: Menlo Park, CA
+        highlights:
+          - Developed automated capacity planning tool for Messenger infrastructure
+          - Tool saved an estimated $2.1M/year in over-provisioned compute resources
+          - Open-sourced internal monitoring library (now 1,800+ GitHub stars)
+      - company: "Acme Robotics (YC S21)"
+        position: Software Engineering Intern
+        start_date: 2021-06
+        end_date: 2021-08
+        location: San Francisco, CA
+        highlights:
+          - Implemented ROS 2 node for LiDAR-camera sensor fusion on delivery robots
+          - Reduced obstacle detection latency from 120ms to 35ms using custom CUDA kernels
+    projects:
+      - name: "[zkEdge](https://github.com/emilie-zp/zkedge)"
+        start_date: 2024-01
+        end_date: 2024-05
+        summary: Zero-knowledge proof system for verifiable edge computation
+        highlights:
+          - Proof generation in <200ms for typical inference workloads
+          - "Presented at MIT CSAIL Systems Lunch (April 2024)"
+      - name: "raftdb"
+        start_date: 2022-09
+        end_date: 2022-12
+        summary: Distributed key-value store implementing Raft consensus (6.824 course project)
+        highlights:
+          - Implemented log compaction, membership changes, and linearizable reads
+          - "Passed all 500+ stress tests with 0 failures"
+      - name: "[linalg.h](https://github.com/emilie-zp/linalg-h)"
+        date: "2021"
+        summary: Header-only C++ linear algebra library with SIMD intrinsics
+        highlights:
+          - "2x–4x speedup over Eigen for small fixed-size matrices (2×2 through 8×8)"
+          - 1,400+ GitHub stars
+    skills:
+      - label: Languages
+        details: "C++, OCaml, Rust, Python, Go, SystemVerilog"
+      - label: Tools & Frameworks
+        details: "Linux, Docker, LLVM, CUDA, gRPC, React"
+      - label: Areas
+        details: "Distributed systems, compilers, computer security, zero-knowledge proofs"
+    honors:
+      - bullet: "ICPC North American Championship qualifier (2022)"
+      - bullet: "MIT EECS Outstanding MEng Thesis Award (2024)"
+      - bullet: "HackMIT — 1st place, Infrastructure Track (2021)"
+      - bullet: "National Merit Scholar (2019)"
+      - bullet: "USACO Platinum Division (2018)"
+design:
+  theme: engineeringresumes

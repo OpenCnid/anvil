@@ -1,6 +1,6 @@
 # Implementation Plan
 
-Status: **Phase 0 complete.** Foundation in place: vendor import hook (find_spec API for Python 3.12+), 4 Modified vendored files patched, CLI scaffold with all 11 commands registered, exceptions, config, cache utilities, 42 tests passing.
+Status: **Phase 0 complete. Phase 1 in progress.** Foundation in place: vendor import hook (find_spec API for Python 3.12+), 4 Modified vendored files patched, CLI scaffold with all 11 commands registered, exceptions, config, cache utilities. AI provider abstraction (F-ANV-09) complete. Fork integrity tests in place. 199 tests passing.
 
 **Vendored file key:** Tasks annotate which vendored files they touch.
 - `[Modified]` = change internals of vendored file (4 files total)
@@ -45,18 +45,18 @@ These tasks are prerequisites for all features and must be completed first.
 - [ ] **1.6 Verify vendored render pipeline** — Ensure `anvil render <rendercv-yaml>` produces byte-identical Typst/Markdown/HTML to `rendercv render` for the same input; this validates the vendor + import path setup
 - [ ] **1.7 Build compatibility corpus** — Collect ≥20 rendercv YAML files (5 built-in themes × all entry types, edge cases per `specs/testing-strategy.md`); place in `tests/corpus/`
 - [ ] **1.8 Compatibility corpus tests** — Automated tests comparing `anvil render` output against baseline rendercv output; compare Typst, Markdown, HTML (NOT PDF/PNG per spec — binary outputs are non-deterministic); place in `tests/integration/rendering/test_compatibility.py`
-- [ ] **1.9 Fork integrity CI check** — Script that compares all "Untouched" vendored files in `src/anvilcv/vendor/rendercv/` against `baseline/rendercv-v2.7/`; any diff fails the check; place in `tests/integration/test_fork_integrity.py`
+- [x] **1.9 Fork integrity CI check** — Script that compares all "Untouched" vendored files in `src/anvilcv/vendor/rendercv/` against `baseline/rendercv-v2.7/`; any diff fails the check; place in `tests/integration/test_fork_integrity.py`
 
 ### F-ANV-09: AI Provider Abstraction (no dependencies — can parallel with F-ANV-03, F-ANV-01)
 
-- [ ] **1.10 Provider interface** — Create `src/anvilcv/ai/provider.py` with abstract base class: `AIProvider`, `ProviderCapabilities`, `GenerationRequest`, `GenerationResponse` dataclasses per `specs/ai-provider-abstraction.md`; include `is_configured()` and `get_setup_instructions()` methods
-- [ ] **1.11 Anthropic provider** — Create `src/anvilcv/ai/anthropic.py` implementing `AIProvider`; XML-structured prompts; separate system message; claude-sonnet-4-20250514 default; tier-dependent rate limits
-- [ ] **1.12 OpenAI provider** — Create `src/anvilcv/ai/openai.py`; native JSON mode; separate system message; gpt-4o default
-- [ ] **1.13 Ollama provider** — Create `src/anvilcv/ai/ollama.py`; llama3.1:8b/70b tested set; others accepted with warning; smaller context window (8K for small models); no auth; local only
-- [ ] **1.14 Token budget calculator** — Create `src/anvilcv/ai/token_budget.py` per spec: allocate system overhead + few-shot examples + output reserve; truncate job description before resume; explicit error if resume alone exceeds budget
-- [ ] **1.15 Output parser** — Create `src/anvilcv/ai/output_parser.py` — validate AI responses against expected schema; retry logic (1-3 times with same prompt); save raw failures to `.anvil/debug/` for debugging
-- [ ] **1.16 Prompt registry skeleton** — Create `src/anvilcv/ai/prompts/` directory structure with task subdirs (`tailor_bullets/`, `cover_letter/`, `interview_prep/`, `keyword_extraction/`); each task dir contains per-provider prompt files (`anthropic.py`, `openai.py`, `ollama.py`)
-- [ ] **1.17 Provider tests** — Unit tests with mocked API responses for all 3 providers; test error handling (missing key, rate limit, malformed response, network failure, context overflow); `tests/unit/ai/test_providers.py`
+- [x] **1.10 Provider interface** — Create `src/anvilcv/ai/provider.py` with abstract base class: `AIProvider`, `ProviderCapabilities`, `GenerationRequest`, `GenerationResponse` dataclasses per `specs/ai-provider-abstraction.md`; include `is_configured()` and `get_setup_instructions()` methods
+- [x] **1.11 Anthropic provider** — Create `src/anvilcv/ai/anthropic.py` implementing `AIProvider`; XML-structured prompts; separate system message; claude-sonnet-4-20250514 default; tier-dependent rate limits
+- [x] **1.12 OpenAI provider** — Create `src/anvilcv/ai/openai.py`; native JSON mode; separate system message; gpt-4o default
+- [x] **1.13 Ollama provider** — Create `src/anvilcv/ai/ollama.py`; llama3.1:8b/70b tested set; others accepted with warning; smaller context window (8K for small models); no auth; local only
+- [x] **1.14 Token budget calculator** — Create `src/anvilcv/ai/token_budget.py` per spec: allocate system overhead + few-shot examples + output reserve; truncate job description before resume; explicit error if resume alone exceeds budget
+- [x] **1.15 Output parser** — Create `src/anvilcv/ai/output_parser.py` — validate AI responses against expected schema; retry logic (1-3 times with same prompt); save raw failures to `.anvil/debug/` for debugging
+- [x] **1.16 Prompt registry skeleton** — Create `src/anvilcv/ai/prompts/` directory structure with task subdirs (`tailor_bullets/`, `cover_letter/`, `interview_prep/`, `keyword_extraction/`); each task dir contains per-provider prompt files (`anthropic.py`, `openai.py`, `ollama.py`)
+- [x] **1.17 Provider tests** — Unit tests with mocked API responses for all 3 providers; test error handling (missing key, rate limit, malformed response, network failure, context overflow); `tests/unit/ai/test_providers.py`
 
 ### F-ANV-02: Extended YAML Schema (depends on F-ANV-01)
 
@@ -179,6 +179,20 @@ These tasks are prerequisites for all features and must be completed first.
 ## Missing Specifications (Must Author Before Implementation)
 
 - [ ] **S.1 `specs/devforge-theme.md`** — Detailed visual design spec for the devforge theme. Required by F-ANV-07 success criteria: "Design mockup or detailed design spec must precede implementation." Must define: layout grid, typography (font family, sizes, weights), color palette, skill chip rendering, project metadata line format, section header styling, spacing system, and responsive behavior for HTML output.
+
+---
+
+## Implementation Notes
+
+### Vendored Import Resolution
+- Python 3.12+ no longer calls `find_module` on meta-path finders; must use `find_spec`/`exec_module` API
+- The `_VendorImporter` in `anvilcv/__init__.py` transparently redirects `rendercv.*` → `anvilcv.vendor.rendercv.*`
+- This preserves all Untouched vendored files without rewriting their imports
+
+### Missing Dependencies Discovered
+- pyproject.toml was missing rendercv's transitive deps: `pydantic[email]`, `pydantic-extra-types`, `phonenumbers`, `markdown`, `annotated-doc`, `rendercv-fonts`, `packaging`
+- These have been added to `dependencies` in pyproject.toml
+- `ruff` config now excludes `src/anvilcv/vendor/` to avoid lint noise from vendored code
 
 ---
 

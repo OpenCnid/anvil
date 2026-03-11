@@ -1,0 +1,92 @@
+cv:
+  name: Rajesh Krishnamurthy
+  location: Bengaluru, India
+  email: rajesh.k@example.com
+  phone: "+91 98765 43210"
+  website: https://rajeshk.dev
+  social_networks:
+    - network: GitHub
+      username: rajeshk-dev
+    - network: LinkedIn
+      username: rajeshkrishnamurthy
+    - network: StackOverflow
+      username: "12345678/rajeshk"
+  sections:
+    education:
+      - institution: Indian Institute of Technology Bombay
+        area: Computer Science & Engineering
+        degree: BTech
+        start_date: 2012-07
+        end_date: 2016-05
+        location: Mumbai, India
+        highlights:
+          - "CPI: 9.2/10.0 (Department Rank 3)"
+          - "Institute Technical Council, General Secretary (2015–2016)"
+    experience:
+      - company: Flipkart (Walmart Group)
+        position: Principal Engineer
+        start_date: 2023-01
+        end_date: present
+        location: Bengaluru, India
+        highlights:
+          - Architected event-driven order management system processing 2M+ orders/day during Big Billion Days
+          - "Reduced checkout latency by 62% (p99: 1.2s → 450ms) via distributed caching layer"
+          - Led migration of 40+ microservices from monolith, achieving zero-downtime deployment
+          - "Mentored 8 engineers; established code review guidelines adopted org-wide"
+      - company: Amazon
+        position: Senior SDE (SDE III)
+        start_date: 2019-06
+        end_date: 2022-12
+        location: Hyderabad, India
+        summary: Core member of the Alexa Smart Home platform team.
+        highlights:
+          - Designed device-cloud sync protocol supporting 300M+ connected devices
+          - Built ML-based anomaly detection pipeline reducing false alerts by 73%
+          - Received 2 Bar Raiser certifications for hiring excellence
+      - company: Microsoft
+        position: Software Engineer (SDE II)
+        start_date: 2016-07
+        end_date: 2019-05
+        location: Hyderabad, India
+        highlights:
+          - Contributed to Azure Cosmos DB global distribution engine
+          - Implemented conflict resolution for multi-master writes with <1ms overhead
+          - Filed patent on adaptive consistency-level selection algorithm
+    projects:
+      - name: "[kv-store-rs](https://github.com/rajeshk-dev/kv-store-rs)"
+        start_date: 2023-06
+        end_date: present
+        summary: Embedded key-value store in Rust with LSM-tree architecture
+        highlights:
+          - "Benchmarks: 1.2M point reads/sec, 800K writes/sec on commodity hardware"
+          - B+ tree index with bloom filters achieving <0.1% false positive rate
+      - name: "loadtest-toolkit"
+        date: "2021"
+        summary: Distributed HTTP load testing framework with real-time dashboards
+        highlights:
+          - Generates up to 500K RPS from a single orchestrator node
+          - Used internally at Amazon for pre-launch stress testing
+      - name: "iitb-thesis-template"
+        date: "2016"
+        summary: "LaTeX thesis template for IIT Bombay — 1,200+ forks on GitHub"
+    skills:
+      - label: Languages
+        details: "Java, Rust, Go, Python, TypeScript, C++"
+      - label: Databases
+        details: "PostgreSQL, DynamoDB, Redis, Cassandra, Elasticsearch"
+      - label: Cloud & DevOps
+        details: "AWS (certified SA-Pro), Kubernetes, Terraform, Datadog, Kafka"
+      - label: Concepts
+        details: "Distributed systems, event sourcing, CQRS, domain-driven design"
+    certifications:
+      - bullet: "AWS Certified Solutions Architect — Professional (2022)"
+      - bullet: "Certified Kubernetes Administrator (CKA, 2021)"
+      - bullet: "Google Cloud Professional Data Engineer (2020)"
+    patents:
+      - number: "Adaptive Consistency Level Selection for Distributed Databases (US Patent App. 16/789,012)"
+    open_source_contributions:
+      - bullet: "**Apache Kafka** — Contributed KIP-500 broker self-management patches (2020)"
+      - bullet: "**Tokio (Rust)** — Fixed work-stealing scheduler fairness bug (#3456)"
+      - bullet: "**RustCrypto** — Added AES-GCM-SIV implementation, merged to main"
+design:
+  theme: sb2nov

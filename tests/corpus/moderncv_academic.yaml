@@ -1,0 +1,132 @@
+cv:
+  name: "Dr. Yuki Tanaka-Hernández"
+  headline: Assistant Professor of Computational Linguistics
+  location: "Montréal, Québec, Canada"
+  email: yuki.tanaka@mcgill.ca
+  website: https://www.cs.mcgill.ca/~ytanaka/
+  social_networks:
+    - network: Google Scholar
+      username: abc123XYZ
+    - network: ORCID
+      username: "0000-0002-1234-5678"
+    - network: GitHub
+      username: yukitanaka
+  sections:
+    research_interests:
+      - "Multilingual NLP, low-resource language modeling, and cross-lingual transfer learning."
+      - "Computational morphology for polysynthetic languages (Inuktitut, Nahuatl, Quechua)."
+      - "Ethical AI & fairness in language technologies — with emphasis on indigenous language preservation."
+    education:
+      - institution: Stanford University
+        area: Computer Science (NLP focus)
+        degree: PhD
+        start_date: 2015-09
+        end_date: 2020-06
+        location: Stanford, CA
+        summary: "Dissertation: Cross-Lingual Representation Learning for Morphologically Rich Languages"
+        highlights:
+          - "Advisor: Prof. Christopher Manning"
+          - Stanford Graduate Fellowship (2015–2018)
+          - Best Dissertation Award, Stanford NLP Group (2020)
+      - institution: University of Tokyo
+        area: Information Science
+        degree: MSc
+        start_date: 2013-04
+        end_date: 2015-03
+        location: "Tokyo, Japan"
+        highlights:
+          - MEXT Scholarship recipient
+          - "Thesis: Attention Mechanisms for Japanese-English Machine Translation"
+      - institution: Universidad Nacional Autónoma de México
+        area: Linguistics & Computer Science (double major)
+        degree: BA
+        start_date: 2009-08
+        end_date: 2013-06
+        location: "Ciudad de México, Mexico"
+        highlights:
+          - Summa cum laude
+          - "GPA: 9.7/10.0"
+    academic_positions:
+      - company: McGill University
+        position: Assistant Professor, School of Computer Science
+        start_date: 2022-08
+        end_date: present
+        location: "Montréal, QC"
+        highlights:
+          - "Director, Multilingual AI Lab (5 PhD students, 3 postdocs)"
+          - "Teaching: COMP 550 NLP, COMP 762 Advanced NLP Seminar"
+          - NSERC Discovery Grant ($350K, 2022–2027)
+      - company: "Mila – Québec AI Institute"
+        position: Associate Member
+        start_date: 2022-08
+        end_date: present
+        location: "Montréal, QC"
+        highlights:
+          - Cross-institutional collaboration on low-resource MT
+      - company: Google Research
+        position: Research Scientist
+        start_date: 2020-07
+        end_date: 2022-07
+        location: New York, NY
+        highlights:
+          - Led 4-person team on massively multilingual models (100+ languages)
+          - Key contributor to mT5 model improving BLEU scores by 8 points on low-resource pairs
+          - "Published 6 papers at *ACL, EMNLP, NAACL during tenure"
+    publications:
+      - title: "Morpheme-Aware Tokenization for Polysynthetic Language Modeling"
+        authors:
+          - "***Yuki Tanaka-Hernández***"
+          - Samuel Littlebear
+          - Aisha Okonkwo
+        date: 2024-05
+        doi: 10.18653/v1/2024.acl-long.123
+        journal: ACL 2024 (Oral)
+      - title: "Cross-Lingual Transfer Without Parallel Data: A Morphological Bridge Approach"
+        authors:
+          - "***Yuki Tanaka-Hernández***"
+          - Pierre Dupont
+        date: 2023-12
+        doi: 10.18653/v1/2023.emnlp-main.456
+        journal: EMNLP 2023
+      - title: "Fairness Auditing in Multilingual NLP Pipelines"
+        authors:
+          - Rosa García
+          - "***Yuki Tanaka-Hernández***"
+          - James Whitfield
+        date: 2023-07
+        doi: 10.18653/v1/2023.acl-long.789
+        journal: ACL 2023
+      - title: "Scaling Multilingual Models to 200 Languages"
+        authors:
+          - Large Author Consortium
+          - "***Yuki Tanaka-Hernández***"
+        date: 2022-05
+        doi: 10.48550/arXiv.2205.00000
+        journal: NAACL 2022, Best Resource Paper
+      - title: "Attention Mechanisms for Agglutinative Languages: An Empirical Study"
+        authors:
+          - "***Yuki Tanaka-Hernández***"
+          - Kenji Watanabe
+        date: 2019-11
+        url: https://aclanthology.org/D19-1234
+        journal: EMNLP 2019
+    invited_talks:
+      - reversed_number: "Language Technology for Everyone — TEDx Montréal (2024)"
+      - reversed_number: "Beyond English NLP — NAACL Keynote (2023)"
+      - reversed_number: "Morphological Complexity & Neural Models — Dagstuhl Seminar (2022)"
+      - reversed_number: "Fair Multilingual AI — UN AI for Good Summit (2022)"
+    selected_honors:
+      - bullet: "Google Research Scholar Award ($60K, 2023)"
+      - bullet: "Best Long Paper Award, EMNLP 2023"
+      - bullet: "MIT Technology Review Innovator Under 35, Latin America (2022)"
+      - bullet: "MEXT Scholarship for Graduate Studies in Japan (2013–2015)"
+      - bullet: "Fulbright–García Robles Fellowship finalist (2015)"
+    skills:
+      - label: Programming
+        details: "Python, C++, Rust, Julia"
+      - label: ML/NLP Frameworks
+        details: "PyTorch, Hugging Face Transformers, JAX, spaCy, fairseq"
+      - label: Languages Spoken
+        details: "Japanese (native), Spanish (native), English (fluent), French (B2), Nahuatl (A2)"
+design:
+  theme: moderncv
