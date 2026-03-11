@@ -69,14 +69,8 @@ def match_resume_to_job(
                 bullet_skills = extract_skills(bullet)
                 all_resume_skills.update(s.lower() for s in bullet_skills)
 
-                matched = [
-                    s for s in bullet_skills if s.lower() in all_job_skills
-                ]
-                relevance = (
-                    len(matched) / len(all_job_skills)
-                    if all_job_skills
-                    else 0.0
-                )
+                matched = [s for s in bullet_skills if s.lower() in all_job_skills]
+                relevance = len(matched) / len(all_job_skills) if all_job_skills else 0.0
 
                 matches.append(
                     MatchResult(
@@ -90,14 +84,7 @@ def match_resume_to_job(
     # Sort by relevance (most relevant first)
     matches.sort(key=lambda m: m.relevance_score, reverse=True)
 
-    resume_skills_list = list(
-        extract_skills(
-            " ".join(
-                str(v)
-                for v in _flatten_values(cv)
-            )
-        )
-    )
+    resume_skills_list = list(extract_skills(" ".join(str(v) for v in _flatten_values(cv))))
     resume_lower = {s.lower() for s in resume_skills_list}
 
     return ResumeMatch(
@@ -106,12 +93,10 @@ def match_resume_to_job(
         job_required_skills=job.requirements.required_skills,
         job_preferred_skills=job.requirements.preferred_skills,
         missing_required=[
-            s for s in job.requirements.required_skills
-            if s.lower() not in resume_lower
+            s for s in job.requirements.required_skills if s.lower() not in resume_lower
         ],
         missing_preferred=[
-            s for s in job.requirements.preferred_skills
-            if s.lower() not in resume_lower
+            s for s in job.requirements.preferred_skills if s.lower() not in resume_lower
         ],
     )
 

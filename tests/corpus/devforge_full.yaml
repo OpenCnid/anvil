@@ -1,0 +1,112 @@
+cv:
+  name: Morgan Chen
+  headline: Senior Platform Engineer
+  location: Seattle, WA
+  email: morgan@example.com
+  phone: "+1 206 555 0142"
+  website: https://morganchen.dev
+  social_networks:
+    - network: LinkedIn
+      username: morganchen
+    - network: GitHub
+      username: mchen-dev
+    - network: StackOverflow
+      username: "11223344/morganchen"
+  sections:
+    summary:
+      - "Platform engineer with 8+ years building developer tools and infrastructure at scale."
+      - "Passionate about developer experience, observability, and **infrastructure as code**."
+    experience:
+      - company: Datadog
+        position: Staff Platform Engineer
+        start_date: 2022-01
+        end_date: present
+        location: New York, NY (Remote)
+        highlights:
+          - Designed internal developer platform serving 2,000+ engineers across 15 teams
+          - Built self-service infrastructure provisioning reducing onboarding time by 70%
+          - Led migration from Jenkins to GitHub Actions across 400+ repositories
+      - company: Stripe
+        position: Senior Infrastructure Engineer
+        start_date: 2019-06
+        end_date: 2021-12
+        location: San Francisco, CA
+        summary: Core member of the platform infrastructure team.
+        highlights:
+          - Architected multi-region Kubernetes deployment supporting 99.999% uptime SLA
+          - Reduced CI/CD pipeline duration from 45 min to 8 min via parallelization and caching
+          - Mentored 4 junior engineers through promotion to mid-level
+      - company: Twilio
+        position: Software Engineer
+        start_date: 2016-08
+        end_date: 2019-05
+        location: San Francisco, CA
+        highlights:
+          - Built real-time log aggregation system processing 2TB/day
+          - Implemented canary deployment framework adopted by 30+ services
+    education:
+      - institution: University of Washington
+        area: Computer Science
+        degree: MS
+        start_date: 2014-09
+        end_date: 2016-06
+        location: Seattle, WA
+        highlights:
+          - "Thesis: Automated Performance Regression Detection in CI Pipelines"
+      - institution: UC San Diego
+        area: Computer Engineering
+        degree: BS
+        start_date: 2010-09
+        end_date: 2014-06
+        location: La Jolla, CA
+    projects:
+      - name: "[platform-cli](https://github.com/mchen-dev/platform-cli)"
+        start_date: 2023-03
+        end_date: present
+        highlights:
+          - Developer CLI for infrastructure provisioning with 800+ GitHub stars
+          - Supports Terraform, Pulumi, and CloudFormation backends
+      - name: k8s-cost-analyzer
+        date: "2022"
+        summary: Kubernetes cost attribution and optimization tool
+        highlights:
+          - Identifies idle resources saving average 25% on cloud spend
+      - name: ci-insights
+        date: "2021"
+        highlights:
+          - CI/CD analytics dashboard tracking build times and flaky test rates
+    publications:
+      - title: "Automated Performance Regression Detection at Scale"
+        authors:
+          - "**Morgan Chen**"
+          - Sarah Kim
+          - Prof. David Liu
+        date: 2023-09
+        doi: 10.1145/icse.2023.perf
+        journal: ICSE 2023
+      - title: "Cost-Aware Container Orchestration for Multi-Tenant Clusters"
+        authors:
+          - "**Morgan Chen**"
+          - James Park
+        date: 2022-04
+        url: https://arxiv.org/abs/2204.00001
+        journal: arXiv preprint
+    skills:
+      - label: Infrastructure
+        details: "Kubernetes, Terraform, Pulumi, AWS, GCP"
+      - label: Languages
+        details: "Go, Python, Rust, TypeScript, Bash"
+      - label: Observability
+        details: "Datadog, Prometheus, Grafana, OpenTelemetry"
+      - label: CI/CD
+        details: "GitHub Actions, ArgoCD, Buildkite, Bazel"
+    certifications:
+      - bullet: "Certified Kubernetes Administrator (CKA, 2021)"
+      - bullet: "AWS Certified Solutions Architect — Professional (2020)"
+      - bullet: "HashiCorp Certified Terraform Associate (2020)"
+    conference_talks:
+      - reversed_number: "Building a Developer Platform from Scratch — KubeCon NA 2024"
+      - reversed_number: "CI/CD at Scale: Lessons from 400 Repositories — DevOpsDays Seattle 2023"
+      - reversed_number: "Performance Regression Detection in Practice — ICSE 2023"
+design:
+  theme: devforge

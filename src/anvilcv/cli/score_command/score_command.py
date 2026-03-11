@@ -164,6 +164,4 @@ def _print_text_report(
 
 def _status_icon(status: str) -> str:
     """Return a text icon for check status."""
-    return {"pass": "[PASS]", "fail": "[FAIL]", "warn": "[WARN]"}.get(
-        status, "[????]"
-    )
+    return {"pass": "[PASS]", "fail": "[FAIL]", "warn": "[WARN]"}.get(status, "[????]")

@@ -115,9 +115,7 @@ def _render_header(cv_data: dict) -> str:
         contact_items.append(f"<span>{_esc(cv_data['location'])}</span>")
     if cv_data.get("email"):
         email = cv_data["email"]
-        contact_items.append(
-            f'<span><a href="mailto:{_esc(email)}">{_esc(email)}</a></span>'
-        )
+        contact_items.append(f'<span><a href="mailto:{_esc(email)}">{_esc(email)}</a></span>')
     if cv_data.get("phone"):
         contact_items.append(f"<span>{_esc(cv_data['phone'])}</span>")
     if cv_data.get("website"):
@@ -208,9 +206,7 @@ def _render_entry(entry: dict) -> str:
 
     # URL
     if entry.get("url"):
-        parts.append(
-            f'<p><a href="{_esc(entry["url"])}">{_esc(entry["url"])}</a></p>'
-        )
+        parts.append(f'<p><a href="{_esc(entry["url"])}">{_esc(entry["url"])}</a></p>')
 
     parts.append("</article>")
     return "\n".join(parts)

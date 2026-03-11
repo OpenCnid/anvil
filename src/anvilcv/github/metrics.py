@@ -16,10 +16,7 @@ def compute_language_percentages(languages: dict[str, int]) -> dict[str, float]:
     total = sum(languages.values())
     if total == 0:
         return {}
-    return {
-        lang: round(bytes_count / total * 100, 1)
-        for lang, bytes_count in languages.items()
-    }
+    return {lang: round(bytes_count / total * 100, 1) for lang, bytes_count in languages.items()}
 
 
 def get_primary_language(languages: dict[str, int]) -> str | None:

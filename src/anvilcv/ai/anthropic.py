@@ -70,10 +70,7 @@ class AnthropicProvider(AIProvider):
             import anthropic  # noqa: PLC0415
         except ImportError:
             raise AnvilAIProviderError(
-                message=(
-                    "Anthropic SDK not installed. Install with:\n"
-                    '  pip install "anvilcv[ai]"'
-                )
+                message=('Anthropic SDK not installed. Install with:\n  pip install "anvilcv[ai]"')
             ) from None
 
         model = request.model or self._model
@@ -110,15 +107,10 @@ class AnthropicProvider(AIProvider):
         except anthropic.RateLimitError as e:
             raise AnvilAIProviderError(
                 message=(
-                    "Anthropic rate limit exceeded. Wait a moment and try again.\n"
-                    f"Details: {e}"
+                    f"Anthropic rate limit exceeded. Wait a moment and try again.\nDetails: {e}"
                 )
             ) from e
         except anthropic.APIError as e:
-            raise AnvilAIProviderError(
-                message=f"Anthropic API error: {e}"
-            ) from e
+            raise AnvilAIProviderError(message=f"Anthropic API error: {e}") from e
         except Exception as e:
-            raise AnvilAIProviderError(
-                message=f"Unexpected error calling Anthropic: {e}"
-            ) from e
+            raise AnvilAIProviderError(message=f"Unexpected error calling Anthropic: {e}") from e

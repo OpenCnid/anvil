@@ -133,9 +133,7 @@ def tailor_command(
 
     # Get bullets to rewrite (top by relevance)
     bullets_to_rewrite = [
-        (m.section_path, m.content)
-        for m in match.matches
-        if m.relevance_score > 0
+        (m.section_path, m.content) for m in match.matches if m.relevance_score > 0
     ][:max_rewrites]
 
     if not bullets_to_rewrite:
@@ -207,16 +205,13 @@ def _resolve_provider(
 
     provider_map = {
         "anthropic": lambda: AnthropicProvider(
-            model=model_name
-            or providers_config.get("anthropic", {}).get("model"),
+            model=model_name or providers_config.get("anthropic", {}).get("model"),
         ),
         "openai": lambda: OpenAIProvider(
-            model=model_name
-            or providers_config.get("openai", {}).get("model"),
+            model=model_name or providers_config.get("openai", {}).get("model"),
         ),
         "ollama": lambda: OllamaProvider(
-            model=model_name
-            or providers_config.get("ollama", {}).get("model"),
+            model=model_name or providers_config.get("ollama", {}).get("model"),
             base_url=providers_config.get("ollama", {}).get("base_url"),
         ),
     }
@@ -224,19 +219,14 @@ def _resolve_provider(
     factory = provider_map.get(provider_name)
     if factory is None:
         raise AnvilUserError(
-            message=(
-                f"Unknown provider: {provider_name}. "
-                "Supported: anthropic, openai, ollama"
-            )
+            message=(f"Unknown provider: {provider_name}. Supported: anthropic, openai, ollama")
         )
 
     provider = factory()
     if not provider.is_configured():
         instructions = provider.get_setup_instructions()
         raise AnvilAIProviderError(
-            message=(
-                f"Provider {provider_name} is not configured.\n{instructions}"
-            )
+            message=(f"Provider {provider_name} is not configured.\n{instructions}")
         )
 
     return provider

@@ -93,9 +93,7 @@ async def generate_prep_notes(
     matched_skills = list(match.resume_skills)
     missing_skills = match.missing_required
 
-    system_prompt, user_prompt = build_prep_prompt(
-        resume_text, job, matched_skills, missing_skills
-    )
+    system_prompt, user_prompt = build_prep_prompt(resume_text, job, matched_skills, missing_skills)
 
     request = GenerationRequest(
         task=TaskType.INTERVIEW_PREP,

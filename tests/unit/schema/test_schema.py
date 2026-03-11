@@ -51,9 +51,7 @@ from anvilcv.schema.variant import VariantChange, VariantMetadata
 
 
 class TestRendercvCompatibility:
-    def test_rendercv_yaml_without_anvil_validates(
-        self, sample_rendercv_yaml: pathlib.Path
-    ):
+    def test_rendercv_yaml_without_anvil_validates(self, sample_rendercv_yaml: pathlib.Path):
         """rendercv YAML without anvil section should validate as AnvilModel."""
         yaml_content = sample_rendercv_yaml.read_text()
         _, model = build_anvil_dictionary_and_model(
@@ -63,14 +61,10 @@ class TestRendercvCompatibility:
         assert model.anvil is None
         assert model.cv.name == "John Doe"
 
-    def test_anvil_yaml_with_anvil_section_validates(
-        self, sample_anvil_yaml: pathlib.Path
-    ):
+    def test_anvil_yaml_with_anvil_section_validates(self, sample_anvil_yaml: pathlib.Path):
         """Anvil YAML with anvil section should validate."""
         yaml_content = sample_anvil_yaml.read_text()
-        _, model = build_anvil_dictionary_and_model(
-            yaml_content, input_file_path=sample_anvil_yaml
-        )
+        _, model = build_anvil_dictionary_and_model(yaml_content, input_file_path=sample_anvil_yaml)
         assert isinstance(model, AnvilModel)
         assert model.anvil is not None
         assert model.anvil.providers.default == "anthropic"
@@ -93,10 +87,7 @@ class TestRendercvCompatibility:
 
     def test_unknown_anvil_field_rejected(self):
         """Unknown fields inside anvil section should be rejected."""
-        yaml = (
-            "cv:\n  name: Test\n"
-            "anvil:\n  unknown_field: bad\n"
-        )
+        yaml = "cv:\n  name: Test\nanvil:\n  unknown_field: bad\n"
         with pytest.raises(Exception):
             build_anvil_dictionary_and_model(yaml)
 
@@ -337,16 +328,11 @@ class TestModelBuilder:
         assert model.anvil.providers.default == "openai"
 
     def test_build_from_yaml_string(self):
-        yaml = (
-            "cv:\n  name: Test User\n"
-            "anvil:\n  providers:\n    default: ollama\n"
-        )
+        yaml = "cv:\n  name: Test User\nanvil:\n  providers:\n    default: ollama\n"
         _, model = build_anvil_dictionary_and_model(yaml)
         assert model.anvil.providers.default == "ollama"
 
-    def test_build_preserves_rendercv_fields(
-        self, sample_rendercv_yaml: pathlib.Path
-    ):
+    def test_build_preserves_rendercv_fields(self, sample_rendercv_yaml: pathlib.Path):
         yaml_content = sample_rendercv_yaml.read_text()
         _, model = build_anvil_dictionary_and_model(
             yaml_content, input_file_path=sample_rendercv_yaml

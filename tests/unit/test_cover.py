@@ -60,31 +60,23 @@ SAMPLE_RESUME = {
 class TestBuildCoverLetterPrompt:
     def test_returns_tuple(self):
         job = _make_job()
-        result = build_cover_letter_prompt(
-            "resume text", job, ["Python"], ["Go"]
-        )
+        result = build_cover_letter_prompt("resume text", job, ["Python"], ["Go"])
         assert isinstance(result, tuple)
         assert len(result) == 2
 
     def test_system_prompt_mentions_cover_letter(self):
         job = _make_job()
-        system, _ = build_cover_letter_prompt(
-            "resume text", job, ["Python"], ["Go"]
-        )
+        system, _ = build_cover_letter_prompt("resume text", job, ["Python"], ["Go"])
         assert "cover letter" in system.lower()
 
     def test_user_prompt_includes_company(self):
         job = _make_job()
-        _, user = build_cover_letter_prompt(
-            "resume text", job, ["Python"], ["Go"]
-        )
+        _, user = build_cover_letter_prompt("resume text", job, ["Python"], ["Go"])
         assert "Acme Corp" in user
 
     def test_user_prompt_non_generic(self):
         job = _make_job()
-        _, user = build_cover_letter_prompt(
-            "resume text", job, ["Python"], ["Go"]
-        )
+        _, user = build_cover_letter_prompt("resume text", job, ["Python"], ["Go"])
         assert "Do NOT fabricate" in user
 
 
@@ -106,9 +98,7 @@ class TestGenerateCoverLetter:
         )
 
         result = asyncio.run(
-            generate_cover_letter(
-                provider, SAMPLE_RESUME, _make_job(), _make_match()
-            )
+            generate_cover_letter(provider, SAMPLE_RESUME, _make_job(), _make_match())
         )
         assert "Acme Corp" in result
         assert isinstance(result, str)
@@ -117,9 +107,7 @@ class TestGenerateCoverLetter:
 class TestWriteCoverLetter:
     def test_writes_file(self, tmp_path: pathlib.Path):
         output = tmp_path / "cover.md"
-        result = write_cover_letter(
-            "Dear Hiring Manager,\n\nContent here.", output
-        )
+        result = write_cover_letter("Dear Hiring Manager,\n\nContent here.", output)
         assert result == output
         assert output.exists()
         assert "Dear Hiring Manager" in output.read_text()

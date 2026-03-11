@@ -7,11 +7,14 @@ Why:
 """
 
 import pathlib
+from unittest.mock import MagicMock, patch
 
 from anvilcv.rendering.variant_renderer import (
     discover_variants,
     get_variant_output_folder,
     read_variant_metadata,
+    render_all_variants,
+    render_variant,
 )
 
 SAMPLE_VARIANT_YAML = """\
@@ -132,3 +135,110 @@ class TestReadVariantMetadata:
     def test_returns_none_for_missing_file(self, tmp_path: pathlib.Path):
         metadata = read_variant_metadata(tmp_path / "missing.yaml")
         assert metadata is None
+
+    def test_returns_none_for_non_dict_yaml(self, tmp_path: pathlib.Path):
+        """Cover line 68: YAML that parses to non-dict returns None."""
+        scalar_file = tmp_path / "scalar.yaml"
+        scalar_file.write_text("just a string")
+        metadata = read_variant_metadata(scalar_file)
+        assert metadata is None
+
+    def test_returns_none_for_empty_yaml(self, tmp_path: pathlib.Path):
+        """Cover line 68: empty YAML (None data) returns None."""
+        empty_file = tmp_path / "empty.yaml"
+        empty_file.write_text("")
+        metadata = read_variant_metadata(empty_file)
+        assert metadata is None
+
+
+# --- render_variant tests (mocked) ---
+
+
+class TestRenderVariant:
+    @patch("anvilcv.vendor.rendercv.cli.render_command.run_rendercv.run_rendercv")
+    @patch("anvilcv.vendor.rendercv.cli.render_command.progress_panel.ProgressPanel")
+    def test_render_variant_default_output(self, mock_panel_cls, mock_run, tmp_path: pathlib.Path):
+        """Cover lines 89-104: render_variant with default output folder."""
+        mock_panel = MagicMock()
+        mock_panel_cls.return_value.__enter__ = lambda self: mock_panel
+        mock_panel_cls.return_value.__exit__ = lambda self, *a: None
+
+        variant = tmp_path / "variants" / "Jane_Acme.yaml"
+        variant.parent.mkdir(parents=True, exist_ok=True)
+        variant.write_text(SAMPLE_VARIANT_YAML)
+
+        result = render_variant(variant)
+        expected_out = tmp_path / "variants" / "rendercv_output" / "Jane_Acme"
+        assert result == expected_out
+        mock_run.assert_called_once()
+
+    @patch("anvilcv.vendor.rendercv.cli.render_command.run_rendercv.run_rendercv")
+    @patch("anvilcv.vendor.rendercv.cli.render_command.progress_panel.ProgressPanel")
+    def test_render_variant_custom_output(self, mock_panel_cls, mock_run, tmp_path: pathlib.Path):
+        """Cover lines 89-104: render_variant with custom output folder."""
+        mock_panel = MagicMock()
+        mock_panel_cls.return_value.__enter__ = lambda self: mock_panel
+        mock_panel_cls.return_value.__exit__ = lambda self, *a: None
+
+        variant = tmp_path / "Jane_Acme.yaml"
+        variant.write_text(SAMPLE_VARIANT_YAML)
+        custom_out = tmp_path / "my_output"
+
+        result = render_variant(variant, output_folder=custom_out)
+        assert result == custom_out
+
+
+# --- render_all_variants tests (mocked) ---
+
+
+class TestRenderAllVariants:
+    @patch("anvilcv.rendering.variant_renderer.render_variant")
+    def test_render_all_success(self, mock_render, tmp_path: pathlib.Path):
+        """Cover lines 122-134: render all variants in a directory."""
+        (tmp_path / "a.yaml").write_text(SAMPLE_VARIANT_YAML)
+        (tmp_path / "b.yaml").write_text(SAMPLE_PLAIN_YAML)
+
+        mock_render.return_value = tmp_path / "output"
+
+        results = render_all_variants(tmp_path)
+        assert len(results) == 2
+        assert mock_render.call_count == 2
+
+    @patch("anvilcv.rendering.variant_renderer.render_variant")
+    def test_render_all_with_base_output(self, mock_render, tmp_path: pathlib.Path):
+        """Cover lines 122-134: base_output is used for output folders."""
+        (tmp_path / "a.yaml").write_text(SAMPLE_VARIANT_YAML)
+
+        mock_render.return_value = tmp_path / "out" / "a"
+        base = tmp_path / "out"
+
+        results = render_all_variants(tmp_path, base_output=base)
+        assert len(results) == 1
+        # Verify the output folder passed is base_output / stem
+        call_kwargs = mock_render.call_args
+        assert call_kwargs[1]["output_folder"] == base / "a"
+
+    @patch("anvilcv.rendering.variant_renderer.render_variant")
+    def test_render_all_partial_failure(self, mock_render, tmp_path: pathlib.Path):
+        """Cover line 130-132: individual failures don't stop the batch."""
+        (tmp_path / "a.yaml").write_text(SAMPLE_VARIANT_YAML)
+        (tmp_path / "b.yaml").write_text(SAMPLE_PLAIN_YAML)
+
+        # First succeeds, second fails
+        def side_effect(path, output_folder, **kwargs):
+            if path.stem == "a":
+                return output_folder
+            raise RuntimeError("Render failed")
+
+        mock_render.side_effect = side_effect
+
+        results = render_all_variants(tmp_path)
+        assert len(results) == 1
+        assert results[0][0].stem == "a"
+
+    @patch("anvilcv.rendering.variant_renderer.render_variant")
+    def test_render_all_empty_dir(self, mock_render, tmp_path: pathlib.Path):
+        """Cover line 122: empty directory yields empty results."""
+        results = render_all_variants(tmp_path)
+        assert results == []
+        mock_render.assert_not_called()

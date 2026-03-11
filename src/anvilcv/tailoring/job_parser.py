@@ -44,16 +44,12 @@ def parse_job_from_text(
 def parse_job_from_stdin() -> JobDescription:
     """Parse a job description from stdin."""
     if sys.stdin.isatty():
-        raise AnvilUserError(
-            message="No job description on stdin. Pipe text or use --job <file>."
-        )
+        raise AnvilUserError(message="No job description on stdin. Pipe text or use --job <file>.")
     text = sys.stdin.read()
     return _parse_text_job(text, source="stdin")
 
 
-def _parse_text_job(
-    text: str, source: Literal["url", "file", "stdin"] = "file"
-) -> JobDescription:
+def _parse_text_job(text: str, source: Literal["url", "file", "stdin"] = "file") -> JobDescription:
     """Extract structured data from raw job description text."""
     required_skills, preferred_skills = categorize_skills(text)
     experience_years = extract_experience_years(text)
@@ -82,23 +78,17 @@ def _parse_text_job(
     )
 
 
-def _parse_yaml_job(
-    text: str, source: Literal["url", "file", "stdin"] = "file"
-) -> JobDescription:
+def _parse_yaml_job(text: str, source: Literal["url", "file", "stdin"] = "file") -> JobDescription:
     """Parse a structured YAML job description."""
     import yaml  # type: ignore[import-untyped]
 
     try:
         data = yaml.safe_load(text)
     except yaml.YAMLError as e:
-        raise AnvilUserError(
-            message=f"Invalid YAML in job description: {e}"
-        ) from e
+        raise AnvilUserError(message=f"Invalid YAML in job description: {e}") from e
 
     if not isinstance(data, dict):
-        raise AnvilUserError(
-            message="Job description YAML must be a mapping."
-        )
+        raise AnvilUserError(message="Job description YAML must be a mapping.")
 
     # Support both top-level and nested under 'job' key
     job_data = data.get("job", data)

@@ -69,10 +69,7 @@ class OpenAIProvider(AIProvider):
             import openai  # noqa: PLC0415
         except ImportError:
             raise AnvilAIProviderError(
-                message=(
-                    "OpenAI SDK not installed. Install with:\n"
-                    '  pip install "anvilcv[ai]"'
-                )
+                message=('OpenAI SDK not installed. Install with:\n  pip install "anvilcv[ai]"')
             ) from None
 
         model = request.model or self._model
@@ -108,16 +105,9 @@ class OpenAIProvider(AIProvider):
             ) from e
         except openai.RateLimitError as e:
             raise AnvilAIProviderError(
-                message=(
-                    "OpenAI rate limit exceeded. Wait a moment and try again.\n"
-                    f"Details: {e}"
-                )
+                message=(f"OpenAI rate limit exceeded. Wait a moment and try again.\nDetails: {e}")
             ) from e
         except openai.APIError as e:
-            raise AnvilAIProviderError(
-                message=f"OpenAI API error: {e}"
-            ) from e
+            raise AnvilAIProviderError(message=f"OpenAI API error: {e}") from e
         except Exception as e:
-            raise AnvilAIProviderError(
-                message=f"Unexpected error calling OpenAI: {e}"
-            ) from e
+            raise AnvilAIProviderError(message=f"Unexpected error calling OpenAI: {e}") from e

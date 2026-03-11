@@ -16,9 +16,7 @@ from anvilcv.scoring.text_extractor import ExtractedDocument
 
 # Contact info patterns
 EMAIL_PATTERN = re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")
-PHONE_PATTERN = re.compile(
-    r"(?:\+?\d{1,3}[-.\s]?)?\(?\d{2,4}\)?[-.\s]?\d{3,4}[-.\s]?\d{3,4}"
-)
+PHONE_PATTERN = re.compile(r"(?:\+?\d{1,3}[-.\s]?)?\(?\d{2,4}\)?[-.\s]?\d{3,4}[-.\s]?\d{3,4}")
 URL_PATTERN = re.compile(r"https?://\S+|(?:linkedin|github)\.com/\S+", re.IGNORECASE)
 
 # Date patterns for chronological ordering check
@@ -166,9 +164,7 @@ def check_s06_chronological_dates(doc: ExtractedDocument) -> Check:
 
     if len(years) >= 2:
         # Allow some flexibility — not strictly monotonic
-        inversions = sum(
-            1 for i in range(len(years) - 1) if years[i] < years[i + 1]
-        )
+        inversions = sum(1 for i in range(len(years) - 1) if years[i] < years[i + 1])
         if inversions > len(years) // 3:
             return Check(
                 name="Chronological date ordering",
@@ -248,9 +244,7 @@ def check_s08_resume_length(doc: ExtractedDocument) -> Check:
     )
 
 
-def run_structure_checks(
-    doc: ExtractedDocument, sections: SectionMap
-) -> list[Check]:
+def run_structure_checks(doc: ExtractedDocument, sections: SectionMap) -> list[Check]:
     """Run all structure checks and return results."""
     return [
         check_s01_contact_info(doc),

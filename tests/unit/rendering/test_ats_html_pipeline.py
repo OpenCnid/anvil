@@ -67,9 +67,7 @@ def _build_model(yaml_path: pathlib.Path):
     )
 
     yaml_text = yaml_path.read_text(encoding="utf-8")
-    _, model = build_rendercv_dictionary_and_model(
-        yaml_text, input_file_path=yaml_path
-    )
+    _, model = build_rendercv_dictionary_and_model(yaml_text, input_file_path=yaml_path)
     return model
 
 
@@ -117,9 +115,7 @@ class TestTemplaterBridge:
         assert "<h1>" in html
         assert "<h2>" in html
 
-    def test_extracts_linkedin_from_social_networks(
-        self, minimal_cv_yaml: pathlib.Path
-    ):
+    def test_extracts_linkedin_from_social_networks(self, minimal_cv_yaml: pathlib.Path):
         from anvilcv.vendor.rendercv.renderer.templater.templater import (
             render_ats_html,
         )
@@ -130,9 +126,7 @@ class TestTemplaterBridge:
         assert "alice-tester" in html
         assert "LinkedIn" in html
 
-    def test_extracts_github_from_social_networks(
-        self, minimal_cv_yaml: pathlib.Path
-    ):
+    def test_extracts_github_from_social_networks(self, minimal_cv_yaml: pathlib.Path):
         from anvilcv.vendor.rendercv.renderer.templater.templater import (
             render_ats_html,
         )
@@ -206,9 +200,7 @@ class TestGenerateAtsHtml:
         assert "<!DOCTYPE html>" in content
         assert "Alice Tester" in content
 
-    def test_output_path_derives_from_html_path(
-        self, minimal_cv_yaml: pathlib.Path
-    ):
+    def test_output_path_derives_from_html_path(self, minimal_cv_yaml: pathlib.Path):
         from anvilcv.vendor.rendercv.renderer.html import generate_ats_html
 
         model = _build_model(minimal_cv_yaml)
@@ -219,9 +211,7 @@ class TestGenerateAtsHtml:
         # The stem should end with _ats
         assert result.stem.endswith("_ats")
 
-    def test_skipped_when_dont_generate_true(
-        self, minimal_cv_yaml: pathlib.Path
-    ):
+    def test_skipped_when_dont_generate_true(self, minimal_cv_yaml: pathlib.Path):
         from anvilcv.vendor.rendercv.renderer.html import generate_ats_html
 
         model = _build_model(minimal_cv_yaml)

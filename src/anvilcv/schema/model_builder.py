@@ -46,18 +46,12 @@ def build_anvil_model_from_commented_map(
         validation_context = {
             "context": ValidationContext(
                 input_file_path=input_file_path,
-                current_date=commented_map.get("settings", {}).get(
-                    "current_date", "today"
-                ),
+                current_date=commented_map.get("settings", {}).get("current_date", "today"),
             )
         }
-        model = AnvilModel.model_validate(
-            commented_map, context=validation_context
-        )
+        model = AnvilModel.model_validate(commented_map, context=validation_context)
     except pydantic.ValidationError as e:
-        validation_errors = parse_validation_errors(
-            e, commented_map, overlay_sources
-        )
+        validation_errors = parse_validation_errors(e, commented_map, overlay_sources)
         raise RenderCVUserValidationError(validation_errors) from e
 
     return model

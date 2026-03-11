@@ -84,15 +84,7 @@ class TestExperienceYears:
 
 class TestSkillCategorization:
     def test_separates_required_and_preferred(self):
-        text = (
-            "Requirements:\n"
-            "- Python\n"
-            "- Kubernetes\n"
-            "\n"
-            "Nice to have:\n"
-            "- Terraform\n"
-            "- Rust\n"
-        )
+        text = "Requirements:\n- Python\n- Kubernetes\n\nNice to have:\n- Terraform\n- Rust\n"
         required, preferred = categorize_skills(text)
         assert "Python" in required
         assert "Kubernetes" in required
@@ -105,10 +97,7 @@ class TestSkillCategorization:
         assert len(preferred) == 0
 
     def test_deduplication_across_sections(self):
-        text = (
-            "Requirements: Python\n"
-            "Nice to have: Python, Rust\n"
-        )
+        text = "Requirements: Python\nNice to have: Python, Rust\n"
         required, preferred = categorize_skills(text)
         assert "Python" in required
         # Python should NOT be in preferred since it's required
@@ -207,10 +196,7 @@ class TestK05ActionVerbs:
         assert check.status == "pass"
 
     def test_weak_phrases_warn(self):
-        text = (
-            "Responsible for building. Helped with deployment. "
-            "Built one thing."
-        )
+        text = "Responsible for building. Helped with deployment. Built one thing."
         check = check_k05_action_verbs(text)
         assert check.status in ("warn", "fail")
 

@@ -98,9 +98,7 @@ def prep_command(
     from anvilcv.prep.generator import generate_prep_notes, write_prep_notes
 
     try:
-        content = asyncio.run(
-            generate_prep_notes(provider_instance, resume_data, job_desc, match)
-        )
+        content = asyncio.run(generate_prep_notes(provider_instance, resume_data, job_desc, match))
     except AnvilAIProviderError as e:
         typer.echo(f"AI error: {e}", err=True)
         raise typer.Exit(code=4) from None
@@ -146,19 +144,14 @@ def _resolve_provider(
     factory = provider_map.get(provider_name)
     if factory is None:
         raise AnvilUserError(
-            message=(
-                f"Unknown provider: {provider_name}. "
-                "Supported: anthropic, openai, ollama"
-            )
+            message=(f"Unknown provider: {provider_name}. Supported: anthropic, openai, ollama")
         )
 
     provider_instance = factory()
     if not provider_instance.is_configured():
         instructions = provider_instance.get_setup_instructions()
         raise AnvilAIProviderError(
-            message=(
-                f"Provider {provider_name} is not configured.\n{instructions}"
-            )
+            message=(f"Provider {provider_name} is not configured.\n{instructions}")
         )
 
     return provider_instance

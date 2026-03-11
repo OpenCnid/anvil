@@ -168,8 +168,8 @@ class TestAnthropicGeneration:
         request = _make_request()
 
         mock_mod = _mock_anthropic_module()
-        mock_mod.Anthropic.return_value.messages.create.side_effect = (
-            mock_mod.AuthenticationError("Invalid API key")
+        mock_mod.Anthropic.return_value.messages.create.side_effect = mock_mod.AuthenticationError(
+            "Invalid API key"
         )
 
         with patch.dict("sys.modules", {"anthropic": mock_mod}):
@@ -181,8 +181,8 @@ class TestAnthropicGeneration:
         request = _make_request()
 
         mock_mod = _mock_anthropic_module()
-        mock_mod.Anthropic.return_value.messages.create.side_effect = (
-            mock_mod.RateLimitError("Rate limit exceeded")
+        mock_mod.Anthropic.return_value.messages.create.side_effect = mock_mod.RateLimitError(
+            "Rate limit exceeded"
         )
 
         with patch.dict("sys.modules", {"anthropic": mock_mod}):
@@ -330,9 +330,7 @@ class TestOutputParser:
                 provider="test",
             )
 
-        result = asyncio.run(
-            generate_with_retry(mock_generate, _make_request(), "anthropic")
-        )
+        result = asyncio.run(generate_with_retry(mock_generate, _make_request(), "anthropic"))
         assert result.content == "valid output"
 
     def test_generate_with_retry_validates(self):

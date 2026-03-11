@@ -1,0 +1,54 @@
+cv:
+  name: Photo Portfolio
+  headline: Full-Stack Developer & Open Source Contributor
+  location: Portland, OR
+  email: photo@example.com
+  phone: "+1 503 555 0199"
+  website: https://photoportfolio.dev
+  # photo field tested with local path; URL photos require network access
+  # photo: photo.jpg
+  social_networks:
+    - network: LinkedIn
+      username: photoportfolio
+    - network: GitHub
+      username: photoportfolio
+    - network: StackOverflow
+      username: "9876543/photoportfolio"
+    - network: Google Scholar
+      username: xYz123AbC
+    - network: ORCID
+      username: "0000-0003-9876-5432"
+  sections:
+    experience:
+      - company: Open Source Corp
+        position: Principal Engineer
+        start_date: 2021-06
+        end_date: present
+        highlights:
+          - Led development of 3 major open-source projects
+          - Grew community from 500 to 15,000 contributors
+      - company: Startup Inc
+        position: Senior Developer
+        start_date: 2018-01
+        end_date: 2021-05
+        highlights:
+          - Built real-time collaboration features used by 50K daily users
+    education:
+      - institution: Oregon State University
+        area: Computer Science
+        degree: BS
+        start_date: 2014-09
+        end_date: 2018-06
+    skills:
+      - label: Frontend
+        details: React, Vue, Svelte, TypeScript
+      - label: Backend
+        details: Node.js, Python, Go, PostgreSQL
+design:
+  theme: classic
+  header:
+    alignment: left
+    photo_width: 4cm
+    photo_position: right
+    photo_space_left: 0.3cm
+    photo_space_right: 0.5cm

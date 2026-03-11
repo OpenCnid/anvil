@@ -52,8 +52,7 @@ def _sample_job() -> JobDescription:
             experience_years=5,
         ),
         raw_text=(
-            "We are looking for a Senior SRE with Python, "
-            "Kubernetes, and Terraform experience."
+            "We are looking for a Senior SRE with Python, Kubernetes, and Terraform experience."
         ),
     )
 
@@ -70,9 +69,7 @@ class TestMatcher:
         assert isinstance(match, ResumeMatch)
         assert len(match.matches) > 0
         # Python bullet should match
-        python_matches = [
-            m for m in match.matches if "Python" in m.matched_skills
-        ]
+        python_matches = [m for m in match.matches if "Python" in m.matched_skills]
         assert len(python_matches) > 0
 
     def test_identifies_missing_skills(self):
@@ -179,9 +176,7 @@ class TestRewriter:
         job = _sample_job()
         match = ResumeMatch()
 
-        result = asyncio.run(
-            rewrite_bullet(provider, "Short bullet", job, match)
-        )
+        result = asyncio.run(rewrite_bullet(provider, "Short bullet", job, match))
         assert result == "Short bullet"
 
 

@@ -48,21 +48,24 @@ from anvilcv.scoring.text_extractor import ExtractedDocument, TextElement
 def _good_resume_doc() -> ExtractedDocument:
     """A well-structured resume document (HTML-like, no position data)."""
     return ExtractedDocument(
-        elements=[TextElement(text=line) for line in [
-            "John Doe",
-            "john@example.com | (555) 123-4567",
-            "San Francisco, CA",
-            "Experience",
-            "Software Engineer at Acme Corp",
-            "January 2020 - Present",
-            "Built scalable microservices serving 1M+ requests/day",
-            "Led migration from monolith to event-driven architecture",
-            "Education",
-            "MIT - BS Computer Science",
-            "September 2016 - May 2020",
-            "Skills",
-            "Python, TypeScript, Go, Rust, Docker, Kubernetes",
-        ]],
+        elements=[
+            TextElement(text=line)
+            for line in [
+                "John Doe",
+                "john@example.com | (555) 123-4567",
+                "San Francisco, CA",
+                "Experience",
+                "Software Engineer at Acme Corp",
+                "January 2020 - Present",
+                "Built scalable microservices serving 1M+ requests/day",
+                "Led migration from monolith to event-driven architecture",
+                "Education",
+                "MIT - BS Computer Science",
+                "September 2016 - May 2020",
+                "Skills",
+                "Python, TypeScript, Go, Rust, Docker, Kubernetes",
+            ]
+        ],
         full_text=(
             "John Doe\njohn@example.com | (555) 123-4567\n"
             "San Francisco, CA\n"
@@ -86,20 +89,76 @@ def _pdf_resume_doc() -> ExtractedDocument:
     """A PDF resume with position data for column detection."""
     # Single column — all text at roughly x=72 (1 inch margin)
     elements = [
-        TextElement(text="John Doe", x=72, y=700, width=200, height=14,
-                    font_name="Helvetica-Bold", font_size=14, page=1),
-        TextElement(text="john@example.com", x=72, y=680, width=150, height=10,
-                    font_name="Helvetica", font_size=10, page=1),
-        TextElement(text="Experience", x=72, y=640, width=100, height=12,
-                    font_name="Helvetica-Bold", font_size=12, page=1),
-        TextElement(text="Software Engineer", x=72, y=620, width=150, height=10,
-                    font_name="Helvetica", font_size=10, page=1),
-        TextElement(text="Built services", x=72, y=600, width=200, height=10,
-                    font_name="Helvetica", font_size=10, page=1),
-        TextElement(text="Education", x=72, y=560, width=100, height=12,
-                    font_name="Helvetica-Bold", font_size=12, page=1),
-        TextElement(text="Skills", x=72, y=500, width=100, height=12,
-                    font_name="Helvetica-Bold", font_size=12, page=1),
+        TextElement(
+            text="John Doe",
+            x=72,
+            y=700,
+            width=200,
+            height=14,
+            font_name="Helvetica-Bold",
+            font_size=14,
+            page=1,
+        ),
+        TextElement(
+            text="john@example.com",
+            x=72,
+            y=680,
+            width=150,
+            height=10,
+            font_name="Helvetica",
+            font_size=10,
+            page=1,
+        ),
+        TextElement(
+            text="Experience",
+            x=72,
+            y=640,
+            width=100,
+            height=12,
+            font_name="Helvetica-Bold",
+            font_size=12,
+            page=1,
+        ),
+        TextElement(
+            text="Software Engineer",
+            x=72,
+            y=620,
+            width=150,
+            height=10,
+            font_name="Helvetica",
+            font_size=10,
+            page=1,
+        ),
+        TextElement(
+            text="Built services",
+            x=72,
+            y=600,
+            width=200,
+            height=10,
+            font_name="Helvetica",
+            font_size=10,
+            page=1,
+        ),
+        TextElement(
+            text="Education",
+            x=72,
+            y=560,
+            width=100,
+            height=12,
+            font_name="Helvetica-Bold",
+            font_size=12,
+            page=1,
+        ),
+        TextElement(
+            text="Skills",
+            x=72,
+            y=500,
+            width=100,
+            height=12,
+            font_name="Helvetica-Bold",
+            font_size=12,
+            page=1,
+        ),
     ]
     return ExtractedDocument(
         elements=elements,
@@ -338,6 +397,7 @@ class TestS02ExperienceSection:
 
     def test_missing_fails(self):
         from anvilcv.scoring.section_detector import SectionMap
+
         result = check_s02_experience_section(SectionMap())
         assert result.status == "fail"
 
@@ -351,6 +411,7 @@ class TestS03EducationSection:
 
     def test_missing_fails(self):
         from anvilcv.scoring.section_detector import SectionMap
+
         result = check_s03_education_section(SectionMap())
         assert result.status == "fail"
 
@@ -364,6 +425,7 @@ class TestS04SkillsSection:
 
     def test_missing_warns(self):
         from anvilcv.scoring.section_detector import SectionMap
+
         result = check_s04_skills_section(SectionMap())
         assert result.status == "warn"
 
@@ -377,15 +439,14 @@ class TestS05StandardHeaders:
 
     def test_no_headers_warns(self):
         from anvilcv.scoring.section_detector import SectionMap
+
         result = check_s05_standard_headers(SectionMap())
         assert result.status == "warn"
 
 
 class TestS06ChronologicalDates:
     def test_reverse_chronological_passes(self):
-        doc = ExtractedDocument(
-            full_text="January 2024\nMarch 2022\nJune 2020\nSeptember 2018"
-        )
+        doc = ExtractedDocument(full_text="January 2024\nMarch 2022\nJune 2020\nSeptember 2018")
         result = check_s06_chronological_dates(doc)
         assert result.status == "pass"
 
@@ -397,8 +458,7 @@ class TestS06ChronologicalDates:
     def test_forward_chronological_warns(self):
         doc = ExtractedDocument(
             full_text=(
-                "January 2018\nMarch 2019\nJune 2020\n"
-                "September 2021\nNovember 2022\nJanuary 2023"
+                "January 2018\nMarch 2019\nJune 2020\nSeptember 2021\nNovember 2022\nJanuary 2023"
             )
         )
         result = check_s06_chronological_dates(doc)
@@ -453,26 +513,20 @@ class TestStructureRunner:
 class TestScoreCalculation:
     def test_all_pass_is_100(self):
         from anvilcv.schema.score_report import Check
-        checks = [
-            Check(name="test", status="pass", confidence="evidence_based")
-            for _ in range(8)
-        ]
+
+        checks = [Check(name="test", status="pass", confidence="evidence_based") for _ in range(8)]
         assert _calculate_category_score(checks) == 100
 
     def test_all_fail_is_0(self):
         from anvilcv.schema.score_report import Check
-        checks = [
-            Check(name="test", status="fail", confidence="evidence_based")
-            for _ in range(8)
-        ]
+
+        checks = [Check(name="test", status="fail", confidence="evidence_based") for _ in range(8)]
         assert _calculate_category_score(checks) == 0
 
     def test_warns_count_half(self):
         from anvilcv.schema.score_report import Check
-        checks = [
-            Check(name="test", status="warn", confidence="evidence_based")
-            for _ in range(4)
-        ]
+
+        checks = [Check(name="test", status="warn", confidence="evidence_based") for _ in range(4)]
         assert _calculate_category_score(checks) == 50
 
     def test_overall_without_keywords(self):
@@ -541,9 +595,7 @@ class TestTextExtractor:
         from anvilcv.scoring.text_extractor import extract_from_html
 
         html = tmp_path / "test.html"
-        html.write_text(
-            "<html><body><table><tr><td>cell</td></tr></table></body></html>"
-        )
+        html.write_text("<html><body><table><tr><td>cell</td></tr></table></body></html>")
         doc = extract_from_html(html)
         assert doc.has_tables is True
 

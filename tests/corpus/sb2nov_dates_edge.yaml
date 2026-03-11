@@ -1,0 +1,66 @@
+cv:
+  name: Date Edge Cases
+  location: Chicago, IL
+  email: dates@example.com
+  sections:
+    experience:
+      - company: Current Corp
+        position: Staff Engineer
+        start_date: 2023-01
+        end_date: present
+        highlights:
+          - Entry with standard start_date and "present" as end_date
+      - company: Summer Internship LLC
+        position: Intern
+        date: "Summer 2019"
+        highlights:
+          - Entry using a freeform text date
+      - company: Year-Only Inc
+        position: Contractor
+        date: "2021"
+        highlights:
+          - Entry with only a year as the date
+      - company: Seasonal Work
+        position: Part-time Developer
+        date: "Fall 2023"
+        highlights:
+          - Entry with a seasonal text date
+    education:
+      - institution: University of Chicago
+        area: Computer Science
+        degree: PhD
+        start_date: 2015-09
+        end_date: 2020-06
+        highlights:
+          - Standard date range entry
+      - institution: Community College
+        area: General Studies
+        degree: AA
+        date: "2013 – 2015"
+        highlights:
+          - Freeform date range as a single string
+      - institution: Online Academy
+        area: Data Science
+        degree: Certificate
+        date: "2024"
+        highlights:
+          - Year-only date for a short program
+    projects:
+      - name: ancient-project
+        date: "circa 2018"
+        highlights:
+          - Approximate date in freeform text
+      - name: ongoing-project
+        start_date: 2024-01
+        end_date: present
+        highlights:
+          - Project with present as end_date
+      - name: quick-hackathon
+        date: "Jan 2023"
+        highlights:
+          - Month and year freeform date
+    skills:
+      - label: Languages
+        details: Python, Java, Rust
+design:
+  theme: sb2nov

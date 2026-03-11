@@ -73,9 +73,7 @@ def check_p01_single_column(doc: ExtractedDocument) -> Check:
             continue
 
         # Check for wide gaps that suggest separate columns
-        gaps = [
-            sorted_x[i + 1] - sorted_x[i] for i in range(len(sorted_x) - 1)
-        ]
+        gaps = [sorted_x[i + 1] - sorted_x[i] for i in range(len(sorted_x) - 1)]
         # A gap > 150 points suggests a separate column
         wide_gaps = [g for g in gaps if g > 150]
         if wide_gaps:

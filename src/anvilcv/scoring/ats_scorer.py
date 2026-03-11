@@ -55,11 +55,7 @@ def _calculate_overall_score(
     Without: 55% parsability + 45% structure
     """
     if keyword_score is not None:
-        return round(
-            parsability_score * 0.40
-            + structure_score * 0.30
-            + keyword_score * 0.30
-        )
+        return round(parsability_score * 0.40 + structure_score * 0.30 + keyword_score * 0.30)
     return round(parsability_score * 0.55 + structure_score * 0.45)
 
 
@@ -112,9 +108,7 @@ def score_extracted_document(
             )
 
     keyword_score = keyword_section.score if keyword_section else None
-    overall = _calculate_overall_score(
-        parsability_score, structure_score, keyword_score
-    )
+    overall = _calculate_overall_score(parsability_score, structure_score, keyword_score)
 
     return ScoreReport(
         file=file_path,

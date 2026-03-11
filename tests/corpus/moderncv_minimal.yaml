@@ -1,0 +1,10 @@
+cv:
+  name: Minimal Person
+  sections:
+    experience:
+      - company: Only Employer
+        position: Only Role
+        start_date: 2024-01
+        end_date: present
+design:
+  theme: moderncv

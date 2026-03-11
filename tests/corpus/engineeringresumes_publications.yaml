@@ -1,0 +1,67 @@
+cv:
+  name: Pub Scholar
+  location: Boston, MA
+  email: scholar@example.com
+  website: https://pubscholar.org
+  social_networks:
+    - network: Google Scholar
+      username: abcDEF123
+    - network: ORCID
+      username: "0000-0001-2345-6789"
+  sections:
+    publications:
+      - title: "A Paper With DOI Only"
+        authors:
+          - "**Pub Scholar**"
+          - Jane Doe
+        date: 2024-03
+        doi: 10.1145/1234567.7654321
+        journal: ACM Computing Surveys
+      - title: "A Paper With URL Only"
+        authors:
+          - "**Pub Scholar**"
+          - John Smith
+        date: 2023-08
+        url: https://arxiv.org/abs/2308.00000
+        journal: arXiv preprint
+      - title: "A Paper With Both DOI and URL"
+        authors:
+          - Alice Wonderland
+          - "**Pub Scholar**"
+        date: 2023-01
+        doi: 10.1109/TSE.2023.0001
+        url: https://ieeexplore.ieee.org/document/0001
+        journal: IEEE Transactions on Software Engineering
+      - title: "A Workshop Paper With Neither DOI nor URL"
+        authors:
+          - "**Pub Scholar**"
+        date: 2022-06
+        journal: ICSE 2022 Workshop on Reproducibility
+    numbered_publications:
+      - number: "P. Scholar, J. Doe, 'Numbered Entry Example One,' Proc. ICML, 2024."
+      - number: "P. Scholar, 'Numbered Entry Example Two,' NeurIPS Workshop, 2023."
+      - number: "P. Scholar et al., 'Numbered Entry Example Three,' AAAI, 2022."
+    invited_talks:
+      - reversed_number: "Keynote: Future of Reproducible Research — ICSE 2024"
+      - reversed_number: "Panel: Open Science in Software Engineering — FSE 2023"
+      - reversed_number: "Workshop: Practical Artifact Evaluation — ASE 2022"
+    experience:
+      - company: MIT CSAIL
+        position: Postdoctoral Researcher
+        start_date: 2022-09
+        end_date: present
+        highlights:
+          - Leading a research group on automated program repair
+    education:
+      - institution: Carnegie Mellon University
+        area: Software Engineering
+        degree: PhD
+        start_date: 2017-08
+        end_date: 2022-08
+    skills:
+      - label: Research
+        details: "Program analysis, software testing, formal verification"
+      - label: Languages
+        details: "Python, Java, OCaml, Coq"
+design:
+  theme: engineeringresumes

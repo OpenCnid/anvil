@@ -72,9 +72,7 @@ def _build_model(yaml_path: pathlib.Path):
     )
 
     yaml_text = yaml_path.read_text(encoding="utf-8")
-    _, model = build_rendercv_dictionary_and_model(
-        yaml_text, input_file_path=yaml_path
-    )
+    _, model = build_rendercv_dictionary_and_model(yaml_text, input_file_path=yaml_path)
     return model
 
 
@@ -194,9 +192,7 @@ class TestTypstGeneration:
         typst = render_full_template(model, "typst")
         assert "Test Developer" in typst
 
-    def test_typst_contains_devforge_functions(
-        self, devforge_yaml: pathlib.Path
-    ):
+    def test_typst_contains_devforge_functions(self, devforge_yaml: pathlib.Path):
         from anvilcv.vendor.rendercv.renderer.templater.templater import (
             render_full_template,
         )
@@ -206,9 +202,7 @@ class TestTypstGeneration:
         assert "devforge-entry" in typst
         assert "skill-chip" in typst
 
-    def test_typst_contains_section_titles(
-        self, devforge_yaml: pathlib.Path
-    ):
+    def test_typst_contains_section_titles(self, devforge_yaml: pathlib.Path):
         from anvilcv.vendor.rendercv.renderer.templater.templater import (
             render_full_template,
         )
@@ -220,9 +214,7 @@ class TestTypstGeneration:
         assert "Projects" in typst
         assert "Skills" in typst
 
-    def test_typst_contains_entry_content(
-        self, devforge_yaml: pathlib.Path
-    ):
+    def test_typst_contains_entry_content(self, devforge_yaml: pathlib.Path):
         from anvilcv.vendor.rendercv.renderer.templater.templater import (
             render_full_template,
         )
@@ -293,9 +285,7 @@ class TestMarkdownGeneration:
         md = render_full_template(model, "markdown")
         assert "# Test Developer's CV" in md
 
-    def test_markdown_uses_devforge_section_headings(
-        self, devforge_yaml: pathlib.Path
-    ):
+    def test_markdown_uses_devforge_section_headings(self, devforge_yaml: pathlib.Path):
         """Devforge SectionBeginning.j2.md uses '# title' (h1) not '## title'."""
         from anvilcv.vendor.rendercv.renderer.templater.templater import (
             render_full_template,

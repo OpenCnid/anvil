@@ -123,9 +123,7 @@ class TestGeneratePrepNotes:
         )
 
         result = asyncio.run(
-            generate_prep_notes(
-                provider, SAMPLE_RESUME, _make_job(), _make_match()
-            )
+            generate_prep_notes(provider, SAMPLE_RESUME, _make_job(), _make_match())
         )
         assert "TechCo" in result
         assert isinstance(result, str)

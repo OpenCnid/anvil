@@ -60,9 +60,7 @@ def export_command(
         with open(input_file) as f:
             data = yaml.load(f)
     except Exception as e:
-        raise AnvilUserError(
-            message=f"Failed to read {input_file}: {e}"
-        ) from e
+        raise AnvilUserError(message=f"Failed to read {input_file}: {e}") from e
 
     if data is None:
         raise AnvilUserError(message=f"Empty YAML file: {input_file}")
@@ -87,8 +85,6 @@ def export_command(
         with open(output, "w") as f:
             yaml.dump(data, f)
     except Exception as e:
-        raise AnvilUserError(
-            message=f"Failed to write {output}: {e}"
-        ) from e
+        raise AnvilUserError(message=f"Failed to write {output}: {e}") from e
 
     typer.echo(f"Exported to {output} (removed: {', '.join(removed)})")

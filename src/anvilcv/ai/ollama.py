@@ -136,6 +136,4 @@ class OllamaProvider(AIProvider):
         except AnvilAIProviderError:
             raise
         except Exception as e:
-            raise AnvilAIProviderError(
-                message=f"Unexpected error calling Ollama: {e}"
-            ) from e
+            raise AnvilAIProviderError(message=f"Unexpected error calling Ollama: {e}") from e

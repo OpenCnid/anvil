@@ -103,8 +103,7 @@ def scan_command(
         token = os.environ.get("GITHUB_TOKEN")
         if not token:
             typer.echo(
-                "Warning: No GITHUB_TOKEN set. "
-                "Rate limited to 60 requests/hour.",
+                "Warning: No GITHUB_TOKEN set. Rate limited to 60 requests/hour.",
                 err=True,
             )
 
@@ -127,10 +126,7 @@ def scan_command(
         typer.echo(f"No public repositories found for {github}.")
         raise typer.Exit(0)
 
-    typer.echo(
-        f"Found {len(profile.repos)} repos, "
-        f"{profile.summary.total_stars} total stars."
-    )
+    typer.echo(f"Found {len(profile.repos)} repos, {profile.summary.total_stars} total stars.")
 
     # Generate output
     if merge:
@@ -159,6 +155,7 @@ def _output_yaml(profile, output_path: pathlib.Path | None) -> None:
         typer.echo(f"Profile written to {output_path}.")
     else:
         import sys
+
         yaml.dump(data, sys.stdout)
 
 
@@ -192,6 +189,7 @@ def _output_entries_only(profile, output_path: pathlib.Path | None) -> None:
         typer.echo(f"Entries written to {output_path}.")
     else:
         import sys
+
         yaml.dump({"projects": entries}, sys.stdout)
 
 

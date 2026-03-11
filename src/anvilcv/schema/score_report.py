@@ -69,19 +69,13 @@ class ScoreReport(BaseModelWithoutExtraKeys):
 
     file: str = pydantic.Field(description="Path to the scored file.")
     scored_at: datetime = pydantic.Field(default_factory=datetime.now)
-    overall_score: int = pydantic.Field(
-        ge=0, le=100, description="Overall ATS score 0-100."
-    )
+    overall_score: int = pydantic.Field(ge=0, le=100, description="Overall ATS score 0-100.")
     job: str | None = pydantic.Field(
         default=None,
         description="Path to the job description YAML, if scored against one.",
     )
-    parsability: SectionScore = pydantic.Field(
-        default_factory=lambda: SectionScore(score=0)
-    )
-    structure: SectionScore = pydantic.Field(
-        default_factory=lambda: SectionScore(score=0)
-    )
+    parsability: SectionScore = pydantic.Field(default_factory=lambda: SectionScore(score=0))
+    structure: SectionScore = pydantic.Field(default_factory=lambda: SectionScore(score=0))
     keyword_match: KeywordMatchSection | None = pydantic.Field(
         default=None,
         description="Present only when scored against a job description.",

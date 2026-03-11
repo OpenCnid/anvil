@@ -142,10 +142,7 @@ class GitHubScanner:
 
         # Filter by since date
         if since:
-            all_repos = [
-                r for r in all_repos
-                if r.get("pushed_at", "") >= since
-            ]
+            all_repos = [r for r in all_repos if r.get("pushed_at", "") >= since]
 
         return all_repos[:max_repos], current_etag
 
@@ -181,6 +178,7 @@ class GitHubScanner:
             link = response.headers.get("Link", "")
             if 'rel="last"' in link:
                 import re
+
                 match = re.search(r'page=(\d+)>; rel="last"', link)
                 if match:
                     return int(match.group(1))
@@ -216,8 +214,7 @@ def build_github_repo(
         total = sum(languages.values())
         if total > 0:
             lang_pct = {
-                lang: round(bytes_count / total * 100, 1)
-                for lang, bytes_count in languages.items()
+                lang: round(bytes_count / total * 100, 1) for lang, bytes_count in languages.items()
             }
 
     license_info = repo_data.get("license")
@@ -283,17 +280,11 @@ def scan_user(
             repo_name = repo_data["name"]
             languages = scanner.fetch_languages(username, repo_name)
             commit_count = scanner.fetch_commit_count(username, repo_name)
-            user_commits = scanner.fetch_commit_count(
-                username, repo_name, author=username
-            )
-            has_ci = scanner.check_file_exists(
-                username, repo_name, ".github/workflows"
-            )
+            user_commits = scanner.fetch_commit_count(username, repo_name, author=username)
+            has_ci = scanner.check_file_exists(username, repo_name, ".github/workflows")
             has_tests = scanner.check_file_exists(
                 username, repo_name, "tests"
-            ) or scanner.check_file_exists(
-                username, repo_name, "test"
-            )
+            ) or scanner.check_file_exists(username, repo_name, "test")
 
         repos.append(
             build_github_repo(
@@ -316,9 +307,7 @@ def scan_user(
     lang_counts: dict[str, int] = {}
     for repo in repos:
         if repo.primary_language:
-            lang_counts[repo.primary_language] = (
-                lang_counts.get(repo.primary_language, 0) + 1
-            )
+            lang_counts[repo.primary_language] = lang_counts.get(repo.primary_language, 0) + 1
     primary_langs = sorted(lang_counts, key=lambda x: lang_counts[x], reverse=True)[:5]
 
     # Active repos (pushed in last 90 days)
@@ -327,9 +316,7 @@ def scan_user(
     for repo in repos:
         if repo.last_push:
             try:
-                push_dt = datetime.fromisoformat(
-                    repo.last_push.replace("Z", "+00:00")
-                )
+                push_dt = datetime.fromisoformat(repo.last_push.replace("Z", "+00:00"))
                 if (now - push_dt.replace(tzinfo=None)).days <= 90:
                     active_count += 1
             except ValueError:

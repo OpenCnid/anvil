@@ -97,9 +97,7 @@ def check_k01_required_skills(
             status=status,
             confidence="evidence_based",
             source="Greenhouse, Lever",
-            detail=(
-                f"Matched {len(matched)}/{len(required_skills)} required skills."
-            ),
+            detail=(f"Matched {len(matched)}/{len(required_skills)} required skills."),
         ),
         matched,
         missing,
@@ -225,11 +223,7 @@ def check_k05_action_verbs(resume_text: str) -> Check:
     """K-05: Check for strong action verbs."""
     text_lower = resume_text.lower()
 
-    strong_found = sum(
-        1
-        for verb in STRONG_ACTION_VERBS
-        if re.search(rf"\b{verb}\b", text_lower)
-    )
+    strong_found = sum(1 for verb in STRONG_ACTION_VERBS if re.search(rf"\b{verb}\b", text_lower))
 
     weak_found = sum(1 for p in WEAK_PATTERNS if p in text_lower)
 
@@ -245,20 +239,14 @@ def check_k05_action_verbs(resume_text: str) -> Check:
             name="Action verb usage",
             status="warn",
             confidence="opinionated_heuristic",
-            detail=(
-                f"Found {strong_found} strong action verbs"
-                f" and {weak_found} weak phrases."
-            ),
+            detail=(f"Found {strong_found} strong action verbs and {weak_found} weak phrases."),
         )
     else:
         return Check(
             name="Action verb usage",
             status="fail",
             confidence="opinionated_heuristic",
-            detail=(
-                f"Only {strong_found} strong action verbs found. "
-                "Use more impactful language."
-            ),
+            detail=(f"Only {strong_found} strong action verbs found. Use more impactful language."),
         )
 
 
@@ -277,9 +265,7 @@ def run_keyword_checks(
     required = required_skills or []
     preferred = preferred_skills or []
 
-    k01_check, matched, missing = check_k01_required_skills(
-        resume_skills, required
-    )
+    k01_check, matched, missing = check_k01_required_skills(resume_skills, required)
     k02_check = check_k02_preferred_skills(resume_skills, preferred)
     k03_check = check_k03_job_title(doc.full_text, job_title)
     k04_check = check_k04_industry_terms(doc.full_text, job_text)

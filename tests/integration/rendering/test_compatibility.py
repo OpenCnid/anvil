@@ -101,9 +101,7 @@ class TestMarkdownGeneration:
         _get_corpus_files(),
         ids=[f.stem for f in _get_corpus_files()],
     )
-    def test_generates_markdown(
-        self, yaml_file: pathlib.Path, tmp_path: pathlib.Path
-    ):
+    def test_generates_markdown(self, yaml_file: pathlib.Path, tmp_path: pathlib.Path):
         """Each corpus file must produce valid Markdown output."""
         from anvilcv.vendor.rendercv.renderer.markdown import generate_markdown
 
