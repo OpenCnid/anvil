@@ -28,6 +28,16 @@ Run these after implementing to get immediate feedback:
 - New Anvil code goes in `src/anvilcv/`, not in the vendor tree
 - The `anvil` CLI entry point is at `src/anvilcv/cli/entry_point.py`
 
+### Dependency Management
+- Always activate venv first: `source .venv/bin/activate`
+- After modifying pyproject.toml deps, reinstall: `pip install -e ".[dev]"`
+- Vendored rendercv requires deps not in rendercv's public extras: `pydantic[email]`, `pydantic-extra-types`, `phonenumbers`, `markdown`, `annotated-doc`, `rendercv-fonts`, `packaging`
+- Ruff excludes `src/anvilcv/vendor/` — only Anvil code is linted
+
+### Virtual Environment
+- Venv at `.venv/` — use `source .venv/bin/activate` before any command
+- Install: `pip install -e ".[dev]"` (or `pip install -e ".[full]"` for PDF rendering)
+
 ### Codebase Patterns
 
 - Pydantic v2 models for all data validation (inheriting from rendercv's pattern)

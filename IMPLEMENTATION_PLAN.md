@@ -1,6 +1,6 @@
 # Implementation Plan
 
-Status: **Zero implementation**. All `src/anvilcv/` directories contain only empty `__init__.py` files. No tests, no patches, no vendored modifications yet. Baseline directory at `baseline/rendercv-v2.7/` exists for fork integrity checks. `pyproject.toml` is fully configured.
+Status: **Phase 0 complete.** Foundation in place: vendor import hook (find_spec API for Python 3.12+), 4 Modified vendored files patched, CLI scaffold with all 11 commands registered, exceptions, config, cache utilities, 42 tests passing.
 
 **Vendored file key:** Tasks annotate which vendored files they touch.
 - `[Modified]` = change internals of vendored file (4 files total)
@@ -14,19 +14,19 @@ Status: **Zero implementation**. All `src/anvilcv/` directories contain only emp
 
 These tasks are prerequisites for all features and must be completed first.
 
-- [ ] **0.1 Vendor patches: Modified files** — Apply the 4 `[Modified]` patches per `specs/architecture.md`:
+- [x] **0.1 Vendor patches: Modified files** — Apply the 4 `[Modified]` patches per `specs/architecture.md`:
   - `src/anvilcv/vendor/rendercv/__init__.py` `[Modified]` — Change package name to `anvilcv`, update version
   - `src/anvilcv/vendor/rendercv/__main__.py` `[Modified]` — Point to Anvil entry point (`anvilcv.__main__`)
   - `src/anvilcv/vendor/rendercv/cli/entry_point.py` `[Modified]` — Rewire to Anvil CLI app
   - `src/anvilcv/vendor/rendercv/cli/app.py` `[Modified]` — Replace Typer app with Anvil's; add new subcommands; version check points to `anvilcv` on PyPI
   - Document each patch in `patches/README.md` with file, purpose, and risk level
-- [ ] **0.2 Initialize `src/anvilcv/__init__.py`** — Set `__version__`, `__package_name__` ("anvilcv"); this is the Anvil package root (NOT the vendored `__init__.py`)
-- [ ] **0.3 Create `src/anvilcv/__main__.py`** — Enable `python -m anvilcv`; delegates to `anvilcv.cli.entry_point:main`
-- [ ] **0.4 Create `src/anvilcv/cli/entry_point.py`** — The `anvil` binary entry point (defined in pyproject.toml as `anvilcv.cli.entry_point:main`); mirrors rendercv's dependency-safe pattern with helpful error on missing deps
-- [ ] **0.5 Create `src/anvilcv/utils/config.py`** — API key lookup from env vars, `.anvil/config.yaml` loading, provider config resolution
-- [ ] **0.6 Create `src/anvilcv/utils/cache.py`** — Generic caching utilities for `.anvil/` directory management (used by GitHub scanner, job parser, debug logs)
-- [ ] **0.7 Error handling foundation** — Define Anvil-specific exception classes (exit codes 1-4 per `specs/cli-interface.md`) in `src/anvilcv/exceptions.py`; integrate with vendored `error_handler.py` `[Extended]`
-- [ ] **0.8 Test infrastructure** — Create `tests/conftest.py` with shared fixtures (tmp dirs, sample YAML, mock providers); verify `pytest`, `ruff`, `mypy` pass on empty project; create a minimal compatibility corpus fixture (at least 1 rendercv YAML file from rendercv examples)
+- [x] **0.2 Initialize `src/anvilcv/__init__.py`** — Set `__version__`, `__package_name__` ("anvilcv"); this is the Anvil package root (NOT the vendored `__init__.py`)
+- [x] **0.3 Create `src/anvilcv/__main__.py`** — Enable `python -m anvilcv`; delegates to `anvilcv.cli.entry_point:main`
+- [x] **0.4 Create `src/anvilcv/cli/entry_point.py`** — The `anvil` binary entry point (defined in pyproject.toml as `anvilcv.cli.entry_point:main`); mirrors rendercv's dependency-safe pattern with helpful error on missing deps
+- [x] **0.5 Create `src/anvilcv/utils/config.py`** — API key lookup from env vars, `.anvil/config.yaml` loading, provider config resolution
+- [x] **0.6 Create `src/anvilcv/utils/cache.py`** — Generic caching utilities for `.anvil/` directory management (used by GitHub scanner, job parser, debug logs)
+- [x] **0.7 Error handling foundation** — Define Anvil-specific exception classes (exit codes 1-4 per `specs/cli-interface.md`) in `src/anvilcv/exceptions.py`; integrate with vendored `error_handler.py` `[Extended]`
+- [x] **0.8 Test infrastructure** — Create `tests/conftest.py` with shared fixtures (tmp dirs, sample YAML, mock providers); verify `pytest`, `ruff`, `mypy` pass on empty project; create a minimal compatibility corpus fixture (at least 1 rendercv YAML file from rendercv examples)
 
 ---
 
@@ -37,7 +37,7 @@ These tasks are prerequisites for all features and must be completed first.
 - [ ] **1.1 Create `src/anvilcv/cli/app.py`** — Anvil Typer app with global `--version` and `--help`; register subcommands: `render`, `new`, `score`, `tailor`, `scan`, `prep`, `cover`, `watch`, `deploy`, `export`
 - [ ] **1.2 Wire render command** — `anvil render` delegates to vendored `rendercv` render pipeline via `anvilcv.vendor.rendercv.cli.render_command`; verify identical behavior to `rendercv render`
 - [ ] **1.3 Wire new command** — `anvil new` delegates to vendored `new_command` with Anvil extensions (`--theme devforge`, `--rendercv-compat` flag to output pure rendercv YAML without `anvil` section)
-- [ ] **1.4 Stub remaining subcommands** — Each subcommand (`score`, `tailor`, `scan`, `prep`, `cover`, `watch`, `deploy`, `export`) prints "Not yet implemented" with exit code 0; ensures `anvil --help` lists all commands and each has `--help`
+- [x] **1.4 Stub remaining subcommands** — Each subcommand (`score`, `tailor`, `scan`, `prep`, `cover`, `watch`, `deploy`, `export`) prints "Not yet implemented" with exit code 0; ensures `anvil --help` lists all commands and each has `--help`
 - [ ] **1.5 Tests for CLI scaffold** — Test `--help` output, `--version`, exit codes, and that `render` delegates correctly; add to `tests/unit/cli/test_cli.py`
 
 ### F-ANV-01: Forward-Compatible Rendering (no dependencies)

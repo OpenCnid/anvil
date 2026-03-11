@@ -23,12 +23,18 @@ classifiers = [
 ]
 dependencies = [
     # Inherited from rendercv
-    "pydantic>=2.0",
+    "pydantic[email]>=2.0",
+    "pydantic-extra-types>=2.0",
     "typer>=0.12",
     "rich>=13.0",
     "Jinja2>=3.1",
     "ruamel.yaml>=0.18",
     "watchdog>=4.0",
+    "packaging>=23.0",
+    "phonenumbers>=8.0",
+    "markdown>=3.0",
+    "annotated-doc>=0.0.4",
+    "rendercv-fonts>=0.5",
     # Anvil additions
     "pdfminer.six>=20231228",
     "readability-lxml>=0.8",
@@ -59,6 +65,7 @@ anvil = "anvilcv.cli.entry_point:main"
 [tool.ruff]
 target-version = "py312"
 line-length = 100
+extend-exclude = ["src/anvilcv/vendor/"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "W", "UP"]
