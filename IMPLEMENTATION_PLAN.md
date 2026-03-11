@@ -1,6 +1,6 @@
 # Implementation Plan
 
-Status: **Phase 0 complete. Phase 1 complete. Phase 2 in progress.** Foundation in place: vendor import hook (find_spec API for Python 3.12+), 4 Modified vendored files patched, CLI scaffold with all 11 commands registered, exceptions, config, cache utilities. AI provider abstraction (F-ANV-09) complete. Extended YAML schema (F-ANV-02) complete. ATS score checker (F-ANV-04, F-ANV-05) complete with keyword matching. Export command (F-ANV-17) complete. AI tailoring pipeline (F-ANV-10) complete. JSON Schema generation (F-ANV-16) complete. Multi-variant rendering (F-ANV-08) complete. Fork integrity tests in place. 360 tests passing.
+Status: **Phase 0 complete. Phase 1 complete. Phase 2 in progress.** Foundation in place: vendor import hook (find_spec API for Python 3.12+), 4 Modified vendored files patched, CLI scaffold with all 11 commands registered, exceptions, config, cache utilities. AI provider abstraction (F-ANV-09) complete. Extended YAML schema (F-ANV-02) complete. ATS score checker (F-ANV-04, F-ANV-05) complete with keyword matching. Export command (F-ANV-17) complete. AI tailoring pipeline (F-ANV-10) complete. JSON Schema generation (F-ANV-16) complete. Multi-variant rendering (F-ANV-08) complete. GitHub scanner (F-ANV-11) complete. Fork integrity tests in place. 395 tests passing.
 
 **Vendored file key:** Tasks annotate which vendored files they touch.
 - `[Modified]` = change internals of vendored file (4 files total)
@@ -136,12 +136,12 @@ These tasks are prerequisites for all features and must be completed first.
 
 ### F-ANV-11: GitHub Content Scanner (depends on F-ANV-02)
 
-- [ ] **2.25 GitHub API client** — Create `src/anvilcv/github/scanner.py` — fetch repos via GitHub REST API with `httpx`; conditional requests (ETag/If-None-Match); `--max-repos 100` default; rate limit awareness (log remaining, pause at 10%)
-- [ ] **2.26 GitHub cache** — Create `src/anvilcv/github/cache.py` — aggressive caching in `.anvil/github/` with TTL; conditional requests returning 304 use cached data; invalidation on `--force-refresh`
-- [ ] **2.27 Metrics extractor** — Create `src/anvilcv/github/metrics.py` — extract languages, commits, stars, forks, topics, CI detection (`.github/workflows/`), test detection, license
-- [ ] **2.28 Entry generator** — Create `src/anvilcv/github/entry_generator.py` — convert GitHub data to rendercv entry YAML (`NormalEntry` format with project metadata line: ★ stars · language · updated)
-- [ ] **2.29 Scan command** — Create `src/anvilcv/cli/scan_command/` — `anvil scan --github <user> [--merge INPUT] [--max-repos N] [--since DATE]`
-- [ ] **2.30 Scan tests** — Mock GitHub API responses (use VCR cassettes); test caching, conditional requests, rate limiting, entry generation; `tests/unit/github/test_scanner.py`
+- [x] **2.25 GitHub API client** — Create `src/anvilcv/github/scanner.py` — fetch repos via GitHub REST API with `httpx`; conditional requests (ETag/If-None-Match); `--max-repos 100` default; rate limit awareness (log remaining, pause at 10%)
+- [x] **2.26 GitHub cache** — Create `src/anvilcv/github/cache.py` — aggressive caching in `.anvil/github/` with TTL; conditional requests returning 304 use cached data; invalidation on `--force-refresh`
+- [x] **2.27 Metrics extractor** — Create `src/anvilcv/github/metrics.py` — extract languages, commits, stars, forks, topics, CI detection (`.github/workflows/`), test detection, license
+- [x] **2.28 Entry generator** — Create `src/anvilcv/github/entry_generator.py` — convert GitHub data to rendercv entry YAML (`NormalEntry` format with project metadata line: ★ stars · language · updated)
+- [x] **2.29 Scan command** — Create `src/anvilcv/cli/scan_command/` — `anvil scan --github <user> [--merge INPUT] [--max-repos N] [--since DATE]`
+- [x] **2.30 Scan tests** — Mock GitHub API responses; test caching, conditional requests, rate limiting, entry generation, CLI; `tests/unit/github/test_scanner.py`
 
 ---
 

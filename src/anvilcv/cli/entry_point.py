@@ -35,6 +35,7 @@ Please reinstall with the correct command above.
     # Trigger vendored rendercv command registration (render, new, create_theme)
     # Register implemented Anvil commands
     import anvilcv.cli.export_command  # noqa: F401, PLC0415
+    import anvilcv.cli.scan_command.scan_command  # noqa: F401, PLC0415
     import anvilcv.cli.score_command.score_command  # noqa: F401, PLC0415
     import anvilcv.cli.tailor_command.tailor_command  # noqa: F401, PLC0415
     import anvilcv.vendor.rendercv.cli.app  # noqa: F401, PLC0415

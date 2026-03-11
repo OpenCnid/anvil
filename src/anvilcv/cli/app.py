@@ -52,14 +52,6 @@ def _not_implemented(command_name: str) -> None:
 
 
 @app.command(
-    name="scan",
-    help="Scan your GitHub profile for resume-worthy projects.",
-)
-def cli_command_scan():
-    _not_implemented("anvil scan")
-
-
-@app.command(
     name="prep",
     help="Generate interview preparation notes.",
 )
