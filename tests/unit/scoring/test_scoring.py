@@ -729,6 +729,7 @@ class TestP01FewElementsSkipped:
             full_text="Hello\nWorld",
             elements=elements,
             page_count=1,
+            source_type="pdf",
         )
         result = check_p01_single_column(doc)
         assert result.status == "pass"
