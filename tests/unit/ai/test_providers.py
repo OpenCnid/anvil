@@ -10,6 +10,7 @@ Why:
 """
 
 import asyncio
+import logging
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -221,6 +222,75 @@ class TestOpenAIGeneration:
             asyncio.run(provider.generate(_make_request()))
 
 
+class TestOpenAIErrorHandling:
+    """Cover OpenAI error paths: ImportError, AuthError, RateLimitError, APIError, generic."""
+
+    def test_generate_import_error(self, monkeypatch):
+        """Line 70-71: openai not installed."""
+        provider = OpenAIProvider(api_key="sk-test")
+        request = _make_request()
+
+        with patch.dict("sys.modules", {"openai": None}):
+            with pytest.raises(AnvilAIProviderError, match="not installed"):
+                asyncio.run(provider.generate(request))
+
+    def test_generate_auth_error(self):
+        """Line 102-105: AuthenticationError."""
+        provider = OpenAIProvider(api_key="sk-bad")
+        request = _make_request()
+
+        mock_mod = _mock_openai_module()
+        mock_mod.OpenAI.return_value.chat.completions.create.side_effect = (
+            mock_mod.AuthenticationError("Invalid key")
+        )
+
+        with patch.dict("sys.modules", {"openai": mock_mod}):
+            with pytest.raises(AnvilAIProviderError, match="authentication failed"):
+                asyncio.run(provider.generate(request))
+
+    def test_generate_rate_limit(self):
+        """Line 106-109: RateLimitError."""
+        provider = OpenAIProvider(api_key="sk-test")
+        request = _make_request()
+
+        mock_mod = _mock_openai_module()
+        mock_mod.OpenAI.return_value.chat.completions.create.side_effect = mock_mod.RateLimitError(
+            "Rate limit"
+        )
+
+        with patch.dict("sys.modules", {"openai": mock_mod}):
+            with pytest.raises(AnvilAIProviderError, match="rate limit"):
+                asyncio.run(provider.generate(request))
+
+    def test_generate_api_error(self):
+        """Line 110-111: APIError."""
+        provider = OpenAIProvider(api_key="sk-test")
+        request = _make_request()
+
+        mock_mod = _mock_openai_module()
+        mock_mod.OpenAI.return_value.chat.completions.create.side_effect = mock_mod.APIError(
+            "Server error"
+        )
+
+        with patch.dict("sys.modules", {"openai": mock_mod}):
+            with pytest.raises(AnvilAIProviderError, match="API error"):
+                asyncio.run(provider.generate(request))
+
+    def test_generate_unexpected_error(self):
+        """Line 112-113: Generic exception."""
+        provider = OpenAIProvider(api_key="sk-test")
+        request = _make_request()
+
+        mock_mod = _mock_openai_module()
+        mock_mod.OpenAI.return_value.chat.completions.create.side_effect = RuntimeError(
+            "Something broke"
+        )
+
+        with patch.dict("sys.modules", {"openai": mock_mod}):
+            with pytest.raises(AnvilAIProviderError, match="Unexpected error"):
+                asyncio.run(provider.generate(request))
+
+
 class TestOllamaGeneration:
     def test_generate_success(self):
         provider = OllamaProvider()
@@ -258,6 +328,162 @@ class TestOllamaGeneration:
             mock_client.post.side_effect = httpx.ConnectError("Connection refused")
 
             with pytest.raises(AnvilAIProviderError, match="Cannot connect"):
+                asyncio.run(provider.generate(request))
+
+    def test_generate_timeout_error(self):
+        """Line 128-135: TimeoutException."""
+        import httpx
+
+        provider = OllamaProvider()
+        request = _make_request()
+
+        with patch("anvilcv.ai.ollama.httpx.AsyncClient") as mock_client_cls:
+            mock_client = AsyncMock()
+            mock_client_cls.return_value.__aenter__ = AsyncMock(return_value=mock_client)
+            mock_client_cls.return_value.__aexit__ = AsyncMock(return_value=False)
+            mock_client.post.side_effect = httpx.ReadTimeout("Timed out")
+
+            with pytest.raises(AnvilAIProviderError, match="timed out"):
+                asyncio.run(provider.generate(request))
+
+    def test_generate_http_error(self):
+        """Line 101-107: Non-200 status code."""
+        provider = OllamaProvider()
+        request = _make_request()
+
+        mock_response = MagicMock()
+        mock_response.status_code = 500
+        mock_response.text = "Internal Server Error"
+
+        with patch("anvilcv.ai.ollama.httpx.AsyncClient") as mock_client_cls:
+            mock_client = AsyncMock()
+            mock_client_cls.return_value.__aenter__ = AsyncMock(return_value=mock_client)
+            mock_client_cls.return_value.__aexit__ = AsyncMock(return_value=False)
+            mock_client.post.return_value = mock_response
+
+            with pytest.raises(AnvilAIProviderError, match="HTTP 500"):
+                asyncio.run(provider.generate(request))
+
+    def test_generate_untested_model_warns(self, caplog):
+        """Line 72-77: Warning for untested model names."""
+        provider = OllamaProvider(model="mistral:7b")
+        request = _make_request()
+
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            "message": {"content": "response"},
+            "prompt_eval_count": 10,
+            "eval_count": 5,
+        }
+
+        with patch("anvilcv.ai.ollama.httpx.AsyncClient") as mock_client_cls:
+            mock_client = AsyncMock()
+            mock_client_cls.return_value.__aenter__ = AsyncMock(return_value=mock_client)
+            mock_client_cls.return_value.__aexit__ = AsyncMock(return_value=False)
+            mock_client.post.return_value = mock_response
+
+            with caplog.at_level(logging.WARNING, logger="anvilcv.ai.ollama"):
+                result = asyncio.run(provider.generate(request))
+
+        assert "not in the tested set" in caplog.text
+        assert result.content == "response"
+
+    def test_generate_with_max_output_tokens(self):
+        """Line 93-95: max_output_tokens sets num_predict."""
+        provider = OllamaProvider()
+        request = GenerationRequest(
+            task=TaskType.TAILOR_BULLETS,
+            system_prompt="system",
+            user_prompt="user",
+            temperature=0.3,
+            max_output_tokens=2048,
+        )
+
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            "message": {"content": "ok"},
+            "prompt_eval_count": 10,
+            "eval_count": 5,
+        }
+
+        with patch("anvilcv.ai.ollama.httpx.AsyncClient") as mock_client_cls:
+            mock_client = AsyncMock()
+            mock_client_cls.return_value.__aenter__ = AsyncMock(return_value=mock_client)
+            mock_client_cls.return_value.__aexit__ = AsyncMock(return_value=False)
+            mock_client.post.return_value = mock_response
+
+            asyncio.run(provider.generate(request))
+
+        # Verify num_predict was set in the payload
+        call_args = mock_client.post.call_args
+        payload = call_args.kwargs.get("json") or call_args[1].get("json")
+        assert payload["options"]["num_predict"] == 2048
+
+    def test_generate_unexpected_error(self):
+        """Line 138-139: Generic exception wrapping."""
+        provider = OllamaProvider()
+        request = _make_request()
+
+        with patch("anvilcv.ai.ollama.httpx.AsyncClient") as mock_client_cls:
+            mock_client = AsyncMock()
+            mock_client_cls.return_value.__aenter__ = AsyncMock(return_value=mock_client)
+            mock_client_cls.return_value.__aexit__ = AsyncMock(return_value=False)
+            mock_client.post.side_effect = ValueError("Unexpected")
+
+            with pytest.raises(AnvilAIProviderError, match="Unexpected error"):
+                asyncio.run(provider.generate(request))
+
+    def test_is_configured_server_reachable(self):
+        """Line 54-56: Server reachable returns True."""
+        provider = OllamaProvider()
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+
+        with patch("anvilcv.ai.ollama.httpx.get", return_value=mock_response):
+            assert provider.is_configured() is True
+
+
+class TestAnthropicErrorHandling:
+    """Cover Anthropic error paths: ImportError, APIError, generic Exception."""
+
+    def test_generate_import_error(self, monkeypatch):
+        """Line 71-72: anthropic not installed."""
+        monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+        provider = AnthropicProvider(api_key="sk-test")
+        request = _make_request()
+
+        with patch.dict("sys.modules", {"anthropic": None}):
+            with pytest.raises(AnvilAIProviderError, match="not installed"):
+                asyncio.run(provider.generate(request))
+
+    def test_generate_api_error(self):
+        """Line 113-114: APIError."""
+        provider = AnthropicProvider(api_key="sk-test")
+        request = _make_request()
+
+        mock_mod = _mock_anthropic_module()
+        mock_mod.Anthropic.return_value.messages.create.side_effect = mock_mod.APIError(
+            "Server error"
+        )
+
+        with patch.dict("sys.modules", {"anthropic": mock_mod}):
+            with pytest.raises(AnvilAIProviderError, match="API error"):
+                asyncio.run(provider.generate(request))
+
+    def test_generate_unexpected_error(self):
+        """Line 115-116: Generic exception."""
+        provider = AnthropicProvider(api_key="sk-test")
+        request = _make_request()
+
+        mock_mod = _mock_anthropic_module()
+        mock_mod.Anthropic.return_value.messages.create.side_effect = RuntimeError(
+            "Something broke"
+        )
+
+        with patch.dict("sys.modules", {"anthropic": mock_mod}):
+            with pytest.raises(AnvilAIProviderError, match="Unexpected error"):
                 asyncio.run(provider.generate(request))
 
 
