@@ -257,6 +257,82 @@ class TestTailorErrors:
         assert "AI error" in result.output
 
 
+class TestTailorRenderAndScore:
+    """Test --render and --score composition flags."""
+
+    @patch("anvilcv.cli.tailor_command.tailor_command._score_variant")
+    @patch("anvilcv.cli.tailor_command.tailor_command._render_variant")
+    @patch("anvilcv.tailoring.variant_writer.write_variant")
+    @patch("anvilcv.tailoring.rewriter.rewrite_top_bullets")
+    @patch("anvilcv.cli.provider_resolver.resolve_provider")
+    @patch("anvilcv.tailoring.matcher.match_resume_to_job")
+    @patch("anvilcv.cli.job_input.resolve_job_input")
+    def test_render_flag_triggers_rendering(
+        self,
+        mock_resolve_job: MagicMock,
+        mock_match: MagicMock,
+        mock_resolve: MagicMock,
+        mock_rewrite: MagicMock,
+        mock_write: MagicMock,
+        mock_render: MagicMock,
+        mock_score: MagicMock,
+        tmp_path: pathlib.Path,
+    ) -> None:
+        resume, job = _write_resume_and_job(tmp_path)
+        out = tmp_path / "variant.yaml"
+
+        mock_resolve_job.return_value = MagicMock(company="TechCo")
+        mock_match.return_value = _make_match()
+        mock_resolve.return_value = MagicMock(name="anthropic")
+        mock_rewrite.return_value = [{"path": "x", "new": "y"}]
+        mock_write.return_value = out
+
+        result = runner.invoke(
+            app,
+            ["tailor", str(resume), "--job", str(job), "--output", str(out), "--render"],
+        )
+        assert result.exit_code == 0
+        mock_render.assert_called_once_with(out)
+        mock_score.assert_not_called()
+
+    @patch("anvilcv.cli.tailor_command.tailor_command._score_variant")
+    @patch("anvilcv.cli.tailor_command.tailor_command._render_variant")
+    @patch("anvilcv.tailoring.variant_writer.write_variant")
+    @patch("anvilcv.tailoring.rewriter.rewrite_top_bullets")
+    @patch("anvilcv.cli.provider_resolver.resolve_provider")
+    @patch("anvilcv.tailoring.matcher.match_resume_to_job")
+    @patch("anvilcv.cli.job_input.resolve_job_input")
+    def test_score_flag_implies_render(
+        self,
+        mock_resolve_job: MagicMock,
+        mock_match: MagicMock,
+        mock_resolve: MagicMock,
+        mock_rewrite: MagicMock,
+        mock_write: MagicMock,
+        mock_render: MagicMock,
+        mock_score: MagicMock,
+        tmp_path: pathlib.Path,
+    ) -> None:
+        """--score implies --render per CLI spec."""
+        resume, job = _write_resume_and_job(tmp_path)
+        out = tmp_path / "variant.yaml"
+        job_desc = MagicMock(company="TechCo")
+
+        mock_resolve_job.return_value = job_desc
+        mock_match.return_value = _make_match()
+        mock_resolve.return_value = MagicMock(name="anthropic")
+        mock_rewrite.return_value = [{"path": "x", "new": "y"}]
+        mock_write.return_value = out
+
+        result = runner.invoke(
+            app,
+            ["tailor", str(resume), "--job", str(job), "--output", str(out), "--score"],
+        )
+        assert result.exit_code == 0
+        mock_render.assert_called_once_with(out)
+        mock_score.assert_called_once()
+
+
 class TestResolveProvider:
     """Test shared resolve_provider helper."""
 

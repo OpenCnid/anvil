@@ -202,6 +202,146 @@ class TestScoreErrors:
         assert "Error: corrupt PDF" in result.output
 
 
+class TestScoreYamlInput:
+    """Test scoring YAML input (auto-renders then scores)."""
+
+    @patch(
+        "anvilcv.cli.score_command.score_command._render_yaml_for_scoring"
+    )
+    @patch("anvilcv.scoring.ats_scorer.score_document")
+    def test_yaml_input_renders_first(
+        self,
+        mock_score: MagicMock,
+        mock_render: MagicMock,
+        tmp_path: pathlib.Path,
+    ) -> None:
+        """YAML input triggers rendering before scoring."""
+        resume = tmp_path / "resume.yaml"
+        resume.write_text("cv:\n  name: Test\n")
+        html_output = tmp_path / "output.html"
+        html_output.write_text("<html>scored</html>")
+        mock_render.return_value = html_output
+        mock_score.return_value = _make_report()
+
+        result = runner.invoke(app, ["score", str(resume)])
+        assert result.exit_code == 0
+        mock_render.assert_called_once_with(resume)
+        assert "85/100" in result.output
+
+    @patch("anvilcv.scoring.ats_scorer.score_document")
+    def test_pdf_input_no_render(
+        self,
+        mock_score: MagicMock,
+        tmp_path: pathlib.Path,
+    ) -> None:
+        """PDF input does not trigger rendering."""
+        pdf = tmp_path / "resume.pdf"
+        pdf.write_bytes(b"%PDF-1.4 test")
+        mock_score.return_value = _make_report()
+
+        result = runner.invoke(app, ["score", str(pdf)])
+        assert result.exit_code == 0
+
+
+class TestScoreYamlFormat:
+    """Test --format yaml output."""
+
+    @patch("anvilcv.scoring.ats_scorer.score_document")
+    def test_yaml_format_output(
+        self,
+        mock_score: MagicMock,
+        tmp_path: pathlib.Path,
+    ) -> None:
+        """--format yaml produces valid YAML output."""
+        import yaml  # type: ignore[import-untyped]
+
+        pdf = tmp_path / "resume.pdf"
+        pdf.write_bytes(b"%PDF-1.4 test")
+        mock_score.return_value = _make_report()
+
+        result = runner.invoke(app, ["score", str(pdf), "--format", "yaml"])
+        assert result.exit_code == 0
+        # Should be parseable YAML
+        data = yaml.safe_load(result.output)
+        assert data["overall_score"] == 85
+
+    @patch("anvilcv.scoring.ats_scorer.score_document")
+    def test_yaml_format_to_file(
+        self,
+        mock_score: MagicMock,
+        tmp_path: pathlib.Path,
+    ) -> None:
+        """--format yaml --output writes to file."""
+        pdf = tmp_path / "resume.pdf"
+        pdf.write_bytes(b"%PDF-1.4 test")
+        out = tmp_path / "report.yaml"
+        mock_score.return_value = _make_report()
+
+        result = runner.invoke(
+            app,
+            ["score", str(pdf), "--format", "yaml", "--output", str(out)],
+        )
+        assert result.exit_code == 0
+        assert out.exists()
+        assert "Report written to" in result.output
+
+
+class TestScoreJobUrl:
+    """Test --job with URL handling."""
+
+    @patch("anvilcv.cli.job_input.resolve_job_input")
+    @patch("anvilcv.scoring.ats_scorer.score_document")
+    def test_job_url_resolves(
+        self,
+        mock_score: MagicMock,
+        mock_resolve_job: MagicMock,
+        tmp_path: pathlib.Path,
+    ) -> None:
+        """--job accepts URL through resolve_job_input."""
+        pdf = tmp_path / "resume.pdf"
+        pdf.write_bytes(b"%PDF-1.4 test")
+        mock_resolve_job.return_value = MagicMock()
+        mock_score.return_value = _make_report()
+
+        result = runner.invoke(
+            app,
+            ["score", str(pdf), "--job", "https://example.com/job"],
+        )
+        assert result.exit_code == 0
+        mock_resolve_job.assert_called_once_with(
+            "https://example.com/job"
+        )
+
+    @patch("anvilcv.cli.job_input.resolve_job_input")
+    @patch("anvilcv.scoring.ats_scorer.score_document")
+    def test_job_service_error_continues(
+        self,
+        mock_score: MagicMock,
+        mock_resolve_job: MagicMock,
+        tmp_path: pathlib.Path,
+    ) -> None:
+        """Service errors warn and continue scoring without keywords."""
+        from anvilcv.exceptions import AnvilServiceError
+
+        pdf = tmp_path / "resume.pdf"
+        pdf.write_bytes(b"%PDF-1.4 test")
+        mock_resolve_job.side_effect = AnvilServiceError(
+            message="Could not fetch URL"
+        )
+        mock_score.return_value = _make_report()
+
+        result = runner.invoke(
+            app,
+            ["score", str(pdf), "--job", "https://unreachable.com/job"],
+        )
+        assert result.exit_code == 0
+        assert "Warning" in result.output
+        # Scored without job description
+        mock_score.assert_called_once()
+        call_kwargs = mock_score.call_args
+        assert call_kwargs[1].get("job") is None
+
+
 class TestScoreReportFormatting:
     """Test _print_text_report and _status_icon helpers."""
 
