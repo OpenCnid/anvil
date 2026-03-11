@@ -1,6 +1,6 @@
 # Implementation Plan
 
-Status: **Phase 0 complete. Phase 1 in progress.** Foundation in place: vendor import hook (find_spec API for Python 3.12+), 4 Modified vendored files patched, CLI scaffold with all 11 commands registered, exceptions, config, cache utilities. AI provider abstraction (F-ANV-09) complete. Extended YAML schema (F-ANV-02) complete. Fork integrity tests in place. 228 tests passing.
+Status: **Phase 0 complete. Phase 1 in progress.** Foundation in place: vendor import hook (find_spec API for Python 3.12+), 4 Modified vendored files patched, CLI scaffold with all 11 commands registered, exceptions, config, cache utilities. AI provider abstraction (F-ANV-09) complete. Extended YAML schema (F-ANV-02) complete. ATS score checker (F-ANV-04) complete. Fork integrity tests in place. 289 tests passing.
 
 **Vendored file key:** Tasks annotate which vendored files they touch.
 - `[Modified]` = change internals of vendored file (4 files total)
@@ -38,7 +38,7 @@ These tasks are prerequisites for all features and must be completed first.
 - [x] **1.2 Wire render command** — `anvil render` delegates to vendored `rendercv` render pipeline via `anvilcv.vendor.rendercv.cli.render_command`; verify identical behavior to `rendercv render`
 - [x] **1.3 Wire new command** — `anvil new` delegates to vendored `new_command` with Anvil extensions (`--theme devforge`, `--rendercv-compat` flag to output pure rendercv YAML without `anvil` section)
 - [x] **1.4 Stub remaining subcommands** — Each subcommand (`score`, `tailor`, `scan`, `prep`, `cover`, `watch`, `deploy`, `export`) prints "Not yet implemented" with exit code 0; ensures `anvil --help` lists all commands and each has `--help`
-- [ ] **1.5 Tests for CLI scaffold** — Test `--help` output, `--version`, exit codes, and that `render` delegates correctly; add to `tests/unit/cli/test_cli.py`
+- [x] **1.5 Tests for CLI scaffold** — Test `--help` output, `--version`, exit codes, and that `render` delegates correctly; add to `tests/unit/cli/test_cli.py`
 
 ### F-ANV-01: Forward-Compatible Rendering (no dependencies)
 
@@ -71,13 +71,13 @@ These tasks are prerequisites for all features and must be completed first.
 
 ### F-ANV-04: ATS Score Checker (depends on F-ANV-01)
 
-- [ ] **1.26 Text extraction** — Create `src/anvilcv/scoring/text_extractor.py` — extract text from PDF (via `pdfminer.six`, MIT, pure Python) and HTML; preserve position data (x, y, width, height) for layout analysis
-- [ ] **1.27 Section detector** — Create `src/anvilcv/scoring/section_detector.py` — detect resume sections (Experience, Education, Skills, Projects, Summary, etc.) from extracted text using header pattern matching
-- [ ] **1.28 Parsability checker** — Create `src/anvilcv/scoring/parsability_checker.py` — implement rules P-01 through P-08 per `specs/ats-scoring-model.md`; each rule returns score + confidence level (evidence-based vs. opinionated heuristic) + evidence
-- [ ] **1.29 Structure checker** — Create `src/anvilcv/scoring/structure_checker.py` — implement rules S-01 through S-08
-- [ ] **1.30 ATS scorer engine** — Create `src/anvilcv/scoring/ats_scorer.py` — orchestrates text extraction → section detection → parsability → structure → score calculation; weighted formula: without JD = parsability×0.55 + structure×0.45; with JD = parsability×0.40 + structure×0.30 + keywords×0.30
-- [ ] **1.31 Score CLI command** — Create `src/anvilcv/cli/score_command/` — implement `anvil score INPUT` with `--format` (text/json), `--output`, `--verbose` options; terminal output with Rich formatting (green ≥80, yellow ≥60, red <60 per spec)
-- [ ] **1.32 Scoring tests** — Unit tests for each scoring rule (P-01 through P-08, S-01 through S-08) with known-good and known-bad inputs; test score calculation formula; 100% rule coverage required per `specs/success-criteria.md`; `tests/unit/scoring/test_scoring.py`
+- [x] **1.26 Text extraction** — Create `src/anvilcv/scoring/text_extractor.py` — extract text from PDF (via `pdfminer.six`, MIT, pure Python) and HTML; preserve position data (x, y, width, height) for layout analysis
+- [x] **1.27 Section detector** — Create `src/anvilcv/scoring/section_detector.py` — detect resume sections (Experience, Education, Skills, Projects, Summary, etc.) from extracted text using header pattern matching
+- [x] **1.28 Parsability checker** — Create `src/anvilcv/scoring/parsability_checker.py` — implement rules P-01 through P-08 per `specs/ats-scoring-model.md`; each rule returns score + confidence level (evidence-based vs. opinionated heuristic) + evidence
+- [x] **1.29 Structure checker** — Create `src/anvilcv/scoring/structure_checker.py` — implement rules S-01 through S-08
+- [x] **1.30 ATS scorer engine** — Create `src/anvilcv/scoring/ats_scorer.py` — orchestrates text extraction → section detection → parsability → structure → score calculation; weighted formula: without JD = parsability×0.55 + structure×0.45; with JD = parsability×0.40 + structure×0.30 + keywords×0.30
+- [x] **1.31 Score CLI command** — Create `src/anvilcv/cli/score_command/` — implement `anvil score INPUT` with `--format` (text/json), `--output`, `--verbose` options; terminal output with Rich formatting (green ≥80, yellow ≥60, red <60 per spec)
+- [x] **1.32 Scoring tests** — Unit tests for each scoring rule (P-01 through P-08, S-01 through S-08) with known-good and known-bad inputs; test score calculation formula; 100% rule coverage required per `specs/success-criteria.md`; `tests/unit/scoring/test_scoring.py`
 
 ### F-ANV-05: ATS Score with Job Description (depends on F-ANV-04)
 

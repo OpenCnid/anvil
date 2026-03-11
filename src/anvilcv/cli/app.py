@@ -52,16 +52,6 @@ def _not_implemented(command_name: str) -> None:
 
 
 @app.command(
-    name="score",
-    help="Check your resume's ATS compatibility score.",
-)
-def cli_command_score(
-    input_file: Annotated[str, typer.Argument(help="Resume file (YAML, PDF, or HTML)")] = "",
-):
-    _not_implemented("anvil score")
-
-
-@app.command(
     name="tailor",
     help="AI-tailor your resume to a specific job description.",
 )

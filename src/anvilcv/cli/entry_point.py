@@ -33,6 +33,8 @@ Please reinstall with the correct command above.
         raise SystemExit(1) from None
 
     # Trigger vendored rendercv command registration (render, new, create_theme)
+    # Register implemented Anvil commands
+    import anvilcv.cli.score_command.score_command  # noqa: F401, PLC0415
     import anvilcv.vendor.rendercv.cli.app  # noqa: F401, PLC0415
 
     app()

@@ -9,6 +9,7 @@ Why:
 
 from typer.testing import CliRunner
 
+import anvilcv.cli.score_command.score_command  # noqa: F401  # register score command
 from anvilcv.cli.app import app
 
 runner = CliRunner()
@@ -44,10 +45,9 @@ class TestCLIHelp:
 class TestStubCommands:
     """Stub commands print 'not yet implemented' and exit 0."""
 
-    def test_score_stub(self):
+    def test_score_requires_input(self):
         result = runner.invoke(app, ["score"])
-        assert result.exit_code == 0
-        assert "not yet implemented" in result.output
+        assert result.exit_code == 2  # Missing required argument
 
     def test_tailor_stub(self):
         result = runner.invoke(app, ["tailor"])
