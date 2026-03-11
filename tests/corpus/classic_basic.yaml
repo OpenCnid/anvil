@@ -1,0 +1,50 @@
+cv:
+  name: Jane Developer
+  location: San Francisco, CA
+  email: jane@example.com
+  website: https://jane.dev
+  social_networks:
+    - network: GitHub
+      username: janedev
+    - network: LinkedIn
+      username: janedeveloper
+  sections:
+    summary:
+      - Experienced software engineer with expertise in distributed systems and cloud infrastructure.
+    experience:
+      - company: TechCorp
+        position: Senior Software Engineer
+        start_date: 2021-06
+        end_date: present
+        location: San Francisco, CA
+        highlights:
+          - Designed and built real-time data pipeline processing 500K events/sec using Apache Kafka
+          - Led migration from monolith to microservices, reducing deployment time by 80%
+          - Mentored 4 junior engineers on system design and code review practices
+      - company: StartupInc
+        position: Software Engineer
+        start_date: 2018-09
+        end_date: 2021-05
+        location: New York, NY
+        highlights:
+          - Built REST API serving 1M+ daily requests with 99.9% uptime
+          - Implemented CI/CD pipeline reducing release cycle from 2 weeks to 2 hours
+    education:
+      - institution: MIT
+        area: Computer Science
+        degree: BS
+        start_date: 2014-09
+        end_date: 2018-05
+        location: Cambridge, MA
+        highlights:
+          - "GPA: 3.85/4.00"
+          - Dean's List all semesters
+    skills:
+      - label: Languages
+        details: Python, Go, Rust, TypeScript
+      - label: Frameworks
+        details: FastAPI, React, Django, gRPC
+      - label: Infrastructure
+        details: AWS, Kubernetes, Docker, Terraform
+design:
+  theme: classic

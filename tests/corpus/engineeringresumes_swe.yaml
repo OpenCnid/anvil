@@ -1,0 +1,54 @@
+cv:
+  name: Sam Engineer
+  location: Seattle, WA
+  email: sam@engineer.io
+  social_networks:
+    - network: GitHub
+      username: samengineer
+    - network: LinkedIn
+      username: samengineer
+  sections:
+    experience:
+      - company: Amazon Web Services
+        position: Software Development Engineer II
+        start_date: 2020-03
+        end_date: present
+        location: Seattle, WA
+        highlights:
+          - Designed distributed caching layer reducing p99 latency by 45% for 100M daily requests
+          - Owned end-to-end delivery of auto-scaling feature used by 2000+ customers
+          - Reduced infrastructure costs by $2.1M/year through resource optimization
+      - company: Microsoft
+        position: Software Engineer
+        start_date: 2017-06
+        end_date: 2020-02
+        location: Redmond, WA
+        highlights:
+          - Built real-time telemetry pipeline processing 1TB/day for Azure Monitor
+          - Implemented zero-downtime deployment strategy for critical production services
+    education:
+      - institution: University of Washington
+        area: Computer Science
+        degree: BS
+        start_date: 2013-09
+        end_date: 2017-06
+        location: Seattle, WA
+    projects:
+      - name: distributed-cache
+        date: 2023
+        highlights:
+          - Open-source distributed cache with consistent hashing, 500+ GitHub stars
+          - Written in Rust with support for Redis protocol compatibility
+      - name: load-tester
+        date: 2022
+        highlights:
+          - HTTP load testing tool with real-time metrics dashboard
+    skills:
+      - label: Languages
+        details: Java, Python, Rust, Go
+      - label: Cloud
+        details: AWS (EC2, Lambda, DynamoDB, S3), Azure
+      - label: Tools
+        details: Docker, Kubernetes, Terraform, Jenkins
+design:
+  theme: engineeringresumes

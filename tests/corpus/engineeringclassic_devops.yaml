@@ -1,0 +1,47 @@
+cv:
+  name: Chris Ops
+  location: Austin, TX
+  email: chris@devops.cloud
+  social_networks:
+    - network: GitHub
+      username: chrisops
+  sections:
+    experience:
+      - company: Stripe
+        position: Staff Site Reliability Engineer
+        start_date: 2019-08
+        end_date: present
+        location: San Francisco, CA
+        highlights:
+          - Architected multi-region deployment reducing failover time from 30min to 45sec
+          - Built observability platform processing 10B+ metrics/day with 99.99% availability
+          - Led incident response for 50+ production incidents, reducing MTTR by 60%
+      - company: Netflix
+        position: Senior SRE
+        start_date: 2016-06
+        end_date: 2019-07
+        location: Los Gatos, CA
+        highlights:
+          - Managed infrastructure serving 200M+ subscribers across 190 countries
+          - Automated chaos engineering experiments running 500+ weekly tests
+    education:
+      - institution: Georgia Tech
+        area: Computer Science
+        degree: MS
+        start_date: 2014-08
+        end_date: 2016-05
+        location: Atlanta, GA
+      - institution: UT Austin
+        area: Electrical Engineering
+        degree: BS
+        start_date: 2010-08
+        end_date: 2014-05
+    skills:
+      - label: Infrastructure
+        details: Kubernetes, Terraform, Ansible, Pulumi
+      - label: Observability
+        details: Prometheus, Grafana, Datadog, PagerDuty
+      - label: Languages
+        details: Python, Go, Bash, HCL
+design:
+  theme: engineeringclassic

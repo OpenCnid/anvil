@@ -1,0 +1,53 @@
+cv:
+  name: Full Example
+  location: Anytown, USA
+  email: full@example.com
+  sections:
+    text_entries:
+      - This is a plain text entry demonstrating the text entry type.
+      - Another text entry with **markdown** and *formatting*.
+    education:
+      - institution: University of Example
+        area: Computer Science
+        degree: PhD
+        start_date: 2018-09
+        end_date: 2023-05
+        highlights:
+          - "Thesis: Advanced Methods in Example Research"
+    experience:
+      - company: Big Tech Inc
+        position: Staff Engineer
+        start_date: 2023-06
+        end_date: present
+        highlights:
+          - Led a team of 10 engineers
+          - Designed systems handling 1B+ requests/day
+    projects:
+      - name: cool-project
+        date: 2024
+        highlights:
+          - An open source project with 1000+ stars
+        url: https://github.com/example/cool-project
+    publications:
+      - title: A Novel Approach to Examples
+        authors:
+          - Full Example
+          - Jane Coauthor
+        journal: Journal of Examples
+        date: 2023-01
+        url: https://doi.org/10.1234/example
+    skills:
+      - label: Programming
+        details: Python, Java, C++
+      - label: Tools
+        details: Git, Docker, Kubernetes
+    one_line_entries:
+      - label: Certification
+        details: AWS Solutions Architect Professional
+      - label: Award
+        details: Employee of the Year 2023
+    bullet_entries:
+      - Volunteered at local coding bootcamp teaching Python basics
+      - Organized annual tech conference with 500+ attendees
+design:
+  theme: classic
