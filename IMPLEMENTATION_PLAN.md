@@ -1,6 +1,6 @@
 # Implementation Plan
 
-Status: **Phase 0 complete. Phase 1 in progress.** Foundation in place: vendor import hook (find_spec API for Python 3.12+), 4 Modified vendored files patched, CLI scaffold with all 11 commands registered, exceptions, config, cache utilities. AI provider abstraction (F-ANV-09) complete. Extended YAML schema (F-ANV-02) complete. ATS score checker (F-ANV-04, F-ANV-05) complete with keyword matching. Fork integrity tests in place. 320 tests passing.
+Status: **Phase 0 complete. Phase 1 complete. Phase 2 in progress.** Foundation in place: vendor import hook (find_spec API for Python 3.12+), 4 Modified vendored files patched, CLI scaffold with all 11 commands registered, exceptions, config, cache utilities. AI provider abstraction (F-ANV-09) complete. Extended YAML schema (F-ANV-02) complete. ATS score checker (F-ANV-04, F-ANV-05) complete with keyword matching. Export command (F-ANV-17) complete. AI tailoring pipeline (F-ANV-10) complete. Fork integrity tests in place. 336 tests passing.
 
 **Vendored file key:** Tasks annotate which vendored files they touch.
 - `[Modified]` = change internals of vendored file (4 files total)
@@ -116,8 +116,8 @@ These tasks are prerequisites for all features and must be completed first.
 
 ### F-ANV-17: rendercv Export (depends on F-ANV-02)
 
-- [ ] **2.14 Export command** — Create `src/anvilcv/cli/export_command/` — `anvil export INPUT --rendercv --output PATH`; strips `anvil` section from YAML; preserves all other sections byte-identical; uses `ruamel.yaml` to preserve formatting and comments
-- [ ] **2.15 Export tests** — Test round-trip: Anvil YAML → export → validate with rendercv schema; verify no data loss; `tests/unit/test_export.py`
+- [x] **2.14 Export command** — Create `src/anvilcv/cli/export_command/` — `anvil export INPUT --rendercv --output PATH`; strips `anvil` section from YAML; preserves all other sections byte-identical; uses `ruamel.yaml` to preserve formatting and comments
+- [x] **2.15 Export tests** — Test round-trip: Anvil YAML → export → validate with rendercv schema; verify no data loss; `tests/unit/test_export.py`
 
 ### F-ANV-08: Multi-Variant Rendering (depends on F-ANV-02)
 
@@ -127,12 +127,12 @@ These tasks are prerequisites for all features and must be completed first.
 
 ### F-ANV-10: AI Job Tailoring (depends on F-ANV-02, F-ANV-09)
 
-- [ ] **2.19 Matcher** — Create `src/anvilcv/tailoring/matcher.py` — match resume content to job requirements; identify relevant bullets, projects, skills
-- [ ] **2.20 Rewriter** — Create `src/anvilcv/tailoring/rewriter.py` — AI bullet rewriting using provider interface; per-provider prompts in `src/anvilcv/ai/prompts/tailor_bullets/`
-- [ ] **2.21 Variant writer** — Create `src/anvilcv/tailoring/variant_writer.py` — write tailored YAML with provenance metadata to `variants/` dir; NEVER modify the user's original file (P1 principle: YAML is source of truth)
-- [ ] **2.22 Tailor command** — Create `src/anvilcv/cli/tailor_command/` — `anvil tailor INPUT --job <path-or-url> [--provider] [--model] [--render] [--score] [--dry-run]`
-- [ ] **2.23 Tailor prompts** — Write per-provider prompts for `tailor_bullets` task: `anthropic.py` (XML-tagged output), `openai.py` (JSON mode), `ollama.py` (markdown with extraction)
-- [ ] **2.24 Tailor tests** — Tier 1 structural tests (output parses as YAML, conforms to AnvilModel schema, provenance metadata present) with mocked APIs; `tests/unit/tailoring/test_tailoring.py`
+- [x] **2.19 Matcher** — Create `src/anvilcv/tailoring/matcher.py` — match resume content to job requirements; identify relevant bullets, projects, skills
+- [x] **2.20 Rewriter** — Create `src/anvilcv/tailoring/rewriter.py` — AI bullet rewriting using provider interface; per-provider prompts in `src/anvilcv/ai/prompts/tailor_bullets/`
+- [x] **2.21 Variant writer** — Create `src/anvilcv/tailoring/variant_writer.py` — write tailored YAML with provenance metadata to `variants/` dir; NEVER modify the user's original file (P1 principle: YAML is source of truth)
+- [x] **2.22 Tailor command** — Create `src/anvilcv/cli/tailor_command/` — `anvil tailor INPUT --job <path-or-url> [--provider] [--model] [--render] [--score] [--dry-run]`
+- [x] **2.23 Tailor prompts** — Write per-provider prompts for `tailor_bullets` task: `anthropic.py` (XML-tagged output), `openai.py` (JSON mode), `ollama.py` (markdown with extraction)
+- [x] **2.24 Tailor tests** — Tier 1 structural tests (output parses as YAML, conforms to AnvilModel schema, provenance metadata present) with mocked APIs; `tests/unit/tailoring/test_tailoring.py`
 
 ### F-ANV-11: GitHub Content Scanner (depends on F-ANV-02)
 

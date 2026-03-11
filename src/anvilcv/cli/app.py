@@ -52,16 +52,6 @@ def _not_implemented(command_name: str) -> None:
 
 
 @app.command(
-    name="tailor",
-    help="AI-tailor your resume to a specific job description.",
-)
-def cli_command_tailor(
-    input_file: Annotated[str, typer.Argument(help="YAML input file")] = "",
-):
-    _not_implemented("anvil tailor")
-
-
-@app.command(
     name="scan",
     help="Scan your GitHub profile for resume-worthy projects.",
 )
@@ -107,11 +97,3 @@ def cli_command_deploy(
     _not_implemented("anvil deploy")
 
 
-@app.command(
-    name="export",
-    help="Export your Anvil YAML to rendercv-compatible format.",
-)
-def cli_command_export(
-    input_file: Annotated[str, typer.Argument(help="YAML input file")] = "",
-):
-    _not_implemented("anvil export")
