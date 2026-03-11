@@ -2,6 +2,7 @@ import io
 import json
 import pathlib
 import re
+import warnings
 from typing import overload
 
 import ruamel.yaml
@@ -245,10 +246,15 @@ def rendercv_model_to_dictionary(data_model: RenderCVModel) -> dict:
     Returns:
         Plain dictionary representation of the model.
     """
-    data_model_as_json = data_model.model_dump_json(
-        exclude_none=False,
-        by_alias=True,
-    )
+    # Suppress Pydantic serialization warnings from discriminated unions
+    # (e.g., design field tries all theme variants, emitting harmless warnings
+    # for non-matching types). Output is correct regardless.
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=UserWarning, module="pydantic")
+        data_model_as_json = data_model.model_dump_json(
+            exclude_none=False,
+            by_alias=True,
+        )
     return json.loads(data_model_as_json)
 
 
