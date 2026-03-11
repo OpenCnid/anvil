@@ -18,8 +18,9 @@ Files where new functionality was appended without altering existing code.
 | E-001 | `vendor/rendercv/cli/render_command/render_command.py` | Extended: Added `--no-ats-html` CLI flag to skip ATS HTML generation | **Low** |
 | E-002 | `vendor/rendercv/cli/render_command/run_rendercv.py` | Extended: Added ATS HTML generation step after standard HTML in the render pipeline | **Low** |
 | E-003 | `vendor/rendercv/renderer/html.py` | Extended: Added `generate_ats_html()` function for ATS HTML file generation with path derivation | **Low** |
-| E-004 | `vendor/rendercv/renderer/templater/templater.py` | Extended: Added `render_ats_html()` bridge function that converts RenderCVModel to dict for ATS renderer, including social_networks extraction | **Low** |
-| E-005 | `schema/models/design/built_in_design.py` | Extended: Imported DevforgeTheme and added to BuiltInDesign discriminated union for theme registration | **Low** |
+| E-004 | `vendor/rendercv/renderer/templater/templater.py` | Extended: Added `render_ats_html()` bridge, theme-specific template lookup for all formats (not just Typst), devforge themes directory | **Low** |
+| E-005 | `vendor/rendercv/schema/models/design/built_in_design.py` | Extended: Imported DevforgeTheme and added to BuiltInDesign discriminated union for theme registration | **Low** |
+| E-006 | `vendor/rendercv/cli/error_handler.py` | Extended: Added AnvilError handling with exit codes 1-4 and category-specific Rich panel styling | **Low** |
 
 Risk levels:
 - **Low** — Simple additions or renames. Unlikely to conflict with upstream.

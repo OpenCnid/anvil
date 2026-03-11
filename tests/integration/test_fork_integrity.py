@@ -35,6 +35,7 @@ MODIFIED_FILES: frozenset[str] = frozenset(
         "cli/entry_point.py",
         "cli/app.py",
         # Extended — functionality added
+        "cli/error_handler.py",
         "cli/render_command/render_command.py",
         "cli/render_command/run_rendercv.py",
         "renderer/html.py",

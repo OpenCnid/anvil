@@ -165,8 +165,8 @@ These tasks are prerequisites for all features and must be completed first.
 
 ## Cross-Cutting Concerns (Ongoing Throughout)
 
-- [ ] **X.1 Vendor patch documentation** — Every vendored file modification gets an entry in `patches/README.md` with file, purpose, and risk level (Low/Medium/High)
-- [ ] **X.2 Extend vendored `error_handler.py`** `[Extended]` — Add formatting for AI/API failure errors (exit codes 3, 4)
+- [x] **X.1 Vendor patch documentation** — All 4 Modified and 6 Extended vendored files documented in `patches/README.md` (P-001 to P-004, E-001 to E-006) with file, purpose, and risk level
+- [x] **X.2 Extend vendored `error_handler.py`** `[Extended]` — Added AnvilError handling with exit codes 1-4, category-specific Rich panel styling (Error/CLI Error/Service Error/AI Provider Error), 10 tests
 - [ ] **X.3 Extend vendored `sample_generator.py` and `sample_content.yaml`** `[Extended]` — Add Anvil-specific and developer-focused sample content for `anvil new`
 - [ ] **X.4 Extend vendored `error_dictionary.yaml`** `[Extended]` — Add error messages for Anvil-specific validation failures
 - [ ] **X.5 Test coverage target** — Maintain ≥80% line coverage on Anvil-specific code; 100% coverage on ATS scoring rules (P-01 through P-08, S-01 through S-08, K-01 through K-05) per `specs/success-criteria.md`
