@@ -1,6 +1,6 @@
 # Implementation Plan
 
-Status: **Phase 0-3 complete. CLI spec compliance complete (C.1-C.6).** All features implemented. 754 tests passing + 30 golden-set tests (skipped without --run-golden).
+Status: **Phase 0-3 complete. CLI spec compliance complete (C.1-C.6).** All features implemented. 762 tests passing + 30 golden-set tests (skipped without --run-golden). 85% coverage.
 
 **Vendored file key:** Tasks annotate which vendored files they touch.
 - `[Modified]` = change internals of vendored file (4 files total)
