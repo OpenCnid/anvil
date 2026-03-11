@@ -210,6 +210,50 @@ class TestScanOutputFormats:
         assert "Entries written to" in result.output
 
 
+class TestScanEntriesOnlyStdout:
+    """Cover lines 191-193: entries-only format without --output goes to stdout."""
+
+    @patch("anvilcv.github.entry_generator.generate_entries")
+    @patch("anvilcv.github.cache.read_cached_profile")
+    def test_entries_only_stdout(
+        self,
+        mock_read_cache: MagicMock,
+        mock_gen: MagicMock,
+    ) -> None:
+        """entries-only format without --output dumps YAML to stdout."""
+        mock_read_cache.return_value = _make_profile()
+        mock_gen.return_value = [{"name": "repo-1", "highlights": ["Built thing"]}]
+
+        result = runner.invoke(
+            app,
+            ["scan", "--github", "testuser", "--format", "entries-only"],
+        )
+        assert result.exit_code == 0
+        # Output goes to stdout (no "Entries written to" message)
+        assert "projects" in result.output or "repo-1" in result.output
+
+
+class TestScanMergeErrors:
+    """Cover line 208: merge into empty/unparseable YAML raises error."""
+
+    @patch("anvilcv.github.cache.read_cached_profile")
+    def test_merge_empty_yaml_errors(
+        self,
+        mock_read_cache: MagicMock,
+        tmp_path: pathlib.Path,
+    ) -> None:
+        """Empty YAML file can't be merged into."""
+        mock_read_cache.return_value = _make_profile()
+        empty_yaml = tmp_path / "empty.yaml"
+        empty_yaml.write_text("")
+
+        result = runner.invoke(
+            app,
+            ["scan", "--github", "testuser", "--merge", str(empty_yaml)],
+        )
+        assert result.exit_code == 1
+
+
 class TestScanNoRepos:
     """No repos found prints a message and exits 0."""
 

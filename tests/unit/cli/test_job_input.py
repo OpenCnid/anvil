@@ -141,6 +141,54 @@ class TestParseJobFromUrl:
             _parse_job_from_url("https://unreachable.example.com/job")
 
 
+class TestUrlSpaAndEmptyExtraction:
+    """Cover lines 97 and 109: SPA warning log and empty text extraction error."""
+
+    @patch("anvilcv.cli.job_input._extract_readable_text")
+    @patch("anvilcv.cli.job_input._looks_like_spa")
+    @patch("httpx.get")
+    def test_spa_page_logs_warning(
+        self, mock_get: MagicMock, mock_spa: MagicMock, mock_extract: MagicMock
+    ) -> None:
+        """Line 97: SPA-like page triggers a warning log."""
+        from anvilcv.cli.job_input import _parse_job_from_url
+
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.headers = {"content-type": "text/html"}
+        mock_response.text = "<html><body>Some content</body></html>"
+        mock_response.raise_for_status = MagicMock()
+        mock_get.return_value = mock_response
+
+        mock_spa.return_value = True
+        mock_extract.return_value = "Extracted job description text"
+
+        with patch("anvilcv.cli.job_input.logger") as mock_logger:
+            _parse_job_from_url("https://spa-site.com/job")
+            mock_logger.warning.assert_called_once()
+            assert "JavaScript" in mock_logger.warning.call_args[0][0]
+
+    @patch("anvilcv.cli.job_input._extract_readable_text")
+    @patch("httpx.get")
+    def test_empty_extraction_raises(
+        self, mock_get: MagicMock, mock_extract: MagicMock
+    ) -> None:
+        """Line 109: Empty extracted text raises AnvilServiceError."""
+        from anvilcv.cli.job_input import _parse_job_from_url
+
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.headers = {"content-type": "text/html"}
+        mock_response.text = "<html><body></body></html>"
+        mock_response.raise_for_status = MagicMock()
+        mock_get.return_value = mock_response
+
+        mock_extract.return_value = "   "  # whitespace only
+
+        with pytest.raises(AnvilServiceError, match="Could not extract text"):
+            _parse_job_from_url("https://empty-page.com/job")
+
+
 class TestSpaDetection:
     """Test SPA/JS-heavy page detection heuristics."""
 
