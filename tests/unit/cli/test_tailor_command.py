@@ -333,6 +333,147 @@ class TestTailorRenderAndScore:
         mock_score.assert_called_once()
 
 
+class TestTailorAutoOutputPath:
+    """Test auto-generated output path when --output is not provided."""
+
+    @patch("anvilcv.tailoring.variant_writer.write_variant")
+    @patch("anvilcv.tailoring.rewriter.rewrite_top_bullets")
+    @patch("anvilcv.cli.provider_resolver.resolve_provider")
+    @patch("anvilcv.tailoring.matcher.match_resume_to_job")
+    @patch("anvilcv.cli.job_input.resolve_job_input")
+    def test_auto_output_path_generated(
+        self,
+        mock_resolve_job: MagicMock,
+        mock_match: MagicMock,
+        mock_resolve: MagicMock,
+        mock_rewrite: MagicMock,
+        mock_write: MagicMock,
+        tmp_path: pathlib.Path,
+    ) -> None:
+        """When --output is omitted, path is auto-generated from name + company + date."""
+        resume, job = _write_resume_and_job(tmp_path)
+
+        mock_resolve_job.return_value = MagicMock(company="TechCo")
+        mock_match.return_value = _make_match()
+        mock_resolve.return_value = MagicMock(name="anthropic")
+        mock_rewrite.return_value = [{"path": "experience.0.highlights.0", "new": "Improved"}]
+        mock_write.return_value = tmp_path / "variant.yaml"
+
+        result = runner.invoke(
+            app, ["tailor", str(resume), "--job", str(job)]
+        )
+        assert result.exit_code == 0
+        # Verify write_variant was called with an auto-generated path
+        call_kwargs = mock_write.call_args
+        output_path = call_kwargs[1].get("output_path") or call_kwargs[0][-1]
+        assert "TechCo" in str(output_path)
+        assert "Test_User" in str(output_path)
+
+
+class TestRenderVariantHelper:
+    """Test _render_variant helper directly."""
+
+    @patch("anvilcv.vendor.rendercv.renderer.html.generate_ats_html")
+    @patch("anvilcv.vendor.rendercv.renderer.html.generate_html")
+    @patch("anvilcv.vendor.rendercv.renderer.markdown.generate_markdown")
+    @patch("anvilcv.vendor.rendercv.renderer.typst.generate_typst")
+    @patch(
+        "anvilcv.vendor.rendercv.schema.rendercv_model_builder.build_rendercv_dictionary_and_model"
+    )
+    def test_render_variant_success(
+        self,
+        mock_build: MagicMock,
+        mock_typst: MagicMock,
+        mock_md: MagicMock,
+        mock_html: MagicMock,
+        mock_ats: MagicMock,
+        tmp_path: pathlib.Path,
+    ) -> None:
+        from anvilcv.cli.tailor_command.tailor_command import _render_variant
+
+        variant = tmp_path / "variant.yaml"
+        variant.write_text("cv:\n  name: Test\n")
+        mock_build.return_value = ({}, MagicMock())
+        mock_md.return_value = tmp_path / "test.md"
+
+        _render_variant(variant)
+
+        mock_build.assert_called_once()
+        mock_typst.assert_called_once()
+        mock_md.assert_called_once()
+        mock_html.assert_called_once()
+        mock_ats.assert_called_once()
+
+    def test_render_variant_handles_exception(
+        self, tmp_path: pathlib.Path, capsys
+    ) -> None:
+        from anvilcv.cli.tailor_command.tailor_command import _render_variant
+
+        variant = tmp_path / "variant.yaml"
+        variant.write_text("cv:\n  name: Test\n")
+
+        with patch(
+            "anvilcv.vendor.rendercv.schema.rendercv_model_builder"
+            ".build_rendercv_dictionary_and_model",
+            side_effect=Exception("render failed"),
+        ):
+            # Should not raise — just prints warning
+            _render_variant(variant)
+
+
+class TestScoreVariantHelper:
+    """Test _score_variant helper directly."""
+
+    @patch("anvilcv.scoring.ats_scorer.score_document")
+    @patch("anvilcv.cli.score_command.score_command._render_yaml_for_scoring")
+    def test_score_variant_success(
+        self,
+        mock_render_yaml: MagicMock,
+        mock_score: MagicMock,
+        tmp_path: pathlib.Path,
+    ) -> None:
+        from anvilcv.cli.tailor_command.tailor_command import _score_variant
+
+        variant = tmp_path / "variant.yaml"
+        mock_render_yaml.return_value = tmp_path / "output.html"
+        mock_report = MagicMock()
+        mock_report.overall_score = 85
+        mock_report.keyword_match = MagicMock(score=72, missing=["terraform"])
+        mock_score.return_value = mock_report
+
+        _score_variant(variant, job_desc=MagicMock())
+
+    @patch("anvilcv.scoring.ats_scorer.score_document")
+    @patch("anvilcv.cli.score_command.score_command._render_yaml_for_scoring")
+    def test_score_variant_no_keyword_match(
+        self,
+        mock_render_yaml: MagicMock,
+        mock_score: MagicMock,
+        tmp_path: pathlib.Path,
+    ) -> None:
+        from anvilcv.cli.tailor_command.tailor_command import _score_variant
+
+        variant = tmp_path / "variant.yaml"
+        mock_render_yaml.return_value = tmp_path / "output.html"
+        mock_report = MagicMock()
+        mock_report.overall_score = 70
+        mock_report.keyword_match = None
+        mock_score.return_value = mock_report
+
+        _score_variant(variant, job_desc=None)
+
+    def test_score_variant_handles_exception(self, tmp_path: pathlib.Path) -> None:
+        from anvilcv.cli.tailor_command.tailor_command import _score_variant
+
+        variant = tmp_path / "variant.yaml"
+        with patch(
+            "anvilcv.cli.score_command.score_command._render_yaml_for_scoring",
+            side_effect=Exception("scoring failed"),
+        ):
+            # Should not raise — just prints warning
+            _score_variant(variant)
+
+
 class TestResolveProvider:
     """Test shared resolve_provider helper."""
 

@@ -1,6 +1,6 @@
 # Implementation Plan
 
-Status: **Phase 0-3 complete. CLI spec compliance complete (C.1-C.7).** All features implemented. 774 unit tests passing + 30 golden-set tests (skipped without --run-golden). 85% coverage.
+Status: **Phase 0-3 complete. CLI spec compliance complete (C.1-C.7).** All features implemented. 807 unit tests passing + 30 golden-set tests (skipped without --run-golden). 86% coverage.
 
 **Vendored file key:** Tasks annotate which vendored files they touch.
 - `[Modified]` = change internals of vendored file (4 files total)
@@ -169,7 +169,7 @@ These tasks are prerequisites for all features and must be completed first.
 - [x] **X.2 Extend vendored `error_handler.py`** `[Extended]` — Added AnvilError handling with exit codes 1-4, category-specific Rich panel styling (Error/CLI Error/Service Error/AI Provider Error), 10 tests
 - [x] **X.3 Extend vendored `sample_generator.py` and `sample_content.yaml`** `[Extended]` — Added `anvil` section to sample_content.yaml (AI providers, GitHub, variants config); extended sample_generator.py with `include_anvil` parameter and `_create_anvil_sample_section()` to include commented-out anvil config in generated YAML; added `--rendercv-compat` flag to `anvil new` to suppress anvil section; 15 new tests, patches E-008 to E-010 documented
 - [x] **X.4 Extend vendored `error_dictionary.yaml`** `[Extended]` — Added error messages for devforge theme tag, AI provider validation, URL format, empty string validation
-- [x] **X.5 Test coverage target** — 85% line coverage on all code (including vendor); Anvil-specific CLI commands 90%+; 100% coverage on ATS scoring rules (P-01 through P-08, S-01 through S-08, K-01 through K-05). 774 tests passing.
+- [x] **X.5 Test coverage target** — 86% line coverage on all code (including vendor); Anvil-specific CLI commands 90%+; 100% coverage on ATS scoring rules (P-01 through P-08, S-01 through S-08, K-01 through K-05). 807 tests passing. Key modules: output_parser 100%, tailor_command 97%, github/cache 100%.
 - [x] **X.6 Ruff + mypy compliance** — All Anvil-specific code passes `ruff check` and `mypy` (0 errors). 29 remaining mypy errors are in vendored rendercv code (Untouched files — not our responsibility)
 - [x] **X.7 Compatibility corpus maintenance** — 21 corpus files covering all 6 themes (classic, sb2nov, engineeringresumes, engineeringclassic, moderncv, devforge), all 8 entry types, edge cases (unicode, empty sections, date variants, design overrides, minimal CV, publications with DOI/URL combos)
 - [x] **X.8 Tier 2 golden-set regression tests** — 30 golden-set tests (5 cases × 2 providers × 3 features) in `tests/golden/`. Cases cover SRE, Frontend, ML Engineer, DevOps, Backend roles. Rubric evaluator with 4 criterion types: keyword_presence, structural_check, factual_accuracy, subjective_quality (with LLM-as-judge fallback to heuristics). Run with `pytest tests/golden/ --run-golden -p no:numprocesses`. Requires ANTHROPIC_API_KEY/OPENAI_API_KEY.

@@ -228,6 +228,52 @@ class TestGitHubCache:
         cached = read_cached_profile("testuser", base_path=tmp_path, ttl_seconds=3600)
         assert cached is None
 
+    def test_corrupted_cache_json(self, tmp_path: pathlib.Path):
+        """Corrupted JSON cache files return None gracefully."""
+        cache_dir = tmp_path / ".anvil" / "github"
+        cache_dir.mkdir(parents=True)
+        (cache_dir / "testuser.json").write_text("not valid json{{{", encoding="utf-8")
+        cached = read_cached_profile("testuser", base_path=tmp_path, ttl_seconds=3600)
+        assert cached is None
+
+    def test_corrupted_profile_in_cache(self, tmp_path: pathlib.Path):
+        """Cache with valid JSON but invalid profile returns None."""
+        import json
+        import time
+
+        cache_dir = tmp_path / ".anvil" / "github"
+        cache_dir.mkdir(parents=True)
+        data = {"_cached_at": time.time(), "profile": {"invalid_field": True}}
+        (cache_dir / "testuser.json").write_text(json.dumps(data), encoding="utf-8")
+        cached = read_cached_profile("testuser", base_path=tmp_path, ttl_seconds=3600)
+        assert cached is None
+
+    def test_etag_read_write(self, tmp_path: pathlib.Path):
+        """ETag is stored and can be read back."""
+        from anvilcv.github.cache import read_cached_etag
+
+        profile = _make_profile()
+        write_cached_profile(profile, base_path=tmp_path, etag='"abc123"')
+        etag = read_cached_etag("testuser", base_path=tmp_path)
+        assert etag == '"abc123"'
+
+    def test_etag_missing_cache(self, tmp_path: pathlib.Path):
+        """Missing cache returns None for ETag."""
+        from anvilcv.github.cache import read_cached_etag
+
+        etag = read_cached_etag("nonexistent", base_path=tmp_path)
+        assert etag is None
+
+    def test_etag_corrupted_cache(self, tmp_path: pathlib.Path):
+        """Corrupted cache returns None for ETag."""
+        from anvilcv.github.cache import read_cached_etag
+
+        cache_dir = tmp_path / ".anvil" / "github"
+        cache_dir.mkdir(parents=True)
+        (cache_dir / "testuser.json").write_text("broken json", encoding="utf-8")
+        etag = read_cached_etag("testuser", base_path=tmp_path)
+        assert etag is None
+
 
 # --- Entry generator tests ---
 
