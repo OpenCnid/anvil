@@ -314,3 +314,27 @@ class TestScoreWithJob:
         assert report.keyword_match.score > 0
         assert len(report.recommendations) > 0  # Terraform missing
         assert report.overall_score > 0
+
+
+class TestBuildAliasMapEdgeCases:
+    """Cover line 35: non-list taxonomy entries are skipped."""
+
+    def test_non_list_taxonomy_entry_skipped(self):
+        """If a taxonomy category value is not a list, it's skipped."""
+        from unittest.mock import patch
+
+        from anvilcv.scoring.keyword_extractor import _build_alias_map
+
+        fake_taxonomy = {
+            "languages": [
+                {"name": "Python", "aliases": ["py"]},
+            ],
+            "metadata": "version 1.0",  # not a list — should be skipped
+        }
+        with patch(
+            "anvilcv.scoring.keyword_extractor._load_taxonomy",
+            return_value=fake_taxonomy,
+        ):
+            alias_map = _build_alias_map()
+        assert "python" in alias_map
+        assert alias_map["py"] == "Python"

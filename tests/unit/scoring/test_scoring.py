@@ -697,3 +697,38 @@ class TestTextExtractor:
 
         with pytest.raises(Exception, match="not found"):
             extract_from_html(tmp_path / "nonexistent.html")
+
+
+class TestS06NonNumericYear:
+    """Cover lines 162-163: ValueError when date part isn't numeric."""
+
+    def test_non_numeric_year_skipped(self):
+        """Dates like 'January present' should not crash year parsing."""
+        doc = ExtractedDocument(
+            full_text=(
+                "January present\nMarch 2022\nJune 2020\nSeptember 2018"
+            )
+        )
+        result = check_s06_chronological_dates(doc)
+        # 'present' causes ValueError on int(), is skipped; remaining years pass
+        assert result.status == "pass"
+
+
+class TestP01FewElementsSkipped:
+    """Cover line 68: pages with <5 elements are skipped in column detection."""
+
+    def test_few_elements_per_page(self):
+        """Pages with fewer than 5 elements skip column analysis."""
+        from anvilcv.scoring.text_extractor import TextElement
+
+        elements = [
+            TextElement(text="Hello", x=72.0, y=100.0, width=200.0, height=12.0, page=1),
+            TextElement(text="World", x=72.0, y=120.0, width=200.0, height=12.0, page=1),
+        ]
+        doc = ExtractedDocument(
+            full_text="Hello\nWorld",
+            elements=elements,
+            page_count=1,
+        )
+        result = check_p01_single_column(doc)
+        assert result.status == "pass"
