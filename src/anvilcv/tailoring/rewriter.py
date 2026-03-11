@@ -37,7 +37,8 @@ def build_rewrite_prompt(
         builder = get_prompt_builder("tailor_bullets", provider_name)
         if builder is not None:
             try:
-                return builder(bullet, job, match)
+                result: tuple[str, str] = builder(bullet, job, match)
+                return result
             except TypeError:
                 logger.debug(
                     "Per-provider prompt builder signature mismatch, using common"
