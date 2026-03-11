@@ -1,0 +1,389 @@
+## Skills taxonomy for keyword matching.
+## ~500 technical skills with aliases, categorized by domain.
+## This is the ONLY source of keyword aliases — do not hardcode aliases in code.
+
+languages:
+  - name: Python
+    aliases: ["python", "python3", "py"]
+  - name: JavaScript
+    aliases: ["javascript", "js", "ecmascript", "es6", "es2015"]
+  - name: TypeScript
+    aliases: ["typescript", "ts"]
+  - name: Java
+    aliases: ["java", "jvm"]
+  - name: Go
+    aliases: ["go", "golang"]
+  - name: Rust
+    aliases: ["rust"]
+  - name: C++
+    aliases: ["c++", "cpp", "cplusplus"]
+  - name: C
+    aliases: ["c language", "ansi c"]
+  - name: C#
+    aliases: ["c#", "csharp", "c sharp", ".net"]
+  - name: Ruby
+    aliases: ["ruby", "rb"]
+  - name: PHP
+    aliases: ["php"]
+  - name: Swift
+    aliases: ["swift"]
+  - name: Kotlin
+    aliases: ["kotlin"]
+  - name: Scala
+    aliases: ["scala"]
+  - name: R
+    aliases: ["r language", "r programming"]
+  - name: Perl
+    aliases: ["perl"]
+  - name: Haskell
+    aliases: ["haskell"]
+  - name: Elixir
+    aliases: ["elixir"]
+  - name: Erlang
+    aliases: ["erlang"]
+  - name: Lua
+    aliases: ["lua"]
+  - name: Dart
+    aliases: ["dart"]
+  - name: SQL
+    aliases: ["sql", "structured query language"]
+  - name: Shell
+    aliases: ["shell", "bash", "zsh", "sh", "shell scripting"]
+  - name: PowerShell
+    aliases: ["powershell", "pwsh"]
+  - name: Objective-C
+    aliases: ["objective-c", "objc", "objective c"]
+
+frameworks:
+  - name: React
+    aliases: ["react", "reactjs", "react.js"]
+  - name: Angular
+    aliases: ["angular", "angularjs", "angular.js"]
+  - name: Vue.js
+    aliases: ["vue", "vuejs", "vue.js"]
+  - name: Next.js
+    aliases: ["next", "nextjs", "next.js"]
+  - name: Svelte
+    aliases: ["svelte", "sveltekit"]
+  - name: Node.js
+    aliases: ["node", "nodejs", "node.js"]
+  - name: Express
+    aliases: ["express", "expressjs", "express.js"]
+  - name: Django
+    aliases: ["django"]
+  - name: Flask
+    aliases: ["flask"]
+  - name: FastAPI
+    aliases: ["fastapi", "fast api"]
+  - name: Spring
+    aliases: ["spring", "spring boot", "springboot"]
+  - name: Rails
+    aliases: ["rails", "ruby on rails", "ror"]
+  - name: Laravel
+    aliases: ["laravel"]
+  - name: ASP.NET
+    aliases: ["asp.net", "aspnet", "asp net"]
+  - name: Gin
+    aliases: ["gin"]
+  - name: Echo
+    aliases: ["echo framework"]
+  - name: Actix
+    aliases: ["actix", "actix-web"]
+  - name: PyTorch
+    aliases: ["pytorch", "torch"]
+  - name: TensorFlow
+    aliases: ["tensorflow", "tf"]
+  - name: Keras
+    aliases: ["keras"]
+  - name: scikit-learn
+    aliases: ["scikit-learn", "sklearn", "scikit learn"]
+  - name: pandas
+    aliases: ["pandas"]
+  - name: NumPy
+    aliases: ["numpy"]
+  - name: Spark
+    aliases: ["spark", "apache spark", "pyspark"]
+  - name: Hadoop
+    aliases: ["hadoop", "apache hadoop"]
+  - name: Flutter
+    aliases: ["flutter"]
+  - name: React Native
+    aliases: ["react native", "react-native"]
+  - name: Electron
+    aliases: ["electron", "electronjs"]
+  - name: Qt
+    aliases: ["qt", "pyqt", "qt framework"]
+  - name: Unity
+    aliases: ["unity", "unity3d"]
+  - name: Unreal Engine
+    aliases: ["unreal", "unreal engine", "ue4", "ue5"]
+
+cloud:
+  - name: AWS
+    aliases: ["aws", "amazon web services", "amazon cloud"]
+  - name: Azure
+    aliases: ["azure", "microsoft azure"]
+  - name: GCP
+    aliases: ["gcp", "google cloud", "google cloud platform"]
+  - name: Kubernetes
+    aliases: ["kubernetes", "k8s", "kube"]
+  - name: Docker
+    aliases: ["docker", "containerization", "containers"]
+  - name: Terraform
+    aliases: ["terraform", "tf", "hcl", "infrastructure as code"]
+  - name: Ansible
+    aliases: ["ansible"]
+  - name: Pulumi
+    aliases: ["pulumi"]
+  - name: CloudFormation
+    aliases: ["cloudformation", "cfn", "aws cloudformation"]
+  - name: Helm
+    aliases: ["helm", "helm charts"]
+  - name: Istio
+    aliases: ["istio", "service mesh"]
+  - name: Lambda
+    aliases: ["lambda", "aws lambda", "serverless"]
+  - name: EC2
+    aliases: ["ec2", "aws ec2"]
+  - name: S3
+    aliases: ["s3", "aws s3"]
+  - name: ECS
+    aliases: ["ecs", "aws ecs"]
+  - name: EKS
+    aliases: ["eks", "aws eks"]
+  - name: GKE
+    aliases: ["gke", "google kubernetes engine"]
+  - name: AKS
+    aliases: ["aks", "azure kubernetes service"]
+  - name: Heroku
+    aliases: ["heroku"]
+  - name: Vercel
+    aliases: ["vercel"]
+  - name: Netlify
+    aliases: ["netlify"]
+  - name: DigitalOcean
+    aliases: ["digitalocean", "digital ocean"]
+  - name: OpenStack
+    aliases: ["openstack"]
+  - name: VMware
+    aliases: ["vmware", "vsphere", "esxi"]
+
+databases:
+  - name: PostgreSQL
+    aliases: ["postgresql", "postgres", "pg"]
+  - name: MySQL
+    aliases: ["mysql"]
+  - name: MongoDB
+    aliases: ["mongodb", "mongo"]
+  - name: Redis
+    aliases: ["redis"]
+  - name: Elasticsearch
+    aliases: ["elasticsearch", "elastic", "es"]
+  - name: DynamoDB
+    aliases: ["dynamodb", "dynamo"]
+  - name: Cassandra
+    aliases: ["cassandra", "apache cassandra"]
+  - name: SQLite
+    aliases: ["sqlite"]
+  - name: Oracle
+    aliases: ["oracle", "oracle db", "oracle database"]
+  - name: SQL Server
+    aliases: ["sql server", "mssql", "microsoft sql server"]
+  - name: Neo4j
+    aliases: ["neo4j", "graph database"]
+  - name: CouchDB
+    aliases: ["couchdb"]
+  - name: Firebase
+    aliases: ["firebase", "firestore"]
+  - name: InfluxDB
+    aliases: ["influxdb", "influx"]
+  - name: TimescaleDB
+    aliases: ["timescaledb", "timescale"]
+  - name: Memcached
+    aliases: ["memcached"]
+  - name: RabbitMQ
+    aliases: ["rabbitmq", "rabbit"]
+  - name: Kafka
+    aliases: ["kafka", "apache kafka"]
+  - name: NATS
+    aliases: ["nats"]
+
+tools:
+  - name: Git
+    aliases: ["git", "version control"]
+  - name: GitHub
+    aliases: ["github"]
+  - name: GitLab
+    aliases: ["gitlab"]
+  - name: Bitbucket
+    aliases: ["bitbucket"]
+  - name: Jenkins
+    aliases: ["jenkins"]
+  - name: CircleCI
+    aliases: ["circleci", "circle ci"]
+  - name: GitHub Actions
+    aliases: ["github actions", "gha"]
+  - name: Travis CI
+    aliases: ["travis", "travis ci"]
+  - name: ArgoCD
+    aliases: ["argocd", "argo cd"]
+  - name: Spinnaker
+    aliases: ["spinnaker"]
+  - name: Prometheus
+    aliases: ["prometheus"]
+  - name: Grafana
+    aliases: ["grafana"]
+  - name: Datadog
+    aliases: ["datadog"]
+  - name: New Relic
+    aliases: ["new relic", "newrelic"]
+  - name: Splunk
+    aliases: ["splunk"]
+  - name: ELK Stack
+    aliases: ["elk", "elk stack", "elastic stack"]
+  - name: Nginx
+    aliases: ["nginx"]
+  - name: Apache
+    aliases: ["apache", "apache httpd"]
+  - name: Envoy
+    aliases: ["envoy", "envoy proxy"]
+  - name: HAProxy
+    aliases: ["haproxy"]
+  - name: Webpack
+    aliases: ["webpack"]
+  - name: Vite
+    aliases: ["vite"]
+  - name: Babel
+    aliases: ["babel"]
+  - name: ESLint
+    aliases: ["eslint"]
+  - name: Prettier
+    aliases: ["prettier"]
+  - name: pytest
+    aliases: ["pytest"]
+  - name: Jest
+    aliases: ["jest"]
+  - name: Mocha
+    aliases: ["mocha"]
+  - name: Cypress
+    aliases: ["cypress"]
+  - name: Selenium
+    aliases: ["selenium", "webdriver"]
+  - name: Playwright
+    aliases: ["playwright"]
+  - name: Postman
+    aliases: ["postman"]
+  - name: Swagger
+    aliases: ["swagger", "openapi"]
+  - name: gRPC
+    aliases: ["grpc", "protobuf", "protocol buffers"]
+  - name: GraphQL
+    aliases: ["graphql"]
+  - name: REST
+    aliases: ["rest", "restful", "rest api"]
+  - name: WebSocket
+    aliases: ["websocket", "websockets", "ws"]
+  - name: OAuth
+    aliases: ["oauth", "oauth2", "oauth 2.0"]
+  - name: JWT
+    aliases: ["jwt", "json web token"]
+  - name: SAML
+    aliases: ["saml"]
+  - name: LDAP
+    aliases: ["ldap", "active directory"]
+  - name: Jira
+    aliases: ["jira"]
+  - name: Confluence
+    aliases: ["confluence"]
+  - name: Notion
+    aliases: ["notion"]
+  - name: Figma
+    aliases: ["figma"]
+  - name: Storybook
+    aliases: ["storybook"]
+
+methodologies:
+  - name: Agile
+    aliases: ["agile", "agile development"]
+  - name: Scrum
+    aliases: ["scrum"]
+  - name: Kanban
+    aliases: ["kanban"]
+  - name: CI/CD
+    aliases: ["ci/cd", "cicd", "continuous integration", "continuous delivery", "continuous deployment"]
+  - name: DevOps
+    aliases: ["devops"]
+  - name: SRE
+    aliases: ["sre", "site reliability", "site reliability engineering"]
+  - name: TDD
+    aliases: ["tdd", "test driven development", "test-driven development"]
+  - name: BDD
+    aliases: ["bdd", "behavior driven development"]
+  - name: Microservices
+    aliases: ["microservices", "micro services"]
+  - name: Event-Driven Architecture
+    aliases: ["event-driven", "event driven", "eda"]
+  - name: Domain-Driven Design
+    aliases: ["domain-driven design", "ddd"]
+  - name: RESTful API Design
+    aliases: ["restful api", "api design"]
+  - name: System Design
+    aliases: ["system design", "systems design"]
+  - name: Distributed Systems
+    aliases: ["distributed systems"]
+  - name: Machine Learning
+    aliases: ["machine learning", "ml"]
+  - name: Deep Learning
+    aliases: ["deep learning", "dl"]
+  - name: NLP
+    aliases: ["nlp", "natural language processing"]
+  - name: Computer Vision
+    aliases: ["computer vision", "cv"]
+  - name: Data Engineering
+    aliases: ["data engineering"]
+  - name: Data Science
+    aliases: ["data science"]
+  - name: ETL
+    aliases: ["etl", "extract transform load"]
+  - name: Data Warehousing
+    aliases: ["data warehouse", "data warehousing"]
+  - name: A/B Testing
+    aliases: ["a/b testing", "ab testing", "split testing"]
+  - name: Performance Testing
+    aliases: ["performance testing", "load testing", "stress testing"]
+  - name: Security
+    aliases: ["security", "cybersecurity", "infosec", "information security"]
+  - name: Penetration Testing
+    aliases: ["penetration testing", "pen testing", "pentest"]
+  - name: Compliance
+    aliases: ["compliance", "soc2", "soc 2", "gdpr", "hipaa", "pci"]
+
+certifications:
+  - name: AWS Solutions Architect
+    aliases: ["aws sa", "aws solutions architect", "aws certified solutions architect"]
+  - name: AWS Developer
+    aliases: ["aws developer", "aws certified developer"]
+  - name: AWS SysOps
+    aliases: ["aws sysops", "aws certified sysops"]
+  - name: AWS DevOps Engineer
+    aliases: ["aws devops", "aws certified devops"]
+  - name: Azure Administrator
+    aliases: ["azure administrator", "az-104"]
+  - name: Azure Developer
+    aliases: ["azure developer", "az-204"]
+  - name: GCP Professional Cloud Architect
+    aliases: ["gcp architect", "gcp professional cloud architect"]
+  - name: Kubernetes Administrator
+    aliases: ["cka", "certified kubernetes administrator"]
+  - name: Kubernetes Developer
+    aliases: ["ckad", "certified kubernetes application developer"]
+  - name: Terraform Associate
+    aliases: ["terraform associate", "hashicorp certified"]
+  - name: PMP
+    aliases: ["pmp", "project management professional"]
+  - name: Scrum Master
+    aliases: ["csm", "certified scrum master", "scrum master"]
+  - name: CISSP
+    aliases: ["cissp"]
+  - name: CompTIA Security+
+    aliases: ["security+", "comptia security+", "comptia security plus"]

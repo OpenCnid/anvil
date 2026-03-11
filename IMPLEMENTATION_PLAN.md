@@ -1,6 +1,6 @@
 # Implementation Plan
 
-Status: **Phase 0 complete. Phase 1 in progress.** Foundation in place: vendor import hook (find_spec API for Python 3.12+), 4 Modified vendored files patched, CLI scaffold with all 11 commands registered, exceptions, config, cache utilities. AI provider abstraction (F-ANV-09) complete. Extended YAML schema (F-ANV-02) complete. ATS score checker (F-ANV-04) complete. Fork integrity tests in place. 289 tests passing.
+Status: **Phase 0 complete. Phase 1 in progress.** Foundation in place: vendor import hook (find_spec API for Python 3.12+), 4 Modified vendored files patched, CLI scaffold with all 11 commands registered, exceptions, config, cache utilities. AI provider abstraction (F-ANV-09) complete. Extended YAML schema (F-ANV-02) complete. ATS score checker (F-ANV-04, F-ANV-05) complete with keyword matching. Fork integrity tests in place. 320 tests passing.
 
 **Vendored file key:** Tasks annotate which vendored files they touch.
 - `[Modified]` = change internals of vendored file (4 files total)
@@ -81,12 +81,12 @@ These tasks are prerequisites for all features and must be completed first.
 
 ### F-ANV-05: ATS Score with Job Description (depends on F-ANV-04)
 
-- [ ] **1.33 Skills taxonomy** — Create `src/anvilcv/scoring/skills_taxonomy.yaml` with ~500 technical skills and aliases per `specs/ats-scoring-model.md`; categorized by domain (languages, frameworks, cloud, databases, tools, methodologies)
-- [ ] **1.34 Keyword extractor** — Create `src/anvilcv/scoring/keyword_extractor.py` — heuristic pipeline: section detection → skill extraction (against taxonomy) → requirement parsing (required vs. preferred) → deduplication; optional AI-enhanced extraction when provider configured
-- [ ] **1.35 Job parser** — Create `src/anvilcv/tailoring/job_parser.py` — multi-source input: URL (via `readability-lxml`), local file, stdin (`--job -`); best-effort URL parsing with graceful fallback; warn on SPA-heavy sites
-- [ ] **1.36 Keyword match scoring** — Implement rules K-01 through K-05 in `src/anvilcv/scoring/keyword_matcher.py`; integrate with `ats_scorer.py` to enable the 3-category weighted formula
-- [ ] **1.37 Score + JD CLI integration** — Add `--job` flag to `anvil score`; handle URL fetch errors, partial extraction, SPA warnings per spec error table in `specs/cli-interface.md`
-- [ ] **1.38 Keyword extraction tests** — Test taxonomy matching, alias deduplication, requirement parsing, section detection; test against sample job descriptions; `tests/unit/scoring/test_keyword_extraction.py`
+- [x] **1.33 Skills taxonomy** — Create `src/anvilcv/scoring/skills_taxonomy.yaml` with ~500 technical skills and aliases per `specs/ats-scoring-model.md`; categorized by domain (languages, frameworks, cloud, databases, tools, methodologies)
+- [x] **1.34 Keyword extractor** — Create `src/anvilcv/scoring/keyword_extractor.py` — heuristic pipeline: section detection → skill extraction (against taxonomy) → requirement parsing (required vs. preferred) → deduplication; optional AI-enhanced extraction when provider configured
+- [x] **1.35 Job parser** — Create `src/anvilcv/tailoring/job_parser.py` — multi-source input: URL (via `readability-lxml`), local file, stdin (`--job -`); best-effort URL parsing with graceful fallback; warn on SPA-heavy sites
+- [x] **1.36 Keyword match scoring** — Implement rules K-01 through K-05 in `src/anvilcv/scoring/keyword_matcher.py`; integrate with `ats_scorer.py` to enable the 3-category weighted formula
+- [x] **1.37 Score + JD CLI integration** — Add `--job` flag to `anvil score`; handle URL fetch errors, partial extraction, SPA warnings per spec error table in `specs/cli-interface.md`
+- [x] **1.38 Keyword extraction tests** — Test taxonomy matching, alias deduplication, requirement parsing, section detection; test against sample job descriptions; `tests/unit/scoring/test_keyword_extraction.py`
 
 ---
 

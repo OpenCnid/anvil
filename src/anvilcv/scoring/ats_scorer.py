@@ -11,11 +11,14 @@ from __future__ import annotations
 import pathlib
 from datetime import datetime
 
+from anvilcv.schema.job_description import JobDescription
 from anvilcv.schema.score_report import (
     Check,
+    Recommendation,
     ScoreReport,
     SectionScore,
 )
+from anvilcv.scoring.keyword_matcher import run_keyword_checks
 from anvilcv.scoring.parsability_checker import run_parsability_checks
 from anvilcv.scoring.section_detector import detect_sections
 from anvilcv.scoring.structure_checker import run_structure_checks
@@ -60,19 +63,23 @@ def _calculate_overall_score(
     return round(parsability_score * 0.55 + structure_score * 0.45)
 
 
-def score_document(path: pathlib.Path) -> ScoreReport:
+def score_document(
+    path: pathlib.Path,
+    job: JobDescription | None = None,
+) -> ScoreReport:
     """Score a document for ATS compatibility.
 
     Runs the full pipeline: extraction → section detection →
-    parsability + structure checks → score calculation.
+    parsability + structure checks → (optional keyword checks) → score.
     """
     doc = extract_text(path)
-    return score_extracted_document(doc, file_path=str(path))
+    return score_extracted_document(doc, file_path=str(path), job=job)
 
 
 def score_extracted_document(
     doc: ExtractedDocument,
     file_path: str = "",
+    job: JobDescription | None = None,
 ) -> ScoreReport:
     """Score an already-extracted document."""
     sections = detect_sections(doc)
@@ -82,7 +89,32 @@ def score_extracted_document(
 
     parsability_score = _calculate_category_score(parsability_checks)
     structure_score = _calculate_category_score(structure_checks)
-    overall = _calculate_overall_score(parsability_score, structure_score)
+
+    keyword_section = None
+    recommendations: list[Recommendation] = []
+
+    if job is not None:
+        _keyword_checks, keyword_section = run_keyword_checks(
+            doc,
+            job_text=job.raw_text,
+            job_title=job.title,
+            required_skills=job.requirements.required_skills,
+            preferred_skills=job.requirements.preferred_skills,
+        )
+
+        # Generate recommendations from missing keywords
+        for skill in keyword_section.missing:
+            recommendations.append(
+                Recommendation(
+                    priority="high",
+                    message=f'Add "{skill}" to skills section.',
+                )
+            )
+
+    keyword_score = keyword_section.score if keyword_section else None
+    overall = _calculate_overall_score(
+        parsability_score, structure_score, keyword_score
+    )
 
     return ScoreReport(
         file=file_path,
@@ -96,4 +128,6 @@ def score_extracted_document(
             score=structure_score,
             checks=structure_checks,
         ),
+        keyword_match=keyword_section,
+        recommendations=recommendations,
     )

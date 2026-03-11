@@ -44,6 +44,14 @@ def score(
             help="Write report to file instead of stdout.",
         ),
     ] = None,
+    job: Annotated[
+        pathlib.Path | None,
+        typer.Option(
+            "--job",
+            "-j",
+            help="Job description file (text or YAML) for keyword matching.",
+        ),
+    ] = None,
     verbose: Annotated[
         bool,
         typer.Option(
@@ -60,8 +68,18 @@ def score(
     """
     from anvilcv.scoring.ats_scorer import score_document
 
+    job_desc = None
+    if job is not None:
+        from anvilcv.tailoring.job_parser import parse_job_from_file
+
+        try:
+            job_desc = parse_job_from_file(job)
+        except AnvilUserError as e:
+            typer.echo(f"Error reading job description: {e}", err=True)
+            raise typer.Exit(code=1) from None
+
     try:
-        report = score_document(input_file)
+        report = score_document(input_file, job=job_desc)
     except AnvilUserError as e:
         typer.echo(f"Error: {e}", err=True)
         raise typer.Exit(code=1) from None
