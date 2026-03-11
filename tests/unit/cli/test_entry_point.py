@@ -10,23 +10,36 @@ from __future__ import annotations
 
 import importlib
 import sys
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
+import typer
+
+# Group with typer_cli tests to prevent module-level app patching from
+# interfering with vendored command registration tests.
+pytestmark = pytest.mark.xdist_group("typer_cli")
 
 
 class TestEntryPointMainHappy:
     """main() imports app, registers commands, and calls app()."""
 
     def test_main_calls_app(self) -> None:
-        """main() ultimately calls app()."""
-        mock_app = MagicMock()
+        """main() ultimately calls app().
 
-        with patch("anvilcv.cli.app.app", mock_app):
-            from anvilcv.cli.entry_point import main
+        We verify main() ends by calling the app. We can't replace
+        anvilcv.cli.app.app with a MagicMock because vendored commands import
+        `app` at module scope — if MagicMock is active during their first
+        import, @app.command() registers on the mock and commands are lost
+        for all subsequent tests on the same worker.
 
+        Instead, we patch Typer's internal __call__ via the `_main` method
+        which is what Typer.__call__ delegates to.
+        """
+        from anvilcv.cli.entry_point import main
+
+        with patch.object(typer.Typer, "__call__", return_value=None) as mock_call:
             main()
-            mock_app.assert_called_once()
+            mock_call.assert_called_once()
 
     def test_main_imports_succeed(self) -> None:
         """All command module imports in main() succeed without error."""

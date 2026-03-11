@@ -138,6 +138,56 @@ class TestCoverErrors:
         result = runner.invoke(app, ["cover", str(resume), "--job", str(job)])
         assert result.exit_code in (0, 1)
 
+    @patch("anvilcv.cli.cover_command.cover_command.YAML")
+    @patch("anvilcv.cli.job_input.resolve_job_input")
+    def test_resume_read_error_exits_1(
+        self,
+        mock_resolve_job: MagicMock,
+        mock_yaml_cls: MagicMock,
+        tmp_path: pathlib.Path,
+    ) -> None:
+        """Lines 84-86: Exception when parsing resume YAML."""
+        resume, job = _write_resume_and_job(tmp_path)
+        mock_resolve_job.return_value = MagicMock(company="Corp")
+        mock_yaml_cls.return_value.load.side_effect = Exception("parse error")
+
+        result = runner.invoke(app, ["cover", str(resume), "--job", str(job)])
+        assert result.exit_code == 1
+        assert "Error reading resume" in result.output
+
+
+class TestCoverRenderFlag:
+    """Test --render flag."""
+
+    @patch("anvilcv.cover.generator.write_cover_letter")
+    @patch("anvilcv.cover.generator.generate_cover_letter")
+    @patch("anvilcv.cli.provider_resolver.resolve_provider")
+    @patch("anvilcv.tailoring.matcher.match_resume_to_job")
+    @patch("anvilcv.cli.job_input.resolve_job_input")
+    def test_render_flag_shows_not_implemented(
+        self,
+        mock_resolve_job: MagicMock,
+        mock_match: MagicMock,
+        mock_resolve: MagicMock,
+        mock_gen: MagicMock,
+        mock_write: MagicMock,
+        tmp_path: pathlib.Path,
+    ) -> None:
+        """Line 125: --render flag prints not-implemented message."""
+        resume, job = _write_resume_and_job(tmp_path)
+
+        mock_resolve_job.return_value = MagicMock(company="TechCo")
+        mock_match.return_value = _make_match()
+        mock_resolve.return_value = MagicMock(name="anthropic")
+        mock_gen.return_value = "Dear Hiring Manager..."
+        mock_write.return_value = None
+
+        result = runner.invoke(
+            app, ["cover", str(resume), "--job", str(job), "--render"]
+        )
+        assert result.exit_code == 0
+        assert "Not yet implemented" in result.output
+
     @patch("anvilcv.cover.generator.generate_cover_letter")
     @patch("anvilcv.cli.provider_resolver.resolve_provider")
     @patch("anvilcv.tailoring.matcher.match_resume_to_job")

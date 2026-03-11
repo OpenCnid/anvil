@@ -233,6 +233,23 @@ class TestTailorErrors:
         # ruamel.yaml may or may not raise; if it does, exit 1
         assert result.exit_code in (0, 1)
 
+    @patch("anvilcv.cli.tailor_command.tailor_command.YAML")
+    @patch("anvilcv.cli.job_input.resolve_job_input")
+    def test_resume_read_error_exits_1(
+        self,
+        mock_resolve_job: MagicMock,
+        mock_yaml_cls: MagicMock,
+        tmp_path: pathlib.Path,
+    ) -> None:
+        """Lines 118-120: Exception when parsing resume YAML."""
+        resume, job = _write_resume_and_job(tmp_path)
+        mock_resolve_job.return_value = MagicMock(company="Corp")
+        mock_yaml_cls.return_value.load.side_effect = Exception("parse error")
+
+        result = runner.invoke(app, ["tailor", str(resume), "--job", str(job)])
+        assert result.exit_code == 1
+        assert "Error reading resume" in result.output
+
     @patch("anvilcv.tailoring.rewriter.rewrite_top_bullets")
     @patch("anvilcv.cli.provider_resolver.resolve_provider")
     @patch("anvilcv.tailoring.matcher.match_resume_to_job")

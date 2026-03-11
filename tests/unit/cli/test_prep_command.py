@@ -178,6 +178,23 @@ class TestPrepErrors:
         result = runner.invoke(app, ["prep", str(resume), "--job", str(job)])
         assert result.exit_code in (0, 1)
 
+    @patch("anvilcv.cli.prep_command.prep_command.YAML")
+    @patch("anvilcv.cli.job_input.resolve_job_input")
+    def test_resume_read_error_exits_1(
+        self,
+        mock_resolve_job: MagicMock,
+        mock_yaml_cls: MagicMock,
+        tmp_path: pathlib.Path,
+    ) -> None:
+        """Lines 77-79: Exception when parsing resume YAML."""
+        resume, job = _write_resume_and_job(tmp_path)
+        mock_resolve_job.return_value = MagicMock(company="Corp")
+        mock_yaml_cls.return_value.load.side_effect = Exception("parse error")
+
+        result = runner.invoke(app, ["prep", str(resume), "--job", str(job)])
+        assert result.exit_code == 1
+        assert "Error reading resume" in result.output
+
     @patch("anvilcv.prep.generator.generate_prep_notes")
     @patch("anvilcv.cli.provider_resolver.resolve_provider")
     @patch("anvilcv.tailoring.matcher.match_resume_to_job")

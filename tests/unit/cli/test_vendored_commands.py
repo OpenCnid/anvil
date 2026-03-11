@@ -19,9 +19,22 @@ runner = CliRunner()
 pytestmark = pytest.mark.xdist_group("typer_cli")
 
 
+def _ensure_commands_registered():
+    """Explicitly import vendored commands to ensure they're registered.
+
+    Why: Module-level autodiscovery in vendor/rendercv/cli/app.py only runs
+    once per process. If another test on the same xdist worker imported the
+    Anvil app first (e.g., test_entry_point patches app with MagicMock),
+    the cached module may have stale command registrations.
+    """
+    import anvilcv.vendor.rendercv.cli.app  # noqa: F401
+    import anvilcv.vendor.rendercv.cli.new_command.new_command  # noqa: F401
+    import anvilcv.vendor.rendercv.cli.render_command.render_command  # noqa: F401
+
+
 def test_render_command_registered():
     """Vendored render command is available after importing vendor app."""
-    import anvilcv.vendor.rendercv.cli.app  # noqa: F401
+    _ensure_commands_registered()
     from anvilcv.cli.app import app
 
     result = runner.invoke(app, ["render", "--help"])
@@ -31,7 +44,7 @@ def test_render_command_registered():
 
 def test_render_variant_flag_in_help():
     """The render command has --variant flag."""
-    import anvilcv.vendor.rendercv.cli.app  # noqa: F401
+    _ensure_commands_registered()
     from anvilcv.cli.app import app
 
     result = runner.invoke(app, ["render", "--help"])
@@ -41,7 +54,7 @@ def test_render_variant_flag_in_help():
 
 def test_render_variant_empty_dir_exits_1(tmp_path):
     """--variant with empty directory exits with code 1."""
-    import anvilcv.vendor.rendercv.cli.app  # noqa: F401
+    _ensure_commands_registered()
     from anvilcv.cli.app import app
 
     empty_dir = tmp_path / "variants"
@@ -57,7 +70,7 @@ def test_render_variant_empty_dir_exits_1(tmp_path):
 
 def test_render_override_flag_in_help():
     """The render command has --override flag."""
-    import anvilcv.vendor.rendercv.cli.app  # noqa: F401
+    _ensure_commands_registered()
     from anvilcv.cli.app import app
 
     result = runner.invoke(app, ["render", "--help"])
@@ -68,7 +81,7 @@ def test_render_override_flag_in_help():
 
 def test_render_override_invalid_format():
     """--override without = sign exits with code 1."""
-    import anvilcv.vendor.rendercv.cli.app  # noqa: F401
+    _ensure_commands_registered()
     from anvilcv.cli.app import app
 
     result = runner.invoke(
@@ -81,7 +94,7 @@ def test_render_override_invalid_format():
 
 def test_render_override_parses_key_value():
     """--override KEY=VALUE is parsed correctly into overrides dict."""
-    import anvilcv.vendor.rendercv.cli.app  # noqa: F401
+    _ensure_commands_registered()
     from anvilcv.cli.app import app
 
     # With a non-existent file, it will fail on file-not-found, not on override parsing
@@ -95,7 +108,7 @@ def test_render_override_parses_key_value():
 
 def test_render_override_multiple_values():
     """Multiple --override flags are all accepted."""
-    import anvilcv.vendor.rendercv.cli.app  # noqa: F401
+    _ensure_commands_registered()
     from anvilcv.cli.app import app
 
     result = runner.invoke(
@@ -114,7 +127,7 @@ def test_render_override_multiple_values():
 
 def test_render_override_value_with_equals():
     """--override handles values containing = signs."""
-    import anvilcv.vendor.rendercv.cli.app  # noqa: F401
+    _ensure_commands_registered()
     from anvilcv.cli.app import app
 
     result = runner.invoke(
@@ -126,7 +139,7 @@ def test_render_override_value_with_equals():
 
 def test_new_command_registered():
     """Vendored new command is available."""
-    import anvilcv.vendor.rendercv.cli.app  # noqa: F401
+    _ensure_commands_registered()
     from anvilcv.cli.app import app
 
     result = runner.invoke(app, ["new", "--help"])
@@ -136,7 +149,7 @@ def test_new_command_registered():
 
 def test_create_theme_command_registered():
     """Vendored create-theme command is available."""
-    import anvilcv.vendor.rendercv.cli.app  # noqa: F401
+    _ensure_commands_registered()
     from anvilcv.cli.app import app
 
     result = runner.invoke(app, ["create-theme", "--help"])
@@ -145,7 +158,7 @@ def test_create_theme_command_registered():
 
 def test_new_command_has_rendercv_compat_flag():
     """The new command exposes --rendercv-compat flag."""
-    import anvilcv.vendor.rendercv.cli.app  # noqa: F401
+    _ensure_commands_registered()
     from anvilcv.cli.app import app
 
     result = runner.invoke(app, ["new", "--help"])
@@ -155,7 +168,7 @@ def test_new_command_has_rendercv_compat_flag():
 
 def test_new_command_generates_file_with_anvil(tmp_path, monkeypatch):
     """anvil new generates YAML with commented anvil section."""
-    import anvilcv.vendor.rendercv.cli.app  # noqa: F401
+    _ensure_commands_registered()
     from anvilcv.cli.app import app
 
     monkeypatch.chdir(tmp_path)
@@ -169,7 +182,7 @@ def test_new_command_generates_file_with_anvil(tmp_path, monkeypatch):
 
 def test_new_command_rendercv_compat_excludes_anvil(tmp_path, monkeypatch):
     """anvil new --rendercv-compat generates YAML without anvil section."""
-    import anvilcv.vendor.rendercv.cli.app  # noqa: F401
+    _ensure_commands_registered()
     from anvilcv.cli.app import app
 
     monkeypatch.chdir(tmp_path)
