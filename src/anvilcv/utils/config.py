@@ -82,7 +82,7 @@ def resolve_provider(
         return cli_provider
 
     if config:
-        default = config.get("providers", {}).get("default")
+        default: str | None = config.get("providers", {}).get("default")
         if default:
             return default
 

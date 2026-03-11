@@ -155,7 +155,8 @@ class GitHubScanner:
             response, _ = self._get(f"/repos/{owner}/{repo}/languages")
             if response is None:
                 return {}
-            return response.json()
+            result: dict[str, int] = response.json()
+            return result
         except httpx.HTTPStatusError:
             return {}
 
@@ -167,7 +168,7 @@ class GitHubScanner:
     ) -> int:
         """Fetch approximate commit count for a repo."""
         try:
-            params = {"per_page": 1}
+            params: dict[str, str | int] = {"per_page": 1}
             if author:
                 params["author"] = author
             response, _ = self._get(

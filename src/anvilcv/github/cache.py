@@ -85,7 +85,8 @@ def read_cached_etag(
 
     try:
         data = json.loads(cache_file.read_text(encoding="utf-8"))
-        return data.get("etag")
+        etag: str | None = data.get("etag")
+        return etag
     except (json.JSONDecodeError, OSError):
         return None
 

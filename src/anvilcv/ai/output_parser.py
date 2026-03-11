@@ -70,7 +70,8 @@ def parse_json_from_response(content: str) -> dict[str, Any] | None:
         content = content[newline:end].strip()
 
     try:
-        return json.loads(content)
+        result: dict[str, Any] = json.loads(content)
+        return result
     except json.JSONDecodeError:
         return None
 

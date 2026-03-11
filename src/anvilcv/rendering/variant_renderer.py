@@ -9,6 +9,7 @@ Why:
 from __future__ import annotations
 
 import pathlib
+from typing import Any
 
 from ruamel.yaml import YAML
 
@@ -21,7 +22,7 @@ def discover_variants(variant_dir: pathlib.Path) -> list[pathlib.Path]:
     if not variant_dir.is_dir():
         return []
 
-    variants = []
+    variants: list[pathlib.Path] = []
     for ext in ("*.yaml", "*.yml"):
         variants.extend(variant_dir.glob(ext))
 
@@ -50,7 +51,7 @@ def get_variant_output_folder(
     return base_output / variant_path.stem
 
 
-def read_variant_metadata(variant_path: pathlib.Path) -> dict | None:
+def read_variant_metadata(variant_path: pathlib.Path) -> dict[str, Any] | None:
     """Read variant provenance metadata from a YAML file.
 
     Returns the `variant` section if present, None otherwise.
@@ -60,7 +61,8 @@ def read_variant_metadata(variant_path: pathlib.Path) -> dict | None:
         with open(variant_path) as f:
             data = yaml.load(f)
         if data and isinstance(data, dict):
-            return data.get("variant")
+            result: dict[str, Any] | None = data.get("variant")
+            return result
     except Exception:
         return None
     return None

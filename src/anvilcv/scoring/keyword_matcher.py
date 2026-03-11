@@ -8,6 +8,7 @@ Why:
 from __future__ import annotations
 
 import re
+from typing import Literal
 
 from anvilcv.schema.score_report import Check, KeywordMatchSection
 from anvilcv.scoring.keyword_extractor import extract_skills
@@ -82,6 +83,7 @@ def check_k01_required_skills(
 
     ratio = len(matched) / len(required_skills) if required_skills else 0
 
+    status: Literal["pass", "fail", "warn"]
     if ratio >= 0.8:
         status = "pass"
     elif ratio >= 0.5:
@@ -122,16 +124,17 @@ def check_k02_preferred_skills(
     matched = sum(1 for s in preferred_skills if s.lower() in resume_lower)
     ratio = matched / len(preferred_skills)
 
+    status2: Literal["pass", "fail", "warn"]
     if ratio >= 0.5:
-        status = "pass"
+        status2 = "pass"
     elif ratio >= 0.25:
-        status = "warn"
+        status2 = "warn"
     else:
-        status = "fail"
+        status2 = "fail"
 
     return Check(
         name="Preferred skill keywords",
-        status=status,
+        status=status2,
         confidence="evidence_based",
         source="Greenhouse, Lever",
         detail=f"Matched {matched}/{len(preferred_skills)} preferred skills.",
@@ -202,16 +205,17 @@ def check_k04_industry_terms(
 
     ratio = len(overlap) / len(job_set) if job_set else 0
 
+    status4: Literal["pass", "fail", "warn"]
     if ratio >= 0.6:
-        status = "pass"
+        status4 = "pass"
     elif ratio >= 0.3:
-        status = "warn"
+        status4 = "warn"
     else:
-        status = "fail"
+        status4 = "fail"
 
     return Check(
         name="Industry terminology",
-        status=status,
+        status=status4,
         confidence="opinionated_heuristic",
         detail=f"Matched {len(overlap)}/{len(job_set)} industry terms.",
     )

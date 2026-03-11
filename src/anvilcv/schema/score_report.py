@@ -76,8 +76,12 @@ class ScoreReport(BaseModelWithoutExtraKeys):
         default=None,
         description="Path to the job description YAML, if scored against one.",
     )
-    parsability: SectionScore = pydantic.Field(default_factory=SectionScore)
-    structure: SectionScore = pydantic.Field(default_factory=SectionScore)
+    parsability: SectionScore = pydantic.Field(
+        default_factory=lambda: SectionScore(score=0)
+    )
+    structure: SectionScore = pydantic.Field(
+        default_factory=lambda: SectionScore(score=0)
+    )
     keyword_match: KeywordMatchSection | None = pydantic.Field(
         default=None,
         description="Present only when scored against a job description.",

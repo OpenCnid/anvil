@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import pathlib
 import sys
+from typing import Literal
 
 from anvilcv.exceptions import AnvilUserError
 from anvilcv.schema.job_description import JobDescription, JobRequirements
@@ -33,7 +34,9 @@ def parse_job_from_file(path: pathlib.Path) -> JobDescription:
     return _parse_text_job(text, source="file")
 
 
-def parse_job_from_text(text: str, source: str = "stdin") -> JobDescription:
+def parse_job_from_text(
+    text: str, source: Literal["url", "file", "stdin"] = "stdin"
+) -> JobDescription:
     """Parse a job description from raw text."""
     return _parse_text_job(text, source=source)
 
@@ -48,7 +51,9 @@ def parse_job_from_stdin() -> JobDescription:
     return _parse_text_job(text, source="stdin")
 
 
-def _parse_text_job(text: str, source: str = "file") -> JobDescription:
+def _parse_text_job(
+    text: str, source: Literal["url", "file", "stdin"] = "file"
+) -> JobDescription:
     """Extract structured data from raw job description text."""
     required_skills, preferred_skills = categorize_skills(text)
     experience_years = extract_experience_years(text)
@@ -67,7 +72,7 @@ def _parse_text_job(text: str, source: str = "file") -> JobDescription:
     return JobDescription(
         title=title,
         company=company,
-        source=source if source in ("url", "file", "stdin") else "file",
+        source=source,
         requirements=JobRequirements(
             required_skills=required_skills,
             preferred_skills=preferred_skills,
@@ -77,9 +82,11 @@ def _parse_text_job(text: str, source: str = "file") -> JobDescription:
     )
 
 
-def _parse_yaml_job(text: str, source: str = "file") -> JobDescription:
+def _parse_yaml_job(
+    text: str, source: Literal["url", "file", "stdin"] = "file"
+) -> JobDescription:
     """Parse a structured YAML job description."""
-    import yaml
+    import yaml  # type: ignore[import-untyped]
 
     try:
         data = yaml.safe_load(text)
@@ -102,7 +109,7 @@ def _parse_yaml_job(text: str, source: str = "file") -> JobDescription:
         title=job_data.get("title", "Unknown Position"),
         company=job_data.get("company", "Unknown Company"),
         url=job_data.get("url"),
-        source=source if source in ("url", "file", "stdin") else "file",
+        source=source,
         requirements=JobRequirements(
             required_skills=reqs.get("required_skills", []),
             preferred_skills=reqs.get("preferred_skills", []),

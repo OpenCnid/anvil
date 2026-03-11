@@ -8,6 +8,7 @@ Why:
 """
 
 import logging
+from typing import Any
 
 import httpx
 
@@ -90,7 +91,8 @@ class OllamaProvider(AIProvider):
         }
 
         if request.max_output_tokens:
-            payload["options"]["num_predict"] = request.max_output_tokens
+            options: dict[str, Any] = payload["options"]  # type: ignore[assignment]
+            options["num_predict"] = request.max_output_tokens
 
         try:
             async with httpx.AsyncClient(timeout=120.0) as client:

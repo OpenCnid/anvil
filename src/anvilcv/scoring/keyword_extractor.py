@@ -11,7 +11,7 @@ from __future__ import annotations
 import pathlib
 import re
 
-import yaml
+import yaml  # type: ignore[import-untyped]
 
 _TAXONOMY_PATH = pathlib.Path(__file__).parent / "skills_taxonomy.yaml"
 _taxonomy_cache: dict[str, list[dict]] | None = None
