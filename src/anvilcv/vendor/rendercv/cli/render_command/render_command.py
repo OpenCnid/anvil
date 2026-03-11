@@ -2,7 +2,6 @@ import pathlib
 from typing import Annotated
 
 import typer
-
 from rendercv.schema.rendercv_model_builder import (
     BuildRendercvModelArguments,
 )
@@ -173,6 +172,13 @@ def cli_command_render(
             help="If provided, ATS-optimized semantic HTML will not be generated.",
         ),
     ] = False,
+    variant: Annotated[
+        pathlib.Path | None,
+        typer.Option(
+            "--variant",
+            help="Render all YAML files in a variant directory.",
+        ),
+    ] = None,
     watch: Annotated[
         bool | None,
         typer.Option(
@@ -225,6 +231,32 @@ def cli_command_render(
         "dont_generate_png": dont_generate_png,
         "overrides": parse_override_arguments(extra_data_model_override_arguments),
     }
+
+    # Variant batch rendering: render all YAML files in a directory
+    if variant is not None:
+        from anvilcv.rendering.variant_renderer import (
+            discover_variants,
+            render_all_variants,
+        )
+
+        variants = discover_variants(variant)
+        if not variants:
+            typer.echo(f"No YAML files found in {variant}")
+            raise typer.Exit(code=1)
+
+        typer.echo(f"Rendering {len(variants)} variants from {variant}...")
+        results = render_all_variants(
+            variant,
+            base_output=output_folder,
+            dont_generate_ats_html=no_ats_html,
+        )
+        typer.echo(
+            f"Rendered {len(results)}/{len(variants)} variants"
+        )
+        if len(results) < len(variants):
+            failed = len(variants) - len(results)
+            typer.echo(f"  ({failed} failed)")
+        return
 
     with ProgressPanel(quiet=quiet) as progress_panel:
         if watch:

@@ -21,6 +21,32 @@ def test_render_command_registered():
     assert "YAML input file" in result.output
 
 
+def test_render_variant_flag_in_help():
+    """The render command has --variant flag."""
+    import anvilcv.vendor.rendercv.cli.app  # noqa: F401
+    from anvilcv.cli.app import app
+
+    result = runner.invoke(app, ["render", "--help"])
+    assert result.exit_code == 0
+    assert "--variant" in result.output
+
+
+def test_render_variant_empty_dir_exits_1(tmp_path):
+    """--variant with empty directory exits with code 1."""
+    import anvilcv.vendor.rendercv.cli.app  # noqa: F401
+    from anvilcv.cli.app import app
+
+    empty_dir = tmp_path / "variants"
+    empty_dir.mkdir()
+
+    result = runner.invoke(
+        app,
+        ["render", "dummy.yaml", "--variant", str(empty_dir)],
+    )
+    assert result.exit_code == 1
+    assert "No YAML files found" in result.output
+
+
 def test_new_command_registered():
     """Vendored new command is available."""
     import anvilcv.vendor.rendercv.cli.app  # noqa: F401
