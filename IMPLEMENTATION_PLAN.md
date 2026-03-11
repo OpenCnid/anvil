@@ -1,6 +1,6 @@
 # Implementation Plan
 
-Status: **Phase 0 complete. Phase 1 complete. Phase 2 complete. Phase 3 complete.** All features implemented. All cross-cutting concerns X.1-X.8 complete. X.5 achieved (85% coverage), X.7 achieved (21 corpus files), X.8 implemented (30 golden-set tests: 5 cases × 2 providers × 3 features). 715 tests passing + 30 golden-set tests (skipped without --run-golden).
+Status: **Phase 0 complete. Phase 1 complete. Phase 2 complete. Phase 3 complete.** All features implemented. All cross-cutting concerns X.1-X.8 complete. X.5 achieved (85% coverage), X.7 achieved (21 corpus files), X.8 implemented (30 golden-set tests: 5 cases × 2 providers × 3 features). 746 tests passing + 30 golden-set tests (skipped without --run-golden). Per-provider prompt registry fully implemented (tailor_bullets, keyword_extraction, cover_letter, interview_prep).
 
 **Vendored file key:** Tasks annotate which vendored files they touch.
 - `[Modified]` = change internals of vendored file (4 files total)
@@ -55,7 +55,7 @@ These tasks are prerequisites for all features and must be completed first.
 - [x] **1.13 Ollama provider** — Create `src/anvilcv/ai/ollama.py`; llama3.1:8b/70b tested set; others accepted with warning; smaller context window (8K for small models); no auth; local only
 - [x] **1.14 Token budget calculator** — Create `src/anvilcv/ai/token_budget.py` per spec: allocate system overhead + few-shot examples + output reserve; truncate job description before resume; explicit error if resume alone exceeds budget
 - [x] **1.15 Output parser** — Create `src/anvilcv/ai/output_parser.py` — validate AI responses against expected schema; retry logic (1-3 times with same prompt); save raw failures to `.anvil/debug/` for debugging
-- [x] **1.16 Prompt registry skeleton** — Create `src/anvilcv/ai/prompts/` directory structure with task subdirs (`tailor_bullets/`, `cover_letter/`, `interview_prep/`, `keyword_extraction/`); each task dir contains per-provider prompt files (`anthropic.py`, `openai.py`, `ollama.py`)
+- [x] **1.16 Prompt registry** — `src/anvilcv/ai/prompts/` with task subdirs. Each has per-provider files (`anthropic.py`, `openai.py`, `ollama.py`) and `common.py` fallback. Prompt selector (`selector.py`) dispatches by provider name. All 4 tasks implemented: `tailor_bullets/` (XML/concise/example), `keyword_extraction/` (XML/JSON/simple), `cover_letter/` (common), `interview_prep/` (common)
 - [x] **1.17 Provider tests** — Unit tests with mocked API responses for all 3 providers; test error handling (missing key, rate limit, malformed response, network failure, context overflow); `tests/unit/ai/test_providers.py`
 
 ### F-ANV-02: Extended YAML Schema (depends on F-ANV-01)
@@ -131,7 +131,7 @@ These tasks are prerequisites for all features and must be completed first.
 - [x] **2.20 Rewriter** — Create `src/anvilcv/tailoring/rewriter.py` — AI bullet rewriting using provider interface; per-provider prompts in `src/anvilcv/ai/prompts/tailor_bullets/`
 - [x] **2.21 Variant writer** — Create `src/anvilcv/tailoring/variant_writer.py` — write tailored YAML with provenance metadata to `variants/` dir; NEVER modify the user's original file (P1 principle: YAML is source of truth)
 - [x] **2.22 Tailor command** — Create `src/anvilcv/cli/tailor_command/` — `anvil tailor INPUT --job <path-or-url> [--provider] [--model] [--render] [--score] [--dry-run]`
-- [x] **2.23 Tailor prompts** — Write per-provider prompts for `tailor_bullets` task: `anthropic.py` (XML-tagged output), `openai.py` (JSON mode), `ollama.py` (markdown with extraction)
+- [x] **2.23 Tailor prompts** — Per-provider prompts for `tailor_bullets` task: `anthropic.py` (XML-tagged output with `<rewritten>` tags), `openai.py` (concise format), `ollama.py` (simplified with example). Prompt selector dispatches by provider name with common fallback. `_extract_rewritten_bullet()` handles XML tag extraction from Anthropic responses
 - [x] **2.24 Tailor tests** — Tier 1 structural tests (output parses as YAML, conforms to AnvilModel schema, provenance metadata present) with mocked APIs; `tests/unit/tailoring/test_tailoring.py`
 
 ### F-ANV-11: GitHub Content Scanner (depends on F-ANV-02)

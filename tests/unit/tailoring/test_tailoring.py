@@ -108,23 +108,81 @@ class TestMatcher:
 
 
 class TestRewriter:
-    def test_build_rewrite_prompt(self):
+    def test_build_rewrite_prompt_common(self):
         job = _sample_job()
         match = ResumeMatch(
             missing_required=["Terraform", "Kubernetes"],
             job_required_skills=["Python", "Kubernetes", "Terraform"],
         )
-        prompt = build_rewrite_prompt(
+        system, user = build_rewrite_prompt(
             "Built scalable Python microservices",
             job,
             match,
         )
-        assert "Python" in prompt
-        assert "TechCo" in prompt
-        assert "Terraform" in prompt
+        assert "resume" in system.lower() or "bullet" in system.lower()
+        assert "Python" in user
+        assert "TechCo" in user
+        assert "Terraform" in user
+
+    def test_build_rewrite_prompt_anthropic(self):
+        """Anthropic prompts use XML tags."""
+        job = _sample_job()
+        match = ResumeMatch(
+            missing_required=["Terraform"],
+            job_required_skills=["Python", "Kubernetes", "Terraform"],
+        )
+        system, user = build_rewrite_prompt(
+            "Built scalable Python microservices",
+            job,
+            match,
+            provider_name="anthropic",
+        )
+        assert "<job>" in user
+        assert "<original_bullet>" in user
+        assert "<rewritten>" in user
+
+    def test_build_rewrite_prompt_openai(self):
+        """OpenAI prompts are concise."""
+        job = _sample_job()
+        match = ResumeMatch(missing_required=["Terraform"])
+        system, user = build_rewrite_prompt(
+            "Built microservices",
+            job,
+            match,
+            provider_name="openai",
+        )
+        assert "TechCo" in user
+        assert len(user) < 500  # Should be concise
+
+    def test_build_rewrite_prompt_ollama(self):
+        """Ollama prompts include an example."""
+        job = _sample_job()
+        match = ResumeMatch(missing_required=["Terraform"])
+        system, user = build_rewrite_prompt(
+            "Built microservices",
+            job,
+            match,
+            provider_name="ollama",
+        )
+        assert "Example:" in user
+        assert "Rewritten:" in user
+
+    def test_build_rewrite_prompt_unknown_provider_falls_back(self):
+        """Unknown providers fall back to common prompt."""
+        job = _sample_job()
+        match = ResumeMatch(missing_required=["Terraform"])
+        system, user = build_rewrite_prompt(
+            "Built microservices",
+            job,
+            match,
+            provider_name="unknown_provider",
+        )
+        # Should get the common prompt (no XML tags, no example)
+        assert "Rewrite this resume bullet" in user
 
     def test_rewrite_bullet_success(self):
         provider = MagicMock()
+        provider.name = "test"
         provider.generate = AsyncMock(
             return_value=GenerationResponse(
                 content="Built and deployed Python microservices on Kubernetes",
@@ -146,8 +204,29 @@ class TestRewriter:
         )
         assert "Kubernetes" in result
 
+    def test_rewrite_bullet_extracts_xml_tags(self):
+        """Anthropic responses with <rewritten> tags are extracted."""
+        provider = MagicMock()
+        provider.name = "anthropic"
+        provider.generate = AsyncMock(
+            return_value=GenerationResponse(
+                content="<rewritten>Deployed Python services on Kubernetes</rewritten>",
+                model="test",
+                provider="test",
+            )
+        )
+
+        job = _sample_job()
+        match = ResumeMatch(missing_required=["Kubernetes"])
+
+        result = asyncio.run(
+            rewrite_bullet(provider, "Built Python microservices", job, match)
+        )
+        assert result == "Deployed Python services on Kubernetes"
+
     def test_rewrite_bullet_fallback_on_error(self):
         provider = MagicMock()
+        provider.name = "test"
         provider.generate = AsyncMock(side_effect=Exception("API error"))
 
         job = _sample_job()
@@ -165,6 +244,7 @@ class TestRewriter:
 
     def test_rewrite_bullet_rejects_too_long(self):
         provider = MagicMock()
+        provider.name = "test"
         provider.generate = AsyncMock(
             return_value=GenerationResponse(
                 content="x" * 10000,  # Way too long

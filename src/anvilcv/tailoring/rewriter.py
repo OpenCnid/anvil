@@ -3,13 +3,17 @@
 Why:
     The rewriter takes matched resume bullets and rewrites them using
     AI to better align with job requirements. It uses the provider
-    interface from F-ANV-09 and per-provider prompts.
+    interface from F-ANV-09 and per-provider prompts per design
+    principle P5 (providers are pluggable not fungible).
 """
 
 from __future__ import annotations
 
 import logging
+import re
 
+from anvilcv.ai.prompts.selector import get_prompt_builder
+from anvilcv.ai.prompts.tailor_bullets.common import build_tailor_prompt
 from anvilcv.ai.provider import AIProvider, GenerationRequest, TaskType
 from anvilcv.schema.job_description import JobDescription
 from anvilcv.tailoring.matcher import ResumeMatch
@@ -21,34 +25,44 @@ def build_rewrite_prompt(
     bullet: str,
     job: JobDescription,
     match: ResumeMatch,
-) -> str:
+    provider_name: str = "",
+) -> tuple[str, str]:
     """Build a prompt for rewriting a single bullet point.
 
-    The prompt includes the original bullet, job requirements,
-    and skills to emphasize.
+    Uses per-provider prompts when available (Anthropic XML, OpenAI concise,
+    Ollama simplified), falling back to the common prompt.
     """
-    missing_skills = ", ".join(match.missing_required[:5])
-    required = ", ".join(job.requirements.required_skills[:10])
+    # Try per-provider prompt first
+    if provider_name:
+        builder = get_prompt_builder("tailor_bullets", provider_name)
+        if builder is not None:
+            try:
+                return builder(bullet, job, match)
+            except TypeError:
+                logger.debug(
+                    "Per-provider prompt builder signature mismatch, using common"
+                )
 
-    return (
-        f"Rewrite this resume bullet point to better match the job requirements.\n"
-        f"\n"
-        f"Original bullet: {bullet}\n"
-        f"\n"
-        f"Job title: {job.title} at {job.company}\n"
-        f"Required skills: {required}\n"
-        f"Skills to emphasize if relevant: {missing_skills}\n"
-        f"\n"
-        f"Rules:\n"
-        f"- Keep the same general meaning and truthfulness\n"
-        f"- Use strong action verbs (built, led, designed, shipped)\n"
-        f"- Include metrics where the original has them\n"
-        f"- Naturally incorporate relevant skills from the job requirements\n"
-        f"- Keep it to 1-2 lines maximum\n"
-        f"- Do NOT fabricate experience or skills not implied by the original\n"
-        f"\n"
-        f"Return ONLY the rewritten bullet point, nothing else."
-    )
+    # Fall back to common prompt
+    return build_tailor_prompt(bullet, job, match)
+
+
+def _extract_rewritten_bullet(content: str) -> str:
+    """Extract the rewritten bullet from provider response.
+
+    Handles XML-tagged output from Anthropic (<rewritten>...</rewritten>)
+    and plain text from other providers.
+    """
+    # Try XML tag extraction (Anthropic)
+    xml_match = re.search(r"<rewritten>(.*?)</rewritten>", content, re.DOTALL)
+    if xml_match:
+        return xml_match.group(1).strip()
+
+    # Plain text — strip quotes, dashes, "Rewritten:" prefix
+    result = content.strip()
+    result = re.sub(r"^(?:Rewritten:\s*)", "", result, flags=re.IGNORECASE)
+    result = result.strip("\"'- ")
+    return result
 
 
 async def rewrite_bullet(
@@ -61,22 +75,20 @@ async def rewrite_bullet(
 
     Returns the rewritten bullet or the original if rewriting fails.
     """
-    prompt = build_rewrite_prompt(bullet, job, match)
+    system_prompt, user_prompt = build_rewrite_prompt(
+        bullet, job, match, provider_name=provider.name
+    )
 
     request = GenerationRequest(
         task=TaskType.TAILOR_BULLETS,
-        system_prompt=(
-            "You are a professional resume writer. You rewrite bullet points "
-            "to better match job descriptions while maintaining truthfulness. "
-            "Return only the rewritten bullet, no explanations."
-        ),
-        user_prompt=prompt,
+        system_prompt=system_prompt,
+        user_prompt=user_prompt,
         temperature=0.3,
     )
 
     try:
         response = await provider.generate(request)
-        rewritten = response.content.strip()
+        rewritten = _extract_rewritten_bullet(response.content)
         # Basic validation: should be similar length, not empty
         if rewritten and len(rewritten) < len(bullet) * 5:
             return rewritten
