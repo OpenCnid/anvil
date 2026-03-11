@@ -16,7 +16,7 @@ v1 is shippable when ALL of the following are true:
    - `anvil tailor` produces tailored variant YAML with provenance metadata
    - `anvil scan` fetches GitHub data and generates project entries
    - ATS-optimized HTML output is generated alongside standard output
-   - At least 2 new developer-focused themes are functional
+   - At least 1 new developer-focused theme is functional (devforge; terminal theme deferred to post-v1 per OQ-4)
 
 3. **AI provider support:** At least 2 providers (Anthropic + OpenAI) pass Tier 2 golden-set regression tests with scores ≥ 60/100 on all test cases. Ollama is functional but best-effort.
 
