@@ -21,6 +21,11 @@ env/
 # Anvil runtime
 .anvil/
 output/
+rendercv_output/
+variants/
+
+# Baseline (large, only needed locally for fork integrity checks)
+baseline/
 
 # Test artifacts
 .pytest_cache/
