@@ -1,0 +1,47 @@
+title: Senior Frontend Engineer
+company: Shopify
+experience_years: 5
+requirements:
+  required:
+    - "Expert-level React and TypeScript skills"
+    - "Experience building and maintaining component libraries or design systems"
+    - "Strong understanding of web performance optimization"
+    - "Experience with server-side rendering frameworks (Next.js, Remix)"
+    - "Solid grasp of accessibility standards"
+  preferred:
+    - "Experience with e-commerce platforms"
+    - "Familiarity with GraphQL and REST API design"
+    - "Knowledge of micro-frontend architectures"
+    - "Experience mentoring junior developers"
+raw_text: |
+  Senior Frontend Engineer - Shopify
+
+  About the Role:
+  Shopify is looking for a Senior Frontend Engineer to join the Storefront
+  Experiences team. You will help build the next generation of merchant-facing
+  tools that power over 2 million online stores worldwide.
+
+  What You'll Do:
+  - Build and maintain high-performance React applications used by millions of merchants
+  - Contribute to Polaris, Shopify's open-source design system
+  - Optimize frontend performance for global audiences across varied network conditions
+  - Collaborate with designers and product managers to ship delightful user experiences
+  - Mentor junior engineers and contribute to frontend best practices
+  - Champion accessibility across the product surface
+
+  Requirements:
+  - 5+ years of professional frontend development experience
+  - Expert-level proficiency in React and TypeScript
+  - Experience building or contributing to component libraries or design systems
+  - Deep understanding of web performance (Core Web Vitals, bundle optimization)
+  - Experience with SSR/SSG frameworks like Next.js or Remix
+  - Strong understanding of accessibility (WCAG 2.1 AA)
+  - Excellent communication and collaboration skills
+
+  Nice to Have:
+  - Experience in e-commerce or merchant-facing tools
+  - Familiarity with GraphQL (we use it extensively)
+  - Experience with micro-frontend or modular frontend architectures
+  - Track record of mentoring and growing other engineers
+
+  Compensation: $170,000 - $240,000 CAD base + equity

@@ -1,0 +1,36 @@
+cv:
+  name: Priya Chandran
+  email: priya.chandran@example.com
+  phone: "+1-415-555-0233"
+  location: San Francisco, CA
+  sections:
+    experience:
+      - company: Luminary Health
+        position: Senior Frontend Engineer
+        start_date: 2022-01
+        end_date: 2024-08
+        highlights:
+          - "Architected a React component library used across 5 product teams, reducing duplicated UI code by 60%"
+          - "Led migration from JavaScript to TypeScript for a 120k-line codebase, catching 340 type-related bugs pre-production"
+          - "Improved Core Web Vitals scores by 45% through code-splitting, lazy loading, and image optimization"
+          - "Built real-time patient dashboard with WebSocket integration serving 8,000 concurrent users"
+      - company: TravelNest
+        position: Frontend Developer
+        start_date: 2019-09
+        end_date: 2021-12
+        highlights:
+          - "Developed booking flow SPA in React that increased conversion rate by 18% through A/B-tested UX improvements"
+          - "Implemented server-side rendering with Next.js, reducing initial page load time from 3.2s to 1.1s"
+          - "Created automated visual regression testing suite with Playwright, catching 95% of UI regressions before release"
+    education:
+      - institution: University of California, Berkeley
+        area: Electrical Engineering and Computer Science
+        degree: BS
+        end_date: 2019-06
+    skills:
+      - label: Frontend
+        details: React, TypeScript, Next.js, Redux, Tailwind CSS, Storybook, Webpack, Vite
+      - label: Testing
+        details: Jest, React Testing Library, Playwright, Cypress, Chromatic
+      - label: General
+        details: GraphQL, REST APIs, Git, Figma, Accessibility (WCAG 2.1), Performance Optimization

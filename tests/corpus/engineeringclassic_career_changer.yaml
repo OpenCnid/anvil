@@ -1,0 +1,95 @@
+cv:
+  name: Søren Nakamura-Johansson
+  headline: Mechanical Engineer → Software Developer
+  location: Copenhagen, Denmark
+  email: soren.nj@example.com
+  website: https://soren-nj.dev
+  social_networks:
+    - network: GitHub
+      username: soren-nj
+    - network: LinkedIn
+      username: sorennj
+  sections:
+    About Me:
+      - "Career changer with 6 years in mechanical engineering now building software full-time."
+      - "I combine deep domain expertise in **physical systems** with modern software engineering practices."
+      - "Passionate about [simulation tools](https://example.com/sim) that bridge the physical–digital divide."
+    education:
+      - institution: Technical University of Denmark
+        area: Software Engineering (conversion programme)
+        degree: MSc
+        start_date: 2021-09
+        end_date: 2023-06
+        location: Lyngby, Denmark
+        highlights:
+          - "Thesis: Real-Time Digital Twin Synchronization via gRPC Streaming"
+          - "GPA: 11.2/12.0 (Danish grading scale)"
+      - institution: Aalborg University
+        area: Mechanical Engineering
+        degree: BEng
+        start_date: 2013-09
+        end_date: 2017-06
+        location: Aalborg, Denmark
+    experience:
+      - company: Vestas Wind Systems
+        position: Software Developer (Digital Twin Platform)
+        start_date: 2023-08
+        end_date: present
+        location: "Århus, Denmark"
+        highlights:
+          - Building digital twin platform ingesting sensor data from 40,000+ wind turbines globally
+          - "Reduced simulation warm-up time by 78% via lazy-loading FEM mesh partitions"
+          - "Tech stack: Rust, Python, Kubernetes, TimescaleDB, Apache Arrow"
+      - company: Grundfos
+        position: Mechanical Design Engineer
+        start_date: 2017-08
+        end_date: 2021-08
+        location: Bjerringbro, Denmark
+        summary: Designed centrifugal pump components for industrial water systems.
+        highlights:
+          - Led FEA-driven redesign of impeller geometry reducing cavitation by 35%
+          - Automated parametric CAD workflows with Python scripting (SolidWorks API)
+          - "Recognized with internal Innovation Award (2019) for self-initiated automation project"
+      - company: MAN Energy Solutions
+        position: Intern, R&D
+        date: "Spring 2017"
+        location: Copenhagen, Denmark
+        highlights:
+          - Conducted vibration analysis on marine diesel engine crankshafts
+          - Results published in internal technical report (MAN-TR-2017-042)
+    projects:
+      - name: "[turbsim-rs](https://github.com/soren-nj/turbsim-rs)"
+        start_date: 2024-01
+        end_date: present
+        summary: Open-source wind turbine aerodynamic simulator in Rust
+        highlights:
+          - Blade Element Momentum (BEM) solver with 3D wake corrections
+          - "FFI bindings for Python & Julia; 600+ GitHub stars"
+      - name: "cph-bike-flow"
+        date: "2022"
+        summary: Real-time bicycle traffic visualization for Copenhagen municipality data
+        highlights:
+          - "D3.js frontend consuming WebSocket stream of 400+ sensor stations"
+          - Featured in Berlingske Tidende article on urban data projects
+      - name: "solid2step"
+        date: "2020"
+        summary: CLI tool converting SolidWorks assemblies to STEP format in batch
+    skills:
+      - label: Software
+        details: "Rust, Python, TypeScript, C++, SQL"
+      - label: Engineering Tools
+        details: "SolidWorks, ANSYS, MATLAB/Simulink, OpenFOAM"
+      - label: Infrastructure
+        details: "Docker, Kubernetes, PostgreSQL, TimescaleDB, Grafana"
+      - label: Languages
+        details: "Danish (native), English (fluent), Japanese (conversational), Swedish (reading)"
+    certifications:
+      - bullet: "Certified Kubernetes Application Developer (CKAD, 2023)"
+      - bullet: "AWS Certified Cloud Practitioner (2023)"
+      - bullet: "Chartered Engineer (IDA Denmark, 2019)"
+    numbered_publications:
+      - number: "S. Nakamura-Johansson et al., \"Digital Twin Synchronization for Wind Turbine Fleets,\" Proc. WindEurope 2024."
+      - number: "S. Nakamura-Johansson & P. Andersen, \"Cavitation Reduction via Impeller Optimization,\" ASME J. Fluids Eng., 2020."
+      - number: "S. Nakamura-Johansson, \"Automated Parametric CAD for Pump Design,\" Grundfos Internal Tech. Report, 2019."
+design:
+  theme: engineeringclassic

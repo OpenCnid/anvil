@@ -1,0 +1,35 @@
+title: DevOps Engineer
+company: Datadog
+requirements:
+  required_skills:
+    - Terraform
+    - Kubernetes
+    - CI/CD pipelines
+    - AWS or GCP
+    - Python or Go
+  preferred_skills:
+    - Observability tools
+    - GitOps
+    - Service mesh
+    - Cost optimization
+  experience_years: 4
+raw_text: |
+  Datadog is hiring a DevOps Engineer to help scale our cloud infrastructure platform.
+  As a leader in cloud monitoring and observability, we need engineers who can build
+  and maintain the systems that power real-time monitoring for thousands of customers.
+
+  Requirements:
+  - 4+ years of experience in DevOps, SRE, or infrastructure engineering
+  - Strong Terraform or similar IaC experience at scale
+  - Production Kubernetes experience (EKS, GKE, or AKS)
+  - CI/CD pipeline design and maintenance
+  - Proficiency in AWS or GCP
+  - Scripting in Python or Go
+  - Strong Linux fundamentals
+
+  Preferred:
+  - Experience with observability tools and practices
+  - GitOps workflows (ArgoCD, Flux)
+  - Service mesh experience (Istio, Linkerd)
+  - Cloud cost optimization experience
+  - Experience operating large-scale distributed systems

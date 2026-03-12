@@ -1,0 +1,46 @@
+title: Senior DevOps Engineer
+company: Datadog
+experience_years: 5
+requirements:
+  required:
+    - "Deep experience with infrastructure as code (Terraform, Pulumi, or CloudFormation)"
+    - "Strong Kubernetes expertise in production environments"
+    - "Experience designing and maintaining CI/CD pipelines"
+    - "Proficiency with cloud platforms (AWS or GCP)"
+    - "Experience with observability and monitoring systems"
+  preferred:
+    - "Experience with GitOps workflows (ArgoCD, Flux)"
+    - "Knowledge of developer experience and internal platform engineering"
+    - "Familiarity with multi-cloud or hybrid cloud architectures"
+    - "Experience scaling infrastructure for SaaS products"
+raw_text: |
+  Senior DevOps Engineer - Datadog
+
+  About the Role:
+  Datadog is looking for a Senior DevOps Engineer to join our Internal
+  Infrastructure team. You will build and maintain the systems and tooling
+  that enable Datadog engineers to ship reliable software at scale.
+
+  What You'll Do:
+  - Design and maintain scalable cloud infrastructure using infrastructure as code
+  - Build and optimize CI/CD pipelines for hundreds of engineers
+  - Operate and improve Kubernetes clusters running thousands of pods
+  - Develop internal developer tools and self-service platforms
+  - Improve deployment velocity and reliability through automation
+  - Collaborate with SRE and security teams on infrastructure standards
+
+  Requirements:
+  - 5+ years of DevOps or infrastructure engineering experience
+  - Deep expertise with Terraform, Pulumi, or CloudFormation
+  - Strong Kubernetes experience in production (operations, troubleshooting, scaling)
+  - Experience designing CI/CD pipelines (GitHub Actions, Jenkins, or similar)
+  - Proficiency with AWS or GCP
+  - Experience with monitoring and observability tools
+
+  Nice to Have:
+  - Experience with GitOps workflows (ArgoCD, Flux)
+  - Background in developer experience or platform engineering (Backstage, etc.)
+  - Experience with multi-cloud or hybrid environments
+  - Track record scaling infrastructure for high-growth SaaS products
+
+  Compensation: $185,000 - $260,000 base + equity + benefits

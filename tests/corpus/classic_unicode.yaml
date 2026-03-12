@@ -1,0 +1,63 @@
+cv:
+  name: "José García-Müller"
+  headline: "Ingénieur Logiciel Senior"
+  location: "München, Deutschland"
+  email: jose.garcia@example.com
+  phone: "+49 89 12345678"
+  website: https://josegm.dev
+  social_networks:
+    - network: LinkedIn
+      username: josegarciamuller
+    - network: GitHub
+      username: jgmuller
+  sections:
+    résumé:
+      - "Développeur expérimenté spécialisé dans les systèmes distribués et l'architecture cloud."
+      - "Passionné par l'open source et les technologies émergentes."
+    education:
+      - institution: "Eidgenössische Technische Hochschule Zürich"
+        area: Informatik
+        degree: MSc
+        start_date: 2014-09
+        end_date: 2016-07
+        location: "Zürich, Schweiz"
+        highlights:
+          - "Thesis: Réseaux de neurones pour la détection d'anomalies"
+      - institution: "Universidad de São Paulo"
+        area: "Ciência da Computação"
+        degree: BSc
+        start_date: 2010-03
+        end_date: 2014-02
+        location: "São Paulo, Brasil"
+        highlights:
+          - "GPA: 9.1/10.0 — Summa cum laude"
+    experience:
+      - company: "Société Générale"
+        position: "Développeur Senior"
+        start_date: 2020-01
+        end_date: present
+        location: "Paris, França"
+        highlights:
+          - "Conçu un système de traitement de données financières traitant 500K transactions/jour"
+          - "Réduit la latence p99 de 280ms à 95ms grâce à l'optimisation du cache"
+      - company: "Fjällräven Tech AB"
+        position: Software Engineer
+        start_date: 2016-09
+        end_date: 2019-12
+        location: "Örnsköldsvik, Sverige"
+        highlights:
+          - "Built microservices architecture for Scandinavian e-commerce platform"
+          - "Implemented naïve Bayes classifier for product recommendation engine"
+    projects:
+      - name: "lösung-finder"
+        date: "2023"
+        highlights:
+          - "An OSS tool for résumé parsing with full Unicode support"
+          - "Handles names like Ñoño, Dvořák, and Ólafsdóttir correctly"
+    skills:
+      - label: Sprachen
+        details: "Python, Rust, Go, TypeScript"
+      - label: "Gesprochene Sprachen"
+        details: "Español (nativo), Deutsch (fließend), Português (nativo), Français (B2)"
+design:
+  theme: classic

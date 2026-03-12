@@ -1,0 +1,47 @@
+title: Machine Learning Engineer
+company: Stripe
+experience_years: 3
+requirements:
+  required:
+    - "Strong experience building and deploying ML models in production"
+    - "Proficiency in Python and ML frameworks (PyTorch or TensorFlow)"
+    - "Experience with feature engineering and data pipelines at scale"
+    - "Understanding of model evaluation, monitoring, and iteration"
+    - "Experience with fraud detection, risk scoring, or payments domain"
+  preferred:
+    - "Experience with real-time inference systems"
+    - "Familiarity with experiment tracking and MLOps tooling"
+    - "Knowledge of distributed training"
+    - "Experience with NLP or transformer-based models"
+raw_text: |
+  Machine Learning Engineer - Stripe
+
+  About the Role:
+  Stripe is looking for a Machine Learning Engineer to join our Risk and
+  Fraud Intelligence team. You will build ML systems that protect millions
+  of businesses from fraudulent transactions while maintaining a seamless
+  payment experience for legitimate users.
+
+  What You'll Do:
+  - Build and deploy ML models for fraud detection and risk scoring
+  - Design and maintain feature engineering pipelines processing billions of events
+  - Develop real-time inference services with low-latency requirements
+  - Collaborate with data scientists and product engineers to ship ML-powered features
+  - Implement model monitoring, A/B testing, and continuous improvement workflows
+  - Optimize model performance for both accuracy and latency
+
+  Requirements:
+  - 3+ years of experience as an ML engineer or applied scientist
+  - Strong proficiency in Python and at least one ML framework (PyTorch, TensorFlow)
+  - Experience building and deploying ML models in production environments
+  - Solid understanding of feature engineering, model evaluation, and data pipelines
+  - Experience with fraud detection, risk modeling, or financial ML applications
+  - Familiarity with SQL and large-scale data processing
+
+  Nice to Have:
+  - Experience with real-time ML serving systems
+  - Familiarity with MLOps tools (MLflow, Kubeflow, SageMaker)
+  - Experience with transformer architectures and NLP
+  - Knowledge of distributed training and model optimization
+
+  Compensation: $190,000 - $280,000 base + equity

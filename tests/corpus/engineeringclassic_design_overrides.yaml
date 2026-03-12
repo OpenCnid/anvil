@@ -1,0 +1,57 @@
+cv:
+  name: Design Override Demo
+  location: Denver, CO
+  email: design@example.com
+  sections:
+    experience:
+      - company: Acme Corp
+        position: Lead Engineer
+        start_date: 2020-06
+        end_date: present
+        highlights:
+          - Architected platform serving 10M users
+          - Reduced deployment time from 2 hours to 15 minutes
+      - company: Beta Startup
+        position: Software Engineer
+        start_date: 2017-03
+        end_date: 2020-05
+        highlights:
+          - Built core API from scratch
+    education:
+      - institution: University of Colorado
+        area: Computer Engineering
+        degree: BS
+        start_date: 2013-08
+        end_date: 2017-05
+    skills:
+      - label: Languages
+        details: Go, Rust, Python, TypeScript
+      - label: DevOps
+        details: Terraform, Kubernetes, ArgoCD
+design:
+  theme: engineeringclassic
+  page:
+    size: a4
+    top_margin: 0.5in
+    bottom_margin: 0.5in
+    left_margin: 0.6in
+    right_margin: 0.6in
+  colors:
+    name: "rgb(0, 51, 102)"
+    section_titles: "rgb(0, 51, 102)"
+    links: "rgb(0, 102, 153)"
+  header:
+    alignment: left
+  section_titles:
+    type: with_full_line
+    line_thickness: 1pt
+    space_above: 0.6cm
+    space_below: 0.2cm
+  entries:
+    highlights:
+      bullet: "◆"
+      space_left: 0.2cm
+  typography:
+    font_size:
+      body: 10pt
+      name: 22pt

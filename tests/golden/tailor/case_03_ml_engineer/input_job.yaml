@@ -1,0 +1,34 @@
+title: Machine Learning Engineer
+company: Stripe
+requirements:
+  required_skills:
+    - Python
+    - PyTorch or TensorFlow
+    - MLOps (model deployment and monitoring)
+    - Feature engineering
+    - SQL
+    - Experiment tracking
+  preferred_skills:
+    - Fraud detection or anomaly detection
+    - Real-time inference systems
+    - Distributed training
+    - Spark or large-scale data processing
+  experience_years: 3
+  education: MS in Computer Science, Machine Learning, or related field
+raw_text: |
+  Stripe is looking for a Machine Learning Engineer to join our risk and fraud intelligence team.
+  You will build and deploy models that protect millions of businesses from fraudulent transactions.
+
+  Requirements:
+  - 3+ years of experience building and deploying ML models in production
+  - Strong Python skills with deep expertise in PyTorch or TensorFlow
+  - Experience with MLOps: model versioning, deployment pipelines, monitoring
+  - Expertise in feature engineering for structured and semi-structured data
+  - Strong SQL skills for data exploration and feature extraction
+  - Familiarity with experiment tracking tools (MLflow, Weights & Biases)
+
+  Preferred:
+  - Experience with fraud detection, anomaly detection, or risk scoring systems
+  - Building real-time inference pipelines with low-latency requirements
+  - Distributed model training across GPU clusters
+  - Large-scale data processing with Spark or equivalent

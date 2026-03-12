@@ -1,0 +1,51 @@
+cv:
+  name: Dr. Alex Researcher
+  location: Boston, MA
+  email: alex@university.edu
+  website: https://alex-research.com
+  social_networks:
+    - network: GitHub
+      username: alexresearch
+  sections:
+    summary:
+      - Research scientist specializing in machine learning and natural language processing.
+    education:
+      - institution: Stanford University
+        area: Computer Science
+        degree: PhD
+        start_date: 2016-09
+        end_date: 2021-06
+        location: Stanford, CA
+        highlights:
+          - "Thesis: Efficient Transformers for Long-Document Understanding"
+          - Published 8 papers in top-tier venues (NeurIPS, ICML, ACL)
+      - institution: UC Berkeley
+        area: Computer Science
+        degree: BS
+        start_date: 2012-09
+        end_date: 2016-05
+        highlights:
+          - "GPA: 3.92/4.00, Summa Cum Laude"
+    experience:
+      - company: Google Research
+        position: Research Scientist
+        start_date: 2021-07
+        end_date: present
+        location: Mountain View, CA
+        highlights:
+          - Lead researcher on efficient attention mechanisms for large language models
+          - Published 3 papers at NeurIPS 2023 on sparse attention patterns
+    publications:
+      - title: "Efficient Attention via Learned Sparsity Patterns"
+        authors:
+          - Alex Researcher
+          - Jane Smith
+        journal: NeurIPS
+        date: 2023-12
+    skills:
+      - label: ML Frameworks
+        details: PyTorch, JAX, TensorFlow
+      - label: Languages
+        details: Python, C++, Julia
+design:
+  theme: sb2nov

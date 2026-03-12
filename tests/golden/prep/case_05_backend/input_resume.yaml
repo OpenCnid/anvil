@@ -1,0 +1,36 @@
+cv:
+  name: Daniel Nakamura
+  email: daniel.nakamura@example.com
+  phone: "+1-206-555-0478"
+  location: Seattle, WA
+  sections:
+    experience:
+      - company: Vantage Commerce
+        position: Senior Backend Engineer
+        start_date: 2021-04
+        end_date: 2024-07
+        highlights:
+          - "Designed event-driven order processing system handling 850K events/day with Apache Kafka, achieving 99.95% delivery guarantee"
+          - "Built distributed caching layer with Redis Cluster that reduced P99 API latency from 420ms to 85ms"
+          - "Led migration from monolith to 18 microservices using Go and gRPC, enabling independent team deployments"
+          - "Implemented rate limiting and circuit breaker patterns that prevented 3 cascading failures during peak traffic"
+      - company: Helix Data Systems
+        position: Backend Engineer
+        start_date: 2018-07
+        end_date: 2021-03
+        highlights:
+          - "Developed RESTful API platform in Python/FastAPI serving 15M requests/day for B2B analytics customers"
+          - "Designed PostgreSQL sharding strategy that supported 10x data growth while maintaining sub-100ms query times"
+          - "Built async job processing system with Celery and RabbitMQ handling 2M background tasks/day"
+    education:
+      - institution: University of Washington
+        area: Computer Science
+        degree: BS
+        end_date: 2018-06
+    skills:
+      - label: Languages
+        details: Go, Python, Java, SQL, Protobuf
+      - label: Distributed Systems
+        details: Apache Kafka, Redis, PostgreSQL, RabbitMQ, gRPC, Celery
+      - label: Infrastructure
+        details: AWS (ECS, RDS, SQS, DynamoDB), Docker, Kubernetes, Terraform, Datadog

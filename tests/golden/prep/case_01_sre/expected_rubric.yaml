@@ -1,0 +1,37 @@
+rubric:
+  - criterion: "Prep notes reference specific projects from resume"
+    weight: 0.3
+    type: keyword_presence
+    keywords:
+      - "Cloudtrace"
+      - "14M requests"
+      - "99.97%"
+      - "Bridgeport"
+      - "Prometheus"
+      - "Kubernetes"
+      - "90 seconds"
+      - "35%"
+    min_matches: 2
+  - criterion: "Contains structured talking points"
+    weight: 0.25
+    type: structural_check
+    checks:
+      - type: min_length
+        value: 500
+      - type: line_count_min
+        value: 15
+      - type: regex_match
+        value: "(?:talk|discuss|explain|describe|highlight|mention)"
+  - criterion: "No fabricated experiences"
+    weight: 0.2
+    type: factual_accuracy
+    forbidden_patterns:
+      - "(?i)\\b(?:led|managed|built)\\b.*(?:at|for) Netflix"
+      - "(?i)chaos monkey"
+      - "(?i)\\bJava\\b"
+      - "(?i)200 million subscribers"
+  - criterion: "Quality and actionability of prep notes"
+    weight: 0.25
+    type: subjective_quality
+    description: "Prep notes should provide actionable talking points that help the candidate prepare for the interview"
+    scoring_guide: "Score 80+ if notes have specific, actionable advice tied to resume content. Score 50-80 if generally useful. Below 50 if too generic."

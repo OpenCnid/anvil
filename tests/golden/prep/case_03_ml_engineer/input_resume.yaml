@@ -1,0 +1,36 @@
+cv:
+  name: Marcus Okonkwo
+  email: marcus.okonkwo@example.com
+  phone: "+1-512-555-0189"
+  location: Austin, TX
+  sections:
+    experience:
+      - company: Synthwave AI
+        position: Machine Learning Engineer
+        start_date: 2021-08
+        end_date: 2024-05
+        highlights:
+          - "Designed and deployed a real-time fraud detection model in PyTorch serving 2.3M transactions/day with 96.4% precision"
+          - "Built feature engineering pipeline in Apache Spark that reduced model training time from 18 hours to 3.5 hours"
+          - "Led A/B testing framework for ML models, enabling 12 concurrent experiments and reducing false positive rate by 28%"
+          - "Implemented model monitoring with custom drift detection alerting, catching 3 data quality incidents before production impact"
+      - company: Greenfield Analytics
+        position: Data Scientist
+        start_date: 2019-06
+        end_date: 2021-07
+        highlights:
+          - "Developed NLP pipeline for customer feedback classification using BERT, achieving 91% accuracy across 15 categories"
+          - "Created recommendation engine that increased user engagement by 22% measured via click-through rate"
+          - "Optimized batch inference pipeline, reducing cloud compute costs by $14,000/month through GPU instance right-sizing"
+    education:
+      - institution: University of Texas at Austin
+        area: Computer Science (Machine Learning specialization)
+        degree: MS
+        end_date: 2019-05
+    skills:
+      - label: ML/AI
+        details: PyTorch, TensorFlow, scikit-learn, Hugging Face Transformers, XGBoost, MLflow
+      - label: Data Engineering
+        details: Apache Spark, Airflow, SQL, Pandas, DVC, Feature Stores (Feast)
+      - label: Infrastructure
+        details: AWS SageMaker, Docker, Kubernetes, Python, Git, Redis

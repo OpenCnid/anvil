@@ -1,0 +1,45 @@
+cv:
+  name: Maria García
+  location: Barcelona, Spain
+  email: maria@design.studio
+  website: https://maria-garcia.design
+  social_networks:
+    - network: LinkedIn
+      username: mariagarcia
+  sections:
+    summary:
+      - Full-stack developer and UX engineer bridging design and engineering.
+    experience:
+      - company: Spotify
+        position: Senior Frontend Engineer
+        start_date: 2020-01
+        end_date: present
+        location: Stockholm, Sweden
+        highlights:
+          - Led redesign of playlist creation flow, increasing user engagement by 25%
+          - Built component library used by 50+ engineers across 8 teams
+          - Implemented accessibility improvements achieving WCAG 2.1 AA compliance
+      - company: Figma
+        position: Frontend Engineer
+        start_date: 2018-03
+        end_date: 2019-12
+        location: San Francisco, CA
+        highlights:
+          - Developed real-time collaboration features for the design editor
+          - Optimized WebGL rendering pipeline, improving frame rate by 40%
+    education:
+      - institution: Universitat Politècnica de Catalunya
+        area: Computer Engineering
+        degree: MS
+        start_date: 2016-09
+        end_date: 2018-02
+        location: Barcelona, Spain
+    skills:
+      - label: Frontend
+        details: React, TypeScript, Next.js, WebGL, CSS-in-JS
+      - label: Design
+        details: Figma, Sketch, Design Systems, Accessibility
+      - label: Backend
+        details: Node.js, GraphQL, PostgreSQL
+design:
+  theme: moderncv

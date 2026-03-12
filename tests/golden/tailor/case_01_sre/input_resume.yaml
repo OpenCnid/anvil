@@ -1,0 +1,36 @@
+cv:
+  name: Alex Chen
+  email: alex.chen@example.com
+  location: Seattle, WA
+  sections:
+    experience:
+      - company: CloudScale Inc
+        position: Software Engineer
+        start_date: 2020-01
+        end_date: present
+        highlights:
+          - Built monitoring dashboards tracking 500+ microservices across 3 regions
+          - Reduced deployment failures by 40% through automated canary analysis
+          - Implemented distributed tracing with OpenTelemetry across 12 services
+          - Developed Python scripts for automated infrastructure provisioning
+      - company: DataFlow Systems
+        position: Junior Developer
+        start_date: 2018-06
+        end_date: 2019-12
+        highlights:
+          - Created REST APIs using Flask handling 10K requests/minute
+          - Wrote unit tests achieving 90% code coverage
+          - Managed CI/CD pipelines with Jenkins and Docker
+    education:
+      - institution: University of Washington
+        area: Computer Science
+        degree: BS
+        start_date: 2014-09
+        end_date: 2018-06
+    skills:
+      - label: Languages
+        details: Python, Go, Bash, SQL
+      - label: Tools
+        details: Kubernetes, Docker, Terraform, Prometheus, Grafana
+      - label: Cloud
+        details: AWS (EC2, EKS, S3, Lambda), GCP

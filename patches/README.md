@@ -1,0 +1,33 @@
+# Patch Index
+
+Modifications to vendored rendercv v2.7 code are tracked here.
+
+| Patch | File Modified | Purpose | Risk Level |
+|-------|--------------|---------|------------|
+| P-001 | `vendor/rendercv/__init__.py` | Package identity: version from anvilcv, description updated | **Low** |
+| P-002 | `vendor/rendercv/__main__.py` | Redirect `python -m` to Anvil entry point | **Low** |
+| P-003 | `vendor/rendercv/cli/entry_point.py` | Redirect CLI entry point to Anvil | **Low** |
+| P-004 | `vendor/rendercv/cli/app.py` | Replace Typer app with Anvil's; vendored command auto-discovery preserved | **Medium** |
+| P-005 | `vendor/rendercv/cli/new_command/print_welcome.py` | Rebrand welcome banner from RenderCV to AnvilCV; update links | **Low** |
+
+## Extended Files
+
+Files where new functionality was appended without altering existing code.
+
+| Patch | File Extended | Purpose | Risk Level |
+|-------|--------------|---------|------------|
+| E-001 | `vendor/rendercv/cli/render_command/render_command.py` | Extended: Added `--no-ats-html`, `--variant`, and `--override KEY=VALUE` CLI flags | **Low** |
+| E-002 | `vendor/rendercv/cli/render_command/run_rendercv.py` | Extended: Added ATS HTML generation step after standard HTML in the render pipeline | **Low** |
+| E-003 | `vendor/rendercv/renderer/html.py` | Extended: Added `generate_ats_html()` function for ATS HTML file generation with path derivation | **Low** |
+| E-004 | `vendor/rendercv/renderer/templater/templater.py` | Extended: Added `render_ats_html()` bridge, theme-specific template lookup for all formats (not just Typst), devforge themes directory | **Low** |
+| E-005 | `vendor/rendercv/schema/models/design/built_in_design.py` | Extended: Imported DevforgeTheme and added to BuiltInDesign discriminated union for theme registration | **Low** |
+| E-006 | `vendor/rendercv/cli/error_handler.py` | Extended: Added AnvilError handling with exit codes 1-4 and category-specific Rich panel styling | **Low** |
+| E-007 | `vendor/rendercv/schema/error_dictionary.yaml` | Extended: Added Anvil-specific error messages for devforge theme, AI providers, URL/string validation | **Low** |
+| E-008 | `vendor/rendercv/schema/sample_content.yaml` | Extended: Added `anvil` section with developer-focused sample config (AI providers, GitHub, variants) | **Low** |
+| E-009 | `vendor/rendercv/schema/sample_generator.py` | Extended: Added `include_anvil` parameter and `_create_anvil_sample_section()` for commented anvil config in generated YAML | **Low** |
+| E-010 | `vendor/rendercv/cli/new_command/new_command.py` | Extended: Added `--rendercv-compat` flag to suppress anvil section; updated help text and next-steps to say `anvil` | **Low** |
+
+Risk levels:
+- **Low** — Simple additions or renames. Unlikely to conflict with upstream.
+- **Medium** — Structural changes. May conflict with upstream refactors.
+- **High** — Deep behavioral changes. Will likely conflict with upstream.

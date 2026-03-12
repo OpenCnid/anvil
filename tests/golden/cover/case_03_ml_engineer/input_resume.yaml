@@ -1,0 +1,36 @@
+cv:
+  name: Jordan Rivera
+  email: jordan.rivera@example.com
+  location: San Francisco, CA
+  sections:
+    experience:
+      - company: Neuron AI Labs
+        position: Machine Learning Engineer
+        start_date: 2021-06
+        end_date: present
+        highlights:
+          - Designed and deployed a fraud detection model achieving 96.3% precision at 0.1% false positive rate
+          - Built feature store serving 50M+ daily predictions with p99 latency under 12ms
+          - Reduced model training time by 60% by migrating pipeline to distributed PyTorch on 8-GPU clusters
+          - Developed A/B testing framework for ML models measuring revenue impact across 3M users
+      - company: DataMind Analytics
+        position: Data Scientist
+        start_date: 2019-08
+        end_date: 2021-05
+        highlights:
+          - Created NLP pipeline for customer support ticket classification with 91% accuracy
+          - Built recommendation engine increasing user engagement by 28% using collaborative filtering
+          - Automated weekly reporting dashboards saving 15 analyst-hours per week
+    education:
+      - institution: Stanford University
+        area: Computer Science (Machine Learning focus)
+        degree: MS
+        start_date: 2017-09
+        end_date: 2019-06
+    skills:
+      - label: Languages
+        details: Python, SQL, Scala, C++
+      - label: ML/AI
+        details: PyTorch, TensorFlow, scikit-learn, Hugging Face, MLflow, Ray
+      - label: Infrastructure
+        details: AWS SageMaker, Kubernetes, Apache Spark, Airflow, Docker

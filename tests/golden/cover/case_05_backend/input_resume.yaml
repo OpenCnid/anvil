@@ -1,0 +1,36 @@
+cv:
+  name: Priya Sharma
+  email: priya.sharma@example.com
+  location: New York, NY
+  sections:
+    experience:
+      - company: ScaleGrid Systems
+        position: Backend Engineer
+        start_date: 2020-07
+        end_date: present
+        highlights:
+          - Designed event-driven order processing system handling 25K transactions/second with Kafka
+          - Built distributed rate limiter using Redis reducing API abuse by 78%
+          - Led migration from monolith to 18 microservices with gRPC, improving deploy independence
+          - Optimized PostgreSQL queries reducing p95 latency from 800ms to 45ms for critical endpoints
+      - company: Nexus Cloud
+        position: Software Developer
+        start_date: 2018-01
+        end_date: 2020-06
+        highlights:
+          - Implemented OAuth2/OIDC authentication service supporting 500K active users
+          - Built async job processing system with Celery handling 1M+ daily tasks
+          - Developed internal API gateway routing traffic across 8 backend services
+    education:
+      - institution: Columbia University
+        area: Computer Science
+        degree: MS
+        start_date: 2016-09
+        end_date: 2018-01
+    skills:
+      - label: Languages
+        details: Python, Go, Java, SQL
+      - label: Backend
+        details: FastAPI, gRPC, Kafka, Redis, PostgreSQL, MongoDB
+      - label: Infrastructure
+        details: Docker, Kubernetes, AWS, Terraform, GitHub Actions

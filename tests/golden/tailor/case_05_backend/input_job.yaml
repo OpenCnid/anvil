@@ -1,0 +1,34 @@
+title: Senior Backend Engineer
+company: Square
+requirements:
+  required_skills:
+    - Java
+    - Distributed systems
+    - PostgreSQL
+    - API design (REST and/or gRPC)
+    - Microservices architecture
+    - Testing and code quality
+  preferred_skills:
+    - Payment processing experience
+    - Event-driven architecture (Kafka, RabbitMQ)
+    - Performance tuning and optimization
+    - Kotlin
+  experience_years: 5
+  education: BS in Computer Science or equivalent
+raw_text: |
+  Square is looking for a Senior Backend Engineer to join our commerce platform team.
+  You will build the APIs and services that power financial tools for millions of sellers.
+
+  Requirements:
+  - 5+ years of backend engineering experience
+  - Strong Java expertise with modern frameworks (Spring Boot, Micronaut, or similar)
+  - Experience designing and operating distributed systems at scale
+  - Deep PostgreSQL knowledge (query optimization, schema design, replication)
+  - Proven ability to design clean, well-documented APIs (REST and/or gRPC)
+  - Strong testing practices (unit, integration, contract testing)
+
+  Preferred:
+  - Experience in payment processing or financial systems
+  - Event-driven architectures with Kafka or similar message brokers
+  - Track record of performance optimization and latency reduction
+  - Kotlin experience

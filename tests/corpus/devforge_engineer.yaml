@@ -1,0 +1,61 @@
+cv:
+  name: Alex Rivera
+  location: San Francisco, CA
+  email: alex@example.com
+  phone: "+1 415 555 0100"
+  website: https://alexrivera.dev
+  social_networks:
+    - network: LinkedIn
+      username: alexrivera
+    - network: GitHub
+      username: alexrivera
+  sections:
+    experience:
+      - company: Stripe
+        position: Staff Software Engineer
+        start_date: 2022-03
+        end_date: present
+        location: San Francisco, CA
+        highlights:
+          - Designed distributed payment processing system handling 50M transactions/day
+          - Led migration from monolithic architecture to event-driven microservices
+      - company: Google
+        position: Senior Software Engineer
+        start_date: 2019-06
+        end_date: 2022-02
+        location: Mountain View, CA
+        highlights:
+          - Built real-time ML inference pipeline processing 100K requests/sec
+          - Reduced cloud infrastructure costs by 35% through optimization
+    education:
+      - institution: Stanford University
+        area: Computer Science
+        degree: MS
+        start_date: 2017-09
+        end_date: 2019-06
+        location: Stanford, CA
+      - institution: UC Berkeley
+        area: Computer Science
+        degree: BS
+        start_date: 2013-08
+        end_date: 2017-05
+        location: Berkeley, CA
+    projects:
+      - name: k8s-autoscaler
+        date: "2023"
+        highlights:
+          - Custom metrics autoscaler for Kubernetes HPA with Prometheus integration
+        url: https://github.com/alexrivera/k8s-autoscaler
+      - name: fastcache
+        date: "2024"
+        highlights:
+          - High-performance distributed caching library in Rust
+    skills:
+      - label: Languages
+        details: Python, Go, Rust, TypeScript, Java
+      - label: Infrastructure
+        details: Kubernetes, Terraform, AWS, GCP, Docker
+      - label: Data
+        details: PostgreSQL, Redis, Kafka, Elasticsearch
+design:
+  theme: devforge

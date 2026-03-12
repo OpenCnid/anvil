@@ -1,0 +1,21 @@
+cv:
+  name: Sparse Resume
+  location: Nowhere, USA
+  sections:
+    summary:
+      - Single summary line only.
+    education:
+      - institution: Solo University
+        area: Philosophy
+        degree: BA
+        start_date: 2018-09
+        end_date: 2022-05
+    experience: []
+    skills:
+      - label: Languages
+        details: Python
+    projects: []
+    awards:
+      - bullet: "Dean's List (2021)"
+design:
+  theme: classic

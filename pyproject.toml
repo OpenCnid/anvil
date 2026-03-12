@@ -1,199 +1,83 @@
-# Every modern Python package today has a `pyproject.toml` file. It is a Python
-# standard. The `pyproject.toml` file contains all the metadata about the package.
-# It also includes the dependencies and required information for building the package.
-# For more details, see https://pip.pypa.io/en/stable/reference/build-system/pyproject-toml/.
-
 [build-system]
-# If code needs to be distributed, it might need to be compiled or bundled with other files.
-# This process of making code ready for distribution is called building.
-
-# Python packages need to be built too, even though they are not compiled (mostly).
-# At the end of the building process, a source distribution package (sdist) and a built
-# distribution package (in Wheel format) are created.
-# See https://packaging.python.org/en/latest/tutorials/packaging-projects/ for details.
-# Built Distribution:
-# https://packaging.python.org/en/latest/glossary/#term-Built-Distribution
-# Source Distribution:
-# https://packaging.python.org/en/latest/glossary/#term-Source-Distribution-or-sdist
-
-# To build RenderCV, we need to specify which build package to use. There are
-# many build backends like `setuptools`, `flit`, `poetry`, `hatchling`, etc. We will use
-# `uv_build`.
-requires = ["uv_build>=0.10.3,<0.11.0"]  # Packages needed to build RenderCV
-# Python has a standard object format called a build-backend object. This object must
-# implement specific methods that perform defined tasks. For example, it should have a
-# method called `build_wheel` that builds a wheel file.
-# See https://peps.python.org/pep-0517/
-build-backend = "uv_build"  # Build-backend object for building RenderCV
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
-# Metadata about RenderCV.
-name = "rendercv"
-version = "2.7"
-description = "Resume builder for academics and engineers"
+name = "anvilcv"
+version = "0.1.0"
+description = "Developer-native, AI-powered resume engine — a fork of rendercv"
 readme = "README.md"
-requires-python = ">=3.12"
 license = "MIT"
-authors = [{ name = "Sina Atalay", email = "dev@atalay.biz" }]
+requires-python = ">=3.12"
+authors = [
+    { name = "Anvil Contributors" },
+]
+keywords = ["resume", "cv", "ats", "ai", "typst", "cli"]
 classifiers = [
-  "Development Status :: 5 - Production/Stable",
-  "Intended Audience :: Education",
-  "Intended Audience :: Science/Research",
-  "License :: OSI Approved :: MIT License",
-  "Operating System :: OS Independent",
-  "Programming Language :: Python :: 3.12",
-  "Programming Language :: Python :: 3.13",
-  "Programming Language :: Python :: 3.14",
-  "Topic :: Printing",
-  "Topic :: Text Processing :: Markup",
-]  # See all classifiers at https://pypi.org/classifiers/
-# RenderCV depends on these packages. They are installed automatically when RenderCV is installed:
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Text Processing :: Markup",
+]
 dependencies = [
-  "Jinja2>=3.1.6",  # Generate Typst and Markdown files
-  "markdown>=3.10.2",  # Convert Markdown to HTML
-  "phonenumbers>=9.0.24",  # Validate phone numbers
-  "pydantic-extra-types>=2.11.0",  # Validate extra types
-  "pydantic[email]>=2.12.5",  # Validate and parse input files
-  "ruamel.yaml>=0.19.1",  # Parse YAML files
+    # Inherited from rendercv
+    "pydantic[email]>=2.0",
+    "pydantic-extra-types>=2.0",
+    "typer>=0.12",
+    "rich>=13.0",
+    "Jinja2>=3.1",
+    "ruamel.yaml>=0.18",
+    "watchdog>=4.0",
+    "packaging>=23.0",
+    "phonenumbers>=8.0",
+    "markdown>=3.0",
+    "annotated-doc>=0.0.4",
+    "rendercv-fonts>=0.5",
+    # Anvil additions
+    "pdfminer.six>=20231228",
+    "readability-lxml>=0.8",
+    "httpx>=0.27",
 ]
 
 [project.optional-dependencies]
-full = [
-  "typer>=0.23.1",  # Command-line interface
-  "watchdog>=6.0.0",  # Monitor files for updates
-  "typst>=0.14.8",  # Render PDF from Typst source files
-  "rendercv-fonts>=0.5.1",  # Font files for RenderCV
-  "packaging>=26.0",  # For version checking
+dev = [
+    "pytest>=8.0",
+    "pytest-xdist>=3.5",
+    "mypy>=1.8",
+    "ruff>=0.3",
+    "vcrpy>=6.0",
+    "responses>=0.25",
 ]
-
-[project.urls]
-Changelog = "https://docs.rendercv.com/changelog"
-Documentation = "https://docs.rendercv.com"
-Source = "https://github.com/rendercv/rendercv"
-# URLs related to RenderCV. Listed under the "Project links" section on PyPI.
-"Web App" = "https://rendercv.com"
+ai = [
+    "anthropic>=0.25",
+    "openai>=1.12",
+]
+full = [
+    "anvilcv[ai]",
+    "typst>=0.11",
+]
 
 [project.scripts]
-# Entry points for RenderCV.
-# See https://packaging.python.org/en/latest/specifications/entry-points/#entry-points
-# See https://hatch.pypa.io/latest/config/metadata/#cli
-
-# The key and value below mean: when someone installs RenderCV,
-# running `rendercv` in the terminal executes the function `entry_point` in
-# `src/rendercv/cli/entry_point.py`.
-rendercv = "rendercv.cli.entry_point:entry_point"
-
-# Virtual Environment Dependencies:
-[dependency-groups]
-dev = [
-  "black>=26.1.0",  # Format the code
-  "prek>=0.3.3",  # Run checks before committing (pre-commit alternative)
-  "pytest>=9.0.2",  # Run tests
-  "pytest-cov>=7.0.0",  # Coverage plugin for pytest with xdist support
-  "pytest-xdist>=3.8.0",  # Run tests in parallel
-  "ruff>=0.15.1",  # Lint and format the code
-  "ty>=0.0.17",  # Type checking
-]
-create-executable = [
-  "pyinstaller>=6.17.0",  # Build executables
-]
-docs = [
-  "markdown-callouts>=0.4.0",  # GitHub alert style admonitions
-  "mkdocs-gen-files>=0.6.0",  # Dynamic page generation for API reference
-  "mkdocs-literate-nav>=0.6.2",  # Dynamic navigation for API reference
-  "mkdocs-macros-plugin>=1.5.0",  # Dynamic content in docs
-  "mkdocs-material>=9.7.1",
-  "griffe>=1.0,<2",  # Pin to v1 (v2 broke mkdocstrings-python compatibility)
-  "mkdocstrings[python]>=1.0.3",  # Build reference docs from docstrings
-]
-update-entry-figures = [
-  "PyMuPDF==1.26.5",  # Convert PDF files to images
-  "pdfCropMargins==2.2.1",  # Generate entry figures for documentation
-  "pillow==10.4.0",  # Lock dependency of pdfCropMargins
-]
-
-# Tools Settings:
-
-# RenderCV uses various tools to check code quality, format code, build docs, and package the project.
-# Their configurations are specified below so contributors and IDEs can pick them up automatically.
-
-[tool.uv]
-default-groups = ["dev", "docs"]
+anvil = "anvilcv.cli.entry_point:main"
 
 [tool.ruff]
-line-length = 88
-
-[tool.ruff.format]
-docstring-code-format = true
+target-version = "py312"
+line-length = 100
+extend-exclude = ["src/anvilcv/vendor/"]
 
 [tool.ruff.lint]
-extend-select = [
-  "B",
-  "I",
-  "ARG",
-  "C4",
-  "EM",
-  "ICN",
-  "ISC",
-  "G",
-  "PGH",
-  "PIE",
-  "PL",
-  "PT",
-  "PTH",
-  "RET",
-  "RUF",
-  "SIM",
-  "T20",
-  "UP",
-  "YTT",
-  "EXE",
-  "NPY",
-  "PD",
-]
-ignore = [
-  "PLR",  # Design-related pylint codes
-  "ISC001",  # Conflicts with formatter
-  "UP007",  # Allow Optional type
-  "PGH003",  # Prefer not to ignore this
-  "RUF001",  # Allow other characters for locale
-  "EM101",  # Allow
-]
-flake8-unused-arguments.ignore-variadic-names = true
+select = ["E", "F", "I", "W", "UP"]
 
-[tool.black]
-line-length = 88  # Maximum line length
-preview = true  # Enable preview features
-enable-unstable-feature = [
-  "string_processing",
-]  # Break strings into multiple lines
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
 
-[tool.ty.rules]
-unused-ignore-comment = "error"
-
-[tool.coverage.run]
-source = ["src/rendercv"]  # Measure coverage in this source
-concurrency = ["multiprocessing"]  # For watcher tests
-# Use relative paths for cross-platform coverage merging:
-relative_files = true
-
-[tool.coverage.report]
-# Exclude templates from coverage reports:
-omit = ["*.j2.*"]
-
-# tombi: lint.rules.deprecated.disabled = true
-# tombi: lint.rules.one-of-multiple-match.disabled = true
 [tool.pytest.ini_options]
-log_cli_level = "INFO"
-xfail_strict = true
-addopts = [
-  "-ra",  # Show extra test summary info
-  "-v",  # Increase verbosity
-  "--strict-markers",  # Disallow unknown markers
-  "--strict-config",  # Fail on unknown config options
-  "--numprocesses=auto",  # Number of processes in parallel
-]
 testpaths = ["tests"]
-
-[tool.codespell]
-skip = "*.md"
+markers = [
+    "nightly: marks tests that run nightly against live APIs",
+    "golden: Tier 2 golden-set regression test (requires --run-golden and live AI API keys)",
+]

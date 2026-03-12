@@ -1,0 +1,125 @@
+cv:
+  name: Alice Müller-O'Brien
+  headline: Senior Software Engineer & Systems Architect
+  location: München, Germany
+  email: alice.muller@example.com
+  phone: "+49 151 12345678"
+  website: https://alicemuller.dev
+  social_networks:
+    - network: LinkedIn
+      username: alicemuller
+    - network: GitHub
+      username: alice-mob
+  sections:
+    summary:
+      - Experienced engineer with 12+ years building distributed systems at scale.
+      - "Specialties: fault-tolerant architectures, compiler design, and performance optimization."
+      - Passionate about **open source** and [reproducible research](https://reproducibility.org).
+    education:
+      - institution: Technische Universität München
+        area: Computer Science
+        degree: PhD
+        start_date: 2010-09
+        end_date: 2014-06
+        location: München, Germany
+        summary: "Thesis: Compiler Optimizations for Heterogeneous Architectures"
+        highlights:
+          - DAAD scholarship recipient (2010–2014)
+          - Published 7 peer-reviewed papers during doctoral studies
+      - institution: "Eidgenössische Technische Hochschule Zürich"
+        area: Electrical Engineering & Information Technology
+        degree: MSc
+        start_date: 2008-09
+        end_date: 2010-07
+        location: "Zürich, Switzerland"
+        highlights:
+          - "GPA: 5.8/6.0 (top 3%)"
+      - institution: Universität Wien
+        area: Mathematics
+        degree: BSc
+        date: "2005 – 2008"
+    experience:
+      - company: Stripe
+        position: Staff Engineer
+        start_date: 2021-03
+        end_date: present
+        location: Remote (Berlin)
+        highlights:
+          - Designed payment processing pipeline handling 500M+ transactions/month
+          - Reduced P99 latency from 340ms to 89ms via custom connection pooling
+          - Led cross-functional team of 14 engineers across 3 time zones
+          - "Mentored 5 engineers; 3 promoted to senior level within 18 months"
+      - company: Google
+        position: Senior Software Engineer
+        start_date: 2016-01
+        end_date: 2021-02
+        location: München, Germany
+        summary: Core member of the Spanner distributed database team.
+        highlights:
+          - Implemented automatic resharding reducing operator intervention by 80%
+          - Co-authored internal design doc adopted as company-wide best practice
+      - company: "SAP SE"
+        position: Software Developer
+        start_date: 2014-08
+        end_date: 2015-12
+        location: Walldorf, Germany
+        highlights:
+          - Built HANA in-memory database query optimizer extensions
+          - Filed 2 patents on columnar storage compression techniques
+      - company: CERN
+        position: Technical Student
+        date: "Summer 2009"
+        highlights:
+          - Contributed to ROOT data analysis framework C++ codebase
+    publications:
+      - title: "Lock-Free Data Structures for High-Contention Environments"
+        authors:
+          - "**Alice Müller-O'Brien**"
+          - Jonas Schmidt
+          - Wei Chen
+        date: 2023-03
+        doi: 10.1145/example.2023.001
+        journal: ACM SIGPLAN Notices
+      - title: "Compiler-Driven Vectorization on ARM Neoverse"
+        authors:
+          - "**Alice Müller-O'Brien**"
+        date: 2020-11
+        url: https://arxiv.org/abs/2011.00000
+        journal: arXiv preprint
+      - title: "Adaptive Query Optimization in Distributed SQL Engines"
+        authors:
+          - Priya Patel
+          - "**Alice Müller-O'Brien**"
+          - Lars Eriksson
+        date: 2018-06
+        doi: 10.1234/vldb.2018.4567
+        journal: VLDB 2018
+    projects:
+      - name: "[libconcur](https://github.com/alice-mob/libconcur)"
+        start_date: 2022-01
+        end_date: present
+        summary: Lock-free concurrent data structures library in Rust
+        highlights:
+          - 3,200+ GitHub stars, used in production by 4 companies
+          - Featured in Rust newsletter and This Week in Rust
+      - name: "müllmake"
+        date: "2019"
+        summary: Incremental build system with content-addressable caching
+        highlights:
+          - 40% faster rebuilds compared to GNU Make on large C++ projects
+    skills:
+      - label: Languages
+        details: "Rust, C++, Go, Python, OCaml, SQL"
+      - label: Infrastructure
+        details: "Kubernetes, Terraform, gRPC, Kafka, PostgreSQL"
+      - label: Spoken Languages
+        details: "German (native), English (fluent), French (intermediate)"
+    selected_awards:
+      - bullet: ACM SIGPLAN Distinguished Paper Award (2023)
+      - bullet: Google Peer Bonus Award — 4 times (2017–2020)
+      - bullet: "DAAD Full Scholarship for Doctoral Studies (2010–2014)"
+    patents:
+      - number: "Columnar Compression with Adaptive Dictionary Encoding (US Patent 10,123,456)"
+      - number: "Hybrid Row-Column Storage for Mixed Workloads (US Patent 10,234,567)"
+design:
+  theme: classic

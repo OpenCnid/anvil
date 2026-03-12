@@ -1,0 +1,34 @@
+title: Senior Frontend Engineer
+company: Shopify
+requirements:
+  required_skills:
+    - React
+    - TypeScript
+    - GraphQL
+    - Web performance optimization
+    - Responsive design
+    - Testing (unit and integration)
+  preferred_skills:
+    - Next.js
+    - Storybook
+    - Design systems
+    - Accessibility (WCAG)
+  experience_years: 5
+  education: BS or equivalent in Computer Science or related field
+raw_text: |
+  Shopify is hiring a Senior Frontend Engineer to help build the future of commerce.
+  You will work on merchant-facing tools used by 2M+ businesses worldwide.
+
+  Requirements:
+  - 5+ years of professional frontend development experience
+  - Expert-level React and TypeScript skills
+  - Experience with GraphQL clients (Apollo, urql, or Relay)
+  - Proven track record optimizing web performance (Core Web Vitals)
+  - Strong understanding of responsive and adaptive design
+  - Experience writing comprehensive tests (Jest, React Testing Library)
+
+  Preferred:
+  - Experience with Next.js or similar SSR frameworks
+  - Storybook for component documentation
+  - Building and maintaining design systems at scale
+  - Deep knowledge of accessibility standards (WCAG 2.1 AA)
