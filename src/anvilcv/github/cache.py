@@ -9,11 +9,14 @@ Why:
 from __future__ import annotations
 
 import json
+import logging
 import pathlib
 import time
 
 from anvilcv.schema.github_profile import GitHubProfile
 from anvilcv.utils.cache import get_cache_dir
+
+logger = logging.getLogger(__name__)
 
 DEFAULT_TTL_SECONDS = 3600  # 1 hour
 
@@ -53,6 +56,7 @@ def read_cached_profile(
     try:
         return GitHubProfile.model_validate(data.get("profile", {}))
     except Exception:
+        logger.warning("Failed to validate cached profile for %s", username)
         return None
 
 

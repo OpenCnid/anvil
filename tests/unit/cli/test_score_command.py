@@ -478,10 +478,10 @@ class TestScoreJobUrl:
 
 
 class TestScoreReportFormatting:
-    """Test _print_text_report and _status_icon helpers."""
+    """Test _print_text_report and Rich formatting helpers."""
 
     def test_recommendations_in_text_report(self, tmp_path: pathlib.Path) -> None:
-        """Recommendations section appears in text output."""
+        """Recommendations section appears in text output with priority icons."""
         from anvilcv.cli.score_command.score_command import _print_text_report
 
         report = _make_report(
@@ -493,17 +493,18 @@ class TestScoreReportFormatting:
         out = tmp_path / "report.txt"
         _print_text_report(report, output=out)
         text = out.read_text()
-        assert "[HIGH] Add more keywords" in text
-        assert "[LOW] Consider reordering" in text
+        assert "HIGH:" in text
+        assert "Add more keywords" in text
+        assert "LOW:" in text
+        assert "Consider reordering" in text
 
-    def test_status_icon_values(self) -> None:
-        """_status_icon returns expected icons."""
-        from anvilcv.cli.score_command.score_command import _status_icon
+    def test_status_icon_rich_values(self) -> None:
+        """_status_icon_rich returns Rich-markup icons."""
+        from anvilcv.cli.score_command.score_command import _status_icon_rich
 
-        assert _status_icon("pass") == "[PASS]"
-        assert _status_icon("fail") == "[FAIL]"
-        assert _status_icon("warn") == "[WARN]"
-        assert _status_icon("unknown") == "[????]"
+        assert "✓" in _status_icon_rich("pass")
+        assert "✗" in _status_icon_rich("fail")
+        assert "⚠" in _status_icon_rich("warn")
 
 
 class TestScoreScoringError:

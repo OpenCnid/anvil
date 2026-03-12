@@ -8,6 +8,7 @@ Modifications to vendored rendercv v2.7 code are tracked here.
 | P-002 | `vendor/rendercv/__main__.py` | Redirect `python -m` to Anvil entry point | **Low** |
 | P-003 | `vendor/rendercv/cli/entry_point.py` | Redirect CLI entry point to Anvil | **Low** |
 | P-004 | `vendor/rendercv/cli/app.py` | Replace Typer app with Anvil's; vendored command auto-discovery preserved | **Medium** |
+| P-005 | `vendor/rendercv/cli/new_command/print_welcome.py` | Rebrand welcome banner from RenderCV to AnvilCV; update links | **Low** |
 
 ## Extended Files
 

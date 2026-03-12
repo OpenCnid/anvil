@@ -8,10 +8,13 @@ Why:
 
 from __future__ import annotations
 
+import logging
 import pathlib
 from typing import Any
 
 from ruamel.yaml import YAML
+
+logger = logging.getLogger(__name__)
 
 
 def discover_variants(variant_dir: pathlib.Path) -> list[pathlib.Path]:
@@ -64,6 +67,7 @@ def read_variant_metadata(variant_path: pathlib.Path) -> dict[str, Any] | None:
             result: dict[str, Any] | None = data.get("variant")
             return result
     except Exception:
+        logger.warning("Failed to read variant metadata from %s", variant_path)
         return None
     return None
 
@@ -127,8 +131,8 @@ def render_all_variants(
         try:
             render_variant(variant_path, output_folder=out, **render_kwargs)
             results.append((variant_path, out))
-        except Exception:
+        except Exception as e:
             # Individual variant failures shouldn't stop the batch
-            pass
+            logger.warning("Failed to render variant %s: %s", variant_path, e)
 
     return results

@@ -34,6 +34,8 @@ MODIFIED_FILES: frozenset[str] = frozenset(
         "__main__.py",
         "cli/entry_point.py",
         "cli/app.py",
+        # Modified — branding updated from RenderCV to AnvilCV
+        "cli/new_command/print_welcome.py",
         # Extended — functionality added
         "cli/error_handler.py",
         "cli/new_command/new_command.py",

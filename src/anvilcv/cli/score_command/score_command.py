@@ -201,67 +201,107 @@ def _print_text_report(
     verbose: bool = False,
     output: pathlib.Path | None = None,
 ) -> None:
-    """Print a formatted text report."""
+    """Print a Rich-formatted, color-coded text report.
 
-    lines: list[str] = []
+    Matches the output format spec in specs/ats-scoring-model.md:
+    - Box-drawing header with score
+    - Progress bar visualization per category
+    - ✓/⚠/✗ icons with green/yellow/red colors
+    - Evidence tags after each check
+    - Actionable recommendations with priority icons
+    """
+    from io import StringIO
 
-    # Header
+    from rich.console import Console
+
+    # If writing to file, use a plain (no-color) console writing to a buffer
+    if output:
+        buf = StringIO()
+        console = Console(file=buf, force_terminal=False, no_color=True)
+    else:
+        console = Console()
+
+    # --- Header with box drawing ---
     score = report.overall_score
-    lines.append("")
-    lines.append("=" * 40)
-    lines.append("     ATS Compatibility Report")
-    lines.append(f"        Score: {score}/100")
-    lines.append("=" * 40)
-    lines.append("")
+    title = "ATS Compatibility Report"
+    score_line = f"Score: {score}/100"
+    box_width = 40
+    console.print()
+    console.print(f"╭{'─' * box_width}╮")
+    console.print(f"│{title:^{box_width}}│")
+    console.print(f"│{score_line:^{box_width}}│")
+    console.print(f"╰{'─' * box_width}╯")
+    console.print()
 
-    # Parsability
-    lines.append(f"Parsability: {report.parsability.score}/100")
-    for check in report.parsability.checks:
-        icon = _status_icon(check.status)
-        conf = f"  [{check.confidence.replace('_', ' ')}]" if verbose else ""
-        lines.append(f"  {icon} {check.name}{conf}")
-        if check.detail and (verbose or check.status != "pass"):
-            lines.append(f"    {check.detail}")
-
-    lines.append("")
-
-    # Structure
-    lines.append(f"Structure: {report.structure.score}/100")
-    for check in report.structure.checks:
-        icon = _status_icon(check.status)
-        conf = f"  [{check.confidence.replace('_', ' ')}]" if verbose else ""
-        lines.append(f"  {icon} {check.name}{conf}")
-        if check.detail and (verbose or check.status != "pass"):
-            lines.append(f"    {check.detail}")
-
-    lines.append("")
+    # --- Category sections ---
+    _print_category(console, "Parsability", report.parsability, verbose)
+    _print_category(console, "Structure", report.structure, verbose)
 
     # Keywords (if present)
     if report.keyword_match:
         km = report.keyword_match
-        lines.append(f"Keywords: {km.score}/100")
+        console.print(_progress_bar_line(f"Keywords: {km.score}/100", km.score))
         if km.matched:
-            lines.append(f"  Matched: {', '.join(km.matched)}")
+            console.print(f"  [green]Matched:[/green] {', '.join(km.matched)}")
         if km.missing:
-            lines.append(f"  Missing: {', '.join(km.missing)}")
-        lines.append("")
+            console.print(f"  [red]Missing:[/red] {', '.join(km.missing)}")
+        console.print()
 
-    # Recommendations
+    # --- Recommendations ---
     if report.recommendations:
-        lines.append("Recommendations:")
+        console.print("──────")
         for rec in report.recommendations:
-            priority = rec.priority.upper()
-            lines.append(f"  [{priority}] {rec.message}")
-        lines.append("")
+            icon = _priority_icon(rec.priority)
+            console.print(f"  {icon} {rec.message}")
+        console.print()
 
-    text = "\n".join(lines)
     if output:
-        output.write_text(text)
+        output.write_text(buf.getvalue())
         typer.echo(f"Report written to {output}")
-    else:
-        typer.echo(text)
 
 
-def _status_icon(status: str) -> str:
-    """Return a text icon for check status."""
-    return {"pass": "[PASS]", "fail": "[FAIL]", "warn": "[WARN]"}.get(status, "[????]")
+def _progress_bar_line(label: str, score: int, width: int = 22):
+    """Build a label + progress bar line like 'Parsability: 90/100  ████████░░░░'."""
+    from rich.text import Text
+
+    filled = round(score / 100 * width)
+    empty = width - filled
+    bar = "█" * filled + "░" * empty
+    text = Text(f"{label}  ")
+    text.append(bar, style="bold")
+    return text
+
+
+def _print_category(
+    console,
+    name: str,
+    section,
+    verbose: bool,
+) -> None:
+    """Print a scored category (Parsability / Structure) with checks."""
+    console.print(_progress_bar_line(f"{name}: {section.score}/100", section.score))
+    for check in section.checks:
+        icon = _status_icon_rich(check.status)
+        conf_tag = f"  [dim]\\[{check.confidence.replace('_', ' ')}][/dim]"
+        console.print(f"  {icon} {check.name}{conf_tag}")
+        if check.detail and (verbose or check.status != "pass"):
+            console.print(f"    [dim]{check.detail}[/dim]")
+    console.print()
+
+
+def _status_icon_rich(status: str) -> str:
+    """Return a Rich-markup icon for check status."""
+    return {
+        "pass": "[green]✓[/green]",
+        "fail": "[red]✗[/red]",
+        "warn": "[yellow]⚠[/yellow]",
+    }.get(status, "[dim]?[/dim]")
+
+
+def _priority_icon(priority: str) -> str:
+    """Return a Rich-markup priority icon for recommendations."""
+    return {
+        "high": "[bold red]⬆ HIGH:[/bold red]",
+        "medium": "[bold yellow]⬆ MED:[/bold yellow]",
+        "low": "[dim]⬇ LOW:[/dim]",
+    }.get(priority, f"[{priority.upper()}]")
